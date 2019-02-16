@@ -3,7 +3,7 @@
 		<div class="product-list-li" v-for="(item,index) in product">
 			<!--选择框-->
 			<div class="product-left">
-
+     <input type="checkbox" name="" value="" />
 			</div>
     <!--内容-->
 			<div class="product-canter">
@@ -37,17 +37,20 @@
 		data() {
 			return {
 				product: [{
+					  id:1,  
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
 						price: "198"
 
 					},
 					{
+						id:2,
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
 						price: "198"
 					},
 					{
+						id:3,
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
 						price: "198"
