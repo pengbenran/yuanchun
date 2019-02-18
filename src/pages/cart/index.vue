@@ -1,7 +1,5 @@
 <template>
-	<div>
-		<div class="cart">
-			
+		<div class="cart">	
 			<div class="product-list-li" v-for="(item,index) in product">
 				<!--选择框-->
 				<div class="product-left">
@@ -278,4 +276,5 @@
       	}
       	
       }
+
 </style>

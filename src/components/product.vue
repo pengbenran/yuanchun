@@ -11,7 +11,11 @@
 				</div> 
 				<div class="price1" :style="{display:isflex}">
 					<span>¥{{item.price}}-</span>
+<<<<<<< HEAD
 					<span>{{item.ticket}}</span>
+=======
+					<span>{{ticket}}</span>
+>>>>>>> f9a9e58bbb555613ccf4c2284dac0607d7d77db0
 					<div class="ptq">平台卷</div>
 				</div>
 			</div>
