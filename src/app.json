@@ -1,9 +1,12 @@
 {
   "pages": [
+    "pages/addressDetail/main",
+    "pages/address/main",
+    "pages/myself/main",
     "pages/index/main",
     "pages/shop/main",
-    "pages/cart/main",
-    "pages/myself/main"
+    "pages/cart/main"
+    
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -12,7 +15,7 @@
     "navigationBarTextStyle": "black"
   },
       "tabBar": {
-    "selectedColor":"#01a4bf", 
+    "selectedColor":"#901414", 
     "list": [
       { 
         "pagePath": "pages/index/main",
