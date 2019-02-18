@@ -113,9 +113,6 @@
 		},
 		mounted: function() {
 			var that = this;
-			for(var i=0;i<10;i++){
-				console.log(i);
-			}
 			that.hideTabBar();
 		},
 		methods: {

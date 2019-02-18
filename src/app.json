@@ -2,11 +2,11 @@
   "pages": [
     "pages/addressDetail/main",
     "pages/address/main",
-    "pages/myself/main",
     "pages/index/main",
     "pages/shop/main",
-    "pages/cart/main"
-    
+    "pages/cart/main",
+    "pages/cart-order/main",
+    "pages/myself/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
