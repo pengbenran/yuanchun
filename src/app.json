@@ -3,7 +3,9 @@
     "pages/index/main",
     "pages/shop/main",
     "pages/cart/main",
+    "pages/cart-order/main",
     "pages/myself/main"
+   
   ],
   "window": {
     "backgroundTextStyle": "light",

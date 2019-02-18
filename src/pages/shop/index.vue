@@ -46,23 +46,27 @@
 				product: [{
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198"
+						price: "198",
+						ticket:"20"
 
 					},
 					{
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198"
+						price: "198",
+						ticket:"20"
 					},
 					{
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198"
+						price: "198",
+						ticket:"20"
 					},
 					{
 						img: "/static/images/product-list.png",
 						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198"
+						price: "198",
+						ticket:"20"
 					},
 				],
 				cate: [{
