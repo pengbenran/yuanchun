@@ -32,7 +32,7 @@
 		</div>
 		<div class="xian"></div>
 		<!--签到-->
-		<div class="sign">
+		<div class="sign" @click="jump">
 			<div class="sign-wp">
 				<div class="sign-left">
 					<span><img src="/static/images/vipicon.png"/></span>
@@ -136,12 +136,19 @@
 				that.showTabBar()
 			},
 			//显示导航栏
-			showTabBar: function() {
+			showTabBar: function()   {
 				let that = this;
 				wx.showTabBar({
 					animation: false //是否需要过渡动画
 				})
 			},
+			//签到跳转
+			jump:function(){
+                wx.navigateTo({
+                	url:"../index-signIn/main"
+                })
+             
+			}
 
 		},
 

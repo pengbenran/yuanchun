@@ -5,7 +5,7 @@
 			<div class="site">
 				+点击新增地址
 			</div>
-
+ 
 			<div class="product-list-li" v-for="(item,index) in product">
 				<!--内容-->
 				<div class="product-canter">
@@ -34,7 +34,7 @@
 				</div>-->
 				<div class="account-right">
 					<span>合计:{{total}}</span>
-					<span @click="jump">结算</span>
+					<span>结算</span>
 				</div>
 			</div>
 		</div>
@@ -148,12 +148,6 @@
 				if(that.product[index].num < 99) {
 					that.product[index].num++
 				}
-			},
-			//结算跳转
-			jump: function() {
-				wx.navigateTo({
-					url: "../cart-order/main",
-				})
 			},
 			created() {
 

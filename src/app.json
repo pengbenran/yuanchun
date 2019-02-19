@@ -1,45 +1,44 @@
 {
-  "pages": [
-    "pages/index/main",
-    "pages/shop/main",
-    "pages/cart/main",
-    "pages/cart-order/main",
-    "pages/myself/main"
-   
-  ],
-  "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle": "black"
-  },
-      "tabBar": {
-    "selectedColor":"#01a4bf", 
-    "list": [
-      { 
-        "pagePath": "pages/index/main",
-        "iconPath": "/static/images/home.png", 
-        "selectedIconPath": "/static/images/homeselect.png",
-        "text": "首页" 
-      },
-      {
-        "pagePath": "pages/shop/main",  
-        "iconPath": "/static/images/shop.png",
-        "selectedIconPath": "/static/images/shopselect.png",
-        "text": "商城"
-      },
-      {
-        "pagePath": "pages/cart/main",
-        "iconPath": "/static/images/cart.png",
-        "selectedIconPath": "/static/images/cartselect.png",
-        "text": "购物车"
-      },
-      {
-        "pagePath": "pages/myself/main",
-        "iconPath": "/static/images/myself.png",
-        "selectedIconPath": "/static/images/myselfselect.png",
-        "text": "我的"
-      }
-    ]
-  }
+	"pages": [
+		"pages/index/main",
+		"pages/index-signIn/main",
+		"pages/addressDetail/main",
+		"pages/address/main",
+		"pages/shop/main", 
+		"pages/cart/main",
+		"pages/cart-order/main",
+		"pages/myself/main"
+	],
+	"window": {
+		"backgroundTextStyle": "light",
+		"navigationBarBackgroundColor": "#fff",
+		"navigationBarTitleText": "WeChat",
+		"navigationBarTextStyle": "black"
+	},
+	"tabBar": {
+		"selectedColor": "#901414", 
+		"list": [
+			{
+				"pagePath": "pages/index/main",
+				"iconPath": "/static/images/home.png",
+				"selectedIconPath": "/static/images/homeselect.png",
+				"text": "首页"
+			}, {
+				"pagePath": "pages/shop/main",
+				"iconPath": "/static/images/shop.png",
+				"selectedIconPath": "/static/images/shopselect.png",
+				"text": "商城"
+			}, {
+				"pagePath": "pages/cart/main",
+				"iconPath": "/static/images/cart.png",
+				"selectedIconPath": "/static/images/cartselect.png",
+				"text": "购物车"
+			}, {
+				"pagePath": "pages/myself/main",
+				"iconPath": "/static/images/myself.png",
+				"selectedIconPath": "/static/images/myselfselect.png",
+				"text": "我的"
+			}
+		]
+	}
 }

@@ -28,4 +28,17 @@ export default {
   -webkit-transition: width 2s;
   -o-transition: width 2s;
 }
+@font-face {
+  font-family: 'iconfont';  /* project id 1048971 */
+  src: url('//at.alicdn.com/t/font_1048971_sbv9of9tawl.eot');
+  src: url('//at.alicdn.com/t/font_1048971_sbv9of9tawl.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1048971_sbv9of9tawl.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1048971_sbv9of9tawl.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1048971_sbv9of9tawl.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1048971_sbv9of9tawl.svg#iconfont') format('svg');
+}
+.iconfont{
+  font-family: 'iconfont';
+  vertical-align: middle; 
+}
 </style>

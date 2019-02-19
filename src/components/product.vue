@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="product-list-li" v-for="(item,index) in products">
+		<div class="product-list-li" v-for="(item,index) in products" @click="jump">
 			<div class="img">
 				<img :src="item.img" />
 			</div>
@@ -13,7 +13,6 @@
 					<span>¥{{item.price}}-</span>
 					<span>{{item.ticket}}</span>
 					<span>{{ticket}}</span>
-
 					<div class="ptq">平台卷</div>
 				</div>
 			</div>
