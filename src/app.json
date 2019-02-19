@@ -1,8 +1,11 @@
 {
   "pages": [
+    "pages/sign/main",
+    "pages/recommendationCode/main",
+    "pages/businessCard/main",
+    "pages/index/main",
     "pages/addressDetail/main",
     "pages/address/main",
-    "pages/index/main",
     "pages/shop/main",
     "pages/cart/main",
     "pages/cart-order/main",
@@ -14,7 +17,7 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
-      "tabBar": {
+  "tabBar": {
     "selectedColor":"#901414", 
     "list": [
       { 
