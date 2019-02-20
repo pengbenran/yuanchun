@@ -12,10 +12,11 @@
     "pages/shop/main",
     "pages/cart/main",
     "pages/cart-order/main",
-    "pages/myself/main"
+    "pages/myself/main",
+    "pages/product-detail/main"
   ],
   "window": {
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "light", 
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
