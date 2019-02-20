@@ -54,41 +54,11 @@
       <div class="menuTitle">
         我的服务
       </div>
-       <div class="menuItem">
+      <div class="menuItem" v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
         <div class="icon">
-          <img src="/static/images/icon.png">
+          <img :src="item.icon">
         </div>
-        <div class="menuname">我的余额</div>
-      </div>
-       <div class="menuItem">
-        <div class="icon">
-          <img src="/static/images/icon3.png">
-        </div>
-        <div class="menuname">我的合伙人</div>
-      </div>
-       <div class="menuItem">
-        <div class="icon">
-          <img src="/static/images/icon4.png">
-        </div>
-        <div class="menuname">地址管理</div>
-      </div>
-       <div class="menuItem">
-        <div class="icon">
-          <img src="/static/images/kefu.png">
-        </div>
-        <div class="menuname">联系客服</div>
-      </div>
-       <div class="menuItem">
-        <div class="icon">
-          <img src="/static/images/mingpian.png">
-        </div>
-        <div class="menuname">个人名片</div>
-      </div>
-       <div class="menuItem">
-        <div class="icon">
-          <img src="/static/images/tequan.png">
-        </div>
-        <div class="menuname">我的特权</div>
+        <div class="menuname">{{item.menuName}}</div>
       </div>
     </div>
   </div>
@@ -100,7 +70,12 @@
 export default {
   data () {
     return {
-    
+      menuItem:[
+      {icon:'/static/images/icon3.png',menuName:'我的合伙人',jumpUrl:'../Partner/main'},
+      {icon:'/static/images/icon4.png',menuName:'地址管理',jumpUrl:'../address/main'},
+      {icon:'/static/images/kefu.png',menuName:'联系客服',jumpUrl:''},
+      {icon:'/static/images/mingpian.png',menuName:'个人名片',jumpUrl:'../businessCard/main'},
+      {icon:'/static/images/tequan.png',menuName:'我的特权',jumpUrl:'../privilege/main'}]
     }
   },
 
@@ -108,7 +83,11 @@ export default {
   },
 
   methods: {
-   
+   jump(url){
+    wx.navigateTo({
+      url:url,
+    })
+   }
   },
 
   created () {

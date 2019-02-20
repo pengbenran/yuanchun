@@ -1,9 +1,12 @@
 {
   "pages": [
+    "pages/index/main",
+    "pages/privilege/main",
+    "pages/inComing/main",
+    "pages/Partner/main",
     "pages/sign/main",
     "pages/recommendationCode/main",
     "pages/businessCard/main",
-    "pages/index/main",
     "pages/addressDetail/main",
     "pages/address/main",
     "pages/shop/main",
