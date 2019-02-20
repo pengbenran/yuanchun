@@ -33,7 +33,11 @@
 		components: {},
 
 		methods: {
-
+             jump:function(){
+             	wx.navigateTo({
+             		url:'../product-detail/main'
+             	})
+             }
 		},
 
 		created() {

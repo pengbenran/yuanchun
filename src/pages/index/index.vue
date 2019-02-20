@@ -145,7 +145,7 @@
 			//签到跳转
 			jump:function(){
                 wx.navigateTo({
-                	url:"../index-signIn/main"
+                	url:"../sign/main"
                 })
              
 			}
