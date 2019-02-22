@@ -3,10 +3,10 @@
 		<!--轮播-->
 		<div class='test'>
 			<swiper display-multiple-items='1' circular previous-margin='28px' next-margin='28px' indicator-dots>
-				<div v-for="(item,index) in banner">
+				<div v-for="(item,index) in banner" :key="item.imageId" :index="index">
 					<swiper-item>
 						<div class='box'>
-							<img :src='item.banners'></img>
+							<img :src='item.imageUrl'></img>
 						</div>
 					</swiper-item>
 				</div>
@@ -14,14 +14,14 @@
 		</div>
 		<!--商品类目-->
 		<div class="cate">
-			<div class="cate-li" v-for="(item,index) in cate">
-				<span><img :src="item.img"/></span>
+			<div class="cate-li" v-for="(item,index) in cate" :key="item.catId" :index="index" @click="getKindGoods(item.catId,index)">
+				<span><img :src="item.goodsCount"/></span>
 				<span>{{item.name}}</span>
 			</div>
 		</div>
 		<!--海报-->
 		<div class="poster">
-			<img :src="poster.img" />
+			<img :src="catImg" />
 		</div>
 		<!--产品列表-->
 		<div class="product">
@@ -35,67 +35,23 @@
 
 <script>
 	import product from '@/components/product'
+	import Api from "@/api/goods";
 	export default {
 		data() {
 			return {
 			    isflex:"none",
-				poster: {
-					img: "/static/images/banner.png"
-				},
-					ticket:20,  //平台券
-				product: [{
-						img: "/static/images/product-list.png",
-						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198",
-						ticket:"20"
-					},
-					{
-						img: "/static/images/product-list.png",
-						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						ticket:"20",
-						price: "198"
-					},
-					{
-						img: "/static/images/product-list.png",
-						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198",
-						ticket:"20"
-					},
-					{
-						img: "/static/images/product-list.png",
-						tit: "元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水",
-						price: "198",
-						ticket:"20"
-					},
-				],
-				cate: [{
-						img: "/static/images/product-cate.png",
-						name: "会员专属"
-
-					},
-					{
-						img: "/static/images/product-cate.png",
-						name: "会员专属"
-					},
-					{
-						img: "/static/images/product-cate.png",
-						name: "会员专属"
-					},
-					{
-						img: "/static/images/product-cate.png",
-						name: "会员专属"
-					},
-				],
-				banner: [{
-						banners: "/static/images/banner.png"
-					},
-					{
-						banners: "/static/images/banner.png"
-					},
-					{
-						banners: "/static/images/banner.png"
-					},
-				]
+				catImg:'',
+				ticket:20,  //平台券
+				product: [],
+				cate: [],
+				banner: [],
+				pages:0,
+				limit:3,
+				hasMore:[],
+				goodsList:[],
+				nowPage:[],
+				kindIndex:0,
+				catId:''
 			}
 		},
 
@@ -104,12 +60,70 @@
 		},
 
 		methods: {
-
+			async getGoodsAll(catId,pages,limit){
+				let that=this
+				if(that.hasMore[that.kindIndex]){
+					wx.showLoading({
+						title: '加载中',
+					})
+					let params={}
+					params.catId=catId
+					params.offset=pages*limit
+					params.limit=limit
+					let res=await Api.getGoodsAll(params)
+					if(res.code==0){
+						wx.hideLoading();
+						if(res.Goods.length<that.limit){
+							that.hasMore[that.kindIndex]=false
+						}
+						that.goodsList[that.kindIndex]=that.goodsList[that.kindIndex].concat(res.Goods)
+					}
+				}
+				else{
+					wx.showToast({
+						title:'没有更多数据了',
+						icon:"none",
+						duration:1500
+					})
+				}
+				that.product=that.goodsList[that.kindIndex]		
+			},
+			getKindGoods(catId,index){
+				let that=this
+				that.catId=catId
+				that.kindIndex=index
+				that.getGoodsAll(catId,that.nowPage[that.kindIndex],that.limit)
+			}
 		},
+		mounted() {
+			let that=this
+			wx.showLoading({
+				title: '加载中',
+			})
+			Api.getGoodCat().then(function(res){
+				if(res.code==0){
+					that.cate=res.firstGoodCat
+					that.catImg=res.firstGoodCat[0].image
+					that.banner=res.banner
+					that.catId=res.firstGoodCat[0].catId
+					for(var i in that.cate){
+						that.hasMore[i]=true
+						that.goodsList[i]=[]
+						that.nowPage[i]=0
+					}
+				 that.getGoodsAll(res.firstGoodCat[0].catId,that.nowPage[that.kindIndex],that.limit)
 
-		created() {
+				}
+				else{
 
-		}
+				}
+			})
+		},
+		onReachBottom:function(){
+			let that = this;
+			that.nowPage[that.kindIndex]+=1
+			that.getGoodsAll(that.catId,that.nowPage[that.kindIndex],that.limit)
+		},
 	}
 </script>
 

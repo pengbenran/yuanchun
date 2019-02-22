@@ -2,31 +2,30 @@
 	<div>
 		<!--轮播图-->
 		<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22">
-			<swiper-item v-for="(item,index) in banner" :key='item' :index="index">
-				<img :src="item.banners" mode='widthFix' />
+			<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index">
+				<img :src="item.imageUrl" mode='widthFix' />
 			</swiper-item>
 		</swiper>
 		<!--购物券-->
 		<div class="coupon">
-			<div class="coupon-list" v-for="(item,index) in coupon">
-				<div class="coupon-list-li">
-					<img :src="item.img" />
-					<div class="rmb"> <span>¥ </span><span>{{item.rmb}}</span></div>
-					<div class="ticket">{{ticket}}元购平台券</div>
+			<div class="coupon-list">
+				<div class="coupon-list-li" v-for="(item,index) in coupon" :key='item.id' :index="index">
+					<!-- <img src="/static/images/indexcoupon.png" /> -->
+					<div class="rmb"> <span>¥ </span>{{item.money}}</div>
+					<div class="ticket">购{{item.giveMoney}}平台券</div>
 					<div class="go">立即抢购</div>
 				</div>
 			</div>
 		</div>
 		<!--新人礼包-->
-		<div class="giftbag">
-			<div class="img"><img :src="giftbag.img" /></div>
+		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
+			<div class="img">
+				<img :src="item.voucherType" />
+			</div>
 			<div class="cant">
-				<div class="cant-left">
-					{{giftbag.mf}}
-				</div>
 				<div class="cant-right">
-					<p>{{giftbag.tit}}</p>
-					<p> <span>{{giftbag.mflq}}</span></p>
+					<p class="fontHidden"><span class="cant-tip">新人礼</span>{{item.repacketName}}</p>
+					<button> 免费领取</button>
 				</div>
 			</div>
 		</div>
@@ -64,56 +63,41 @@
 				</div>
 			</div>
 		</div>
+		<loginModel ref="loginModel"></loginModel> 
 	</div>
 </template>
-
 <script>
+	import Api from "@/api/home";
+	import loginModel from "@/components/loginModel"; 
 	export default {
 		data() {
 			return {
 				isTogo: true,
 				msg: [],
-				giftbag: {
-					img: "/static/images/indexlist.png",
-					mf: "免费",
-					tit: "新人礼包元淳孕妇护肤品补水保湿面膜滋养蚕丝面膜多效面膜",
-					mflq: "免费领取",
-				},
-				coupon: [{
-						img: "/static/images/indexcoupon.png",
-						rmb: 300,
-						ticket: 100,
-					},
-					{
-						img: "/static/images/indexcoupon.png",
-						rmb: 300,
-						ticket: 100,
-					},
-					{
-						img: "/static/images/indexcoupon.png",
-						rmb: 300,
-						ticket: 100,
-					},
-				],
-				banner: [{
-						banners: "/static/images/banner.png"
-					},
-					{
-						banners: "/static/images/banner.png"
-					},
-					{
-						banners: "/static/images/banner.png"
-					},
-				]
+				giftbag:[],
+				coupon: [],
+				banner: []
 			}
 		},
 
 		components: {
-
+			loginModel
 		},
-		mounted: function() {
+		async mounted(){
 			var that = this; 
+			wx.showLoading({
+				title: '加载中',
+			})
 			that.hideTabBar();
+			Api.getIndex().then(function(res){
+				if(res.code==0){
+					wx.hideLoading();
+					that.banner=res.banner
+					that.giftbag=res.giftPackage
+					that.coupon=res.memberTiket
+				}
+			})
+			// await that.$refs.loginModel.userLogin()
 		},
 		methods: {
 			//隐藏导航栏
@@ -150,10 +134,6 @@
              
 			}
 
-		},
-
-		created() {
-
 		}
 	}
 </script>
@@ -173,11 +153,12 @@
 	/*弹窗*/
 	
 	.popup {
-		position: absolute;
+		position: fixed;
 		z-index: 99;
 		top: 0;
-		width: 100%;
-		height: 100%;
+		bottom:0;
+		left: 0;
+		right: 0;
 		background-color: rgba(0, 0, 0, .7);
 		.popup-wp {
 			width: 100%;
@@ -240,40 +221,30 @@
 	}
 	/*购物券*/
 	
-	.coupon {
-		width: 100%;
+	.coupon {	
 		background-color: #f5f5f5;
-		height: 83px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0 36px;
-		box-sizing: border-box;
+		height: 70px;
+		position: relative;
+		overflow: hidden;
 		.coupon-list {
+			width: 100%;
+			position: absolute;
+			display: flex;
+			justify-content: space-around;
+			bottom: -20px;
 			.coupon-list-li {
-				position: relative;
 				text-align: center;
-				img {
-					width: 71px;
-					height: 62px;
-				}
-				.rmb,
-				.ticket,
-				.go {
-					position: absolute;
-					color: #ffffff;
-				}
+				background: #6e1b22;
+				width:80px;
+				height: 80px;
+				border-radius: 40px 40px 35px 35px;
+				color:#fff;
 				.rmb {
-					top: 0;
-					display: flex;
-					align-items: flex-end;
+					top: 0;	
 					left: 10px;
 					span {
-						display: block;
 						&:nth-child(1) {
 							font-size: 7px;
-							position: relative;
-							top: -7px;
 						}
 						&:nth-child(2) {
 							font-size: 26px;
@@ -281,20 +252,18 @@
 					}
 				}
 				.ticket {
-					top: 28px;
-					font-size: 8px;
-					left: 15px;
+					font-size: 10px;
+					height: 18px;
+					line-height:18px;
 				}
 				.go {
-					top: 40px;
-					font-size: 6px;
+					font-size: 8px;
 					width: 49px;
 					margin: 0 auto;
-					height: 8px;
-					line-height: 8px;
+					height: 12px;
+					line-height: 12px;
 					text-align: center;
 					border: 1px solid rgba(255, 255, 255, .6);
-					left: 9px;
 				}
 			}
 		}
@@ -303,7 +272,7 @@
 	
 	.giftbag {
 		width: 100%;
-		height: 118px;
+		height: 100px;
 		background-color: #FFFFFF;
 		padding: 13px 11px 5px 21px;
 		box-sizing: border-box;
@@ -311,8 +280,8 @@
 		justify-content: space-between;
 		flex-wrap: wrap;
 		.img {
-			width: 100px;
-			height: 100px;
+			width: 90px;
+			height: 90px;
 			image {
 				width: 100%;
 				height: 100%;
@@ -320,44 +289,37 @@
 		}
 		.cant {
 			width: 237px;
-			display: flex;
-			justify-content: space-around;
-			flex-wrap: wrap;
-			margin-top: 18px;
-			.cant-left {
-				width: 34px;
-				height: 15px;
-				border-radius: 5px;
-				text-align: center;
-				line-height: 15px;
-				background-color: #6e1b22;
-				color: #FFFFFF;
-				font-size: 11px;
-			}
 			.cant-right {
-				width: 196px;
 				p {
-					display: block;
-					&:nth-child(1) {
-						font-size: 11px;
-						color: #333333;
+					font-size: 11px;
+					color: #333333;
+					line-height:20px;
+					.cant-tip{
+						width: 40px;
+						height: 15px;
+						border-radius: 5px;
+						text-align: center;
+						line-height: 15px;
+						background-color: #6e1b22;
+						color: #FFFFFF;		
+						display: inline-block;
 					}
-					&:nth-child(2) {
-						justify-content: flex-end;
-						display: flex;
-						span {
-							display: block;
-							width: 79px;
-							height: 20px;
-							background-color: #6e1b22;
-							text-align: center;
-							line-height: 20px;
-							border-radius: 5px;
-							font-size: 13px;
-							color: #ffffff;
-							margin-top: 30px;
-						}
-					}
+					
+				}
+				button{
+					width: 79px;
+					height: 20px;
+					background-color: #6e1b22;
+					text-align: center;
+					line-height: 20px;
+					border-radius: 5px;
+					font-size: 13px;
+					color: #ffffff;
+					padding:0;
+					border: 0;
+					outline: none;
+					float: right;
+					margin-top: 15px;
 				}
 			}
 		}

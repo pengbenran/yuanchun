@@ -1,6 +1,9 @@
 {
   "pages": [
+    "pages/product-detail/main",
     "pages/index/main",
+    "pages/orderList/main",
+    "pages/withdrawal/main",
     "pages/privilege/main",
     "pages/inComing/main",
     "pages/Partner/main",
@@ -12,8 +15,7 @@
     "pages/shop/main",
     "pages/cart/main",
     "pages/cart-order/main",
-    "pages/myself/main",
-    "pages/product-detail/main"
+    "pages/myself/main"
   ],
   "window": {
     "backgroundTextStyle": "light", 

@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div class="menu">
-			<div class="menuList">
+			<div class="menuList" @click="jump('../inComing/main')">
 				<img src="/static/images/menu1.png">
 				佣金
 			</div>
@@ -28,16 +28,16 @@
 				<img src="/static/images/menu2.png">
 				订单
 			</div>
-			<div class="menuList">
+			<div class="menuList" @click="jump('../withdrawal/main')">
 				<img src="/static/images/menu3.png">
 				提现记录
 			</div>
-			<div class="menuList">
+			<div class="menuList" @click="jump('../Partner/main')">
 				<img src="/static/images/menu4.png">
 				我的合伙人
 			</div>
 		</div>
-		<div class="mark">
+		<div class="mark" @click="jump('../recommendationCode/main')">
 			<img src="/static/images/mingpian.png">我的推荐码
 			<span class="iconfont">&#xe72b;</span>
 		</div>
@@ -54,7 +54,11 @@
 
 		},
 		methods:{
-
+			jump(url){
+				wx.navigateTo({
+					url:url,
+				})
+			}
 		}
 	}
 </script>

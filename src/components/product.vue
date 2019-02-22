@@ -1,19 +1,17 @@
 <template>
 	<div>
-		<div class="product-list-li" v-for="(item,index) in products" @click="jump">
+		<div class="product-list-li" v-for="(item,index) in products" @click="jump(item.goodsId)">
 			<div class="img">
-				<img :src="item.img" />
+				<img :src="item.thumbnail" />
 			</div>
 			<div class="content">
-				<div class="tit">{{item.tit}}</div>
+				<div class="tit fontHidden">{{item.name}}</div>
 				<div class="price">
-					<span>¥{{item.price}}</span>
+					<span>¥{{item.cost}}</span>
 				</div> 
 				<div class="price1" :style="{display:isflex}">
-					<span>¥{{item.price}}-</span>
-					<span>{{item.ticket}}</span>
-					<span>{{ticket}}</span>
-					<div class="ptq">平台卷</div>
+					<span>¥{{item.price}}+</span>
+					<div class="ptq">{{item.unit}}平台卷</div>
 				</div>
 			</div>
 		</div>
@@ -33,9 +31,9 @@
 		components: {},
 
 		methods: {
-             jump:function(){
+             jump:function(goodsId){
              	wx.navigateTo({
-             		url:'../product-detail/main'
+             		url:'../product-detail/main?goodsId='+goodsId
              	})
              }
 		},
@@ -53,9 +51,6 @@
 		padding: 15px 0 15px 0;
 		border-bottom: 1px solid #e6e6e6;
 		flex-wrap: wrap;
-		&:nth-child(1) {
-			padding: 0 0 15px 0;
-		}
 		.img {
 			width: 110px;
 			height: 110px;
@@ -69,11 +64,12 @@
 			font-size: 11px;
 			.tit {
 				color: #333333;
-				line-height: 18px;
-				margin-top: 10px;
+				line-height: 25px;
+				box-sizing: border-box;
+				height: 55px;
+				margin-bottom: 10px;
 			}
 			.price {
-				margin-top: 20px;
 				span {
 					color: #a82429;
 					font-size: 16px;
@@ -84,13 +80,14 @@
 				font-size: 16px;
 				.ptq {
 					background-color: #801d20;
-					width: 36px;
-					height: 13px;
+					padding:0 10px;
+					box-sizing: border-box;
+					height: 19px;
 					text-align: center;
 					border-radius: 5px;
-					line-height: 13px;
+					line-height: 19px;
 					color: #ffffff;
-					font-size: 7px;
+					font-size: 13px;
 					display: inline-block;
 					vertical-align: middle;
 				}

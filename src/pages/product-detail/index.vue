@@ -5,7 +5,7 @@
 			<div v-for="(item,index) in banner">
 				<swiper-item>
 					<div class='box'>
-						<img :src='item.banners'></img>
+						<img :src='item.original' mode="widthFix"></img>
 					</div>
 				</swiper-item>
 			</div>
@@ -13,68 +13,64 @@
 		<!--产品详情-->
 		<div class="detail">
 			<div class="pic">
-				<span>¥ {{detail.pic}}</span>
-				<span>¥ {{detail.pic1}}</span>
+			   ¥ {{detail.cost}}
+			</div>
+			<div class="price1">
+				<span>¥{{detail.price}}+</span>
+				<div class="ptq">{{detail.unit}}平台卷</div>
 			</div>
 			<div class="tit">
-				{{detail.tit}}
+				{{detail.name}}
 			</div>
 			<div class="kdf">
 				<span>快递费：{{detail.kdf}}元</span>
-				<span>月销{{detail.sales}}笔</span>
+				<span>月销{{detail.haveSpec}}笔</span>
 				<span>{{detail.site}}</span>
 			</div>
 		</div>
-		<div class="xian"></div>
-		<!--产品属性-->
-		<div class="attribute">
-			<span @click="btnTab(index)" class="tit" :class="curr==index?'addr':''" v-for="(attribute,index) in attribute">{{attribute.tit}}</span>			
-		</div>
+		<goodsDetailFooter :GoodsInfo='detail'/>
 	</div>
 </template>
 
 <script>
+	import Api from '@/api/goods'
+	import goodsDetailFooter from '@/components/goodDetailFooter'
 	export default {
 		data() {
 			return {
 				curr:0,
-				attribute:[
-		              {tit:"商品详情"},
-		              {tit:"商品属性"},
-		              {tit:"商品推荐"},
-				],
-				detail: {
-					pic: 219,
-					pic1: 399,
-					tit: '元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水 ',
-					kdf:13,
-					sales:3456,
-					site:"江西南昌",
-				},
-				banner: [{
-						banners: "/static/images/banner.png"
-					},
-					{
-						banners: "/static/images/banner.png"
-					},
-					{
-						banners: "/static/images/banner.png"
-					},
-				]
+				posts:false,
+				detail: {},
+				banner: []
 			}
 		},
 
-		components: {},
+		components: {goodsDetailFooter},
 
 		methods: {
           btnTab:function(index){
           	let that = this
           	that.curr = index
+          },
+	       getGoodsInfo(goodsId){
+          	let params={}
+          	let that=this
+          	params.goodsId=goodsId
+          	Api.getGoodsInfo(params).then(function(res){
+          		if(res.code==0){
+          			that.banner=res.Gallery
+          			res.Goods.products=res.products
+          			that.detail=res.Goods
+          		}
+          		console.log(res);
+          	})
           }
 		},
-
-		created() {
-
+		mounted() {
+			let that=this
+			// that.goodsId =that.$root.$mp.query.goodsId
+			 that.goodsId=50
+			that.getGoodsInfo(that.goodsId)
 		}
 	}
 </script>
@@ -99,17 +95,24 @@
 		box-sizing: border-box;
 		.pic{
 			padding: 17px 0 9px 0;
-			span{
-				&:nth-child(1){
-					font-size: 14px;
-					color: #fe2448;
-				}
-				&:nth-child(2){
-					font-size: 12px;
-					color: #a6a6a6;
-					margin-left: 10px;
-					text-decoration: line-through;
-				}
+			font-size: 16px;
+			color: #a82429;		
+		}
+		.price1 {
+			color: #a82429;
+			font-size: 16px;
+			.ptq {
+				background-color: #801d20;
+				padding:0 10px;
+				box-sizing: border-box;
+				height: 19px;
+				text-align: center;
+				border-radius: 5px;
+				line-height: 19px;
+				color: #ffffff;
+				font-size: 13px;
+				display: inline-block;
+				vertical-align: middle;
 			}
 		}
 		.tit{
@@ -131,14 +134,6 @@
 			}
 		}
 	}
-	.xian{
-		width: 100%;
-		height: 12px;
-		background-color: #f1f1f1;
-		
-	}
-	
-	
 	.attribute{
 		display: flex;
 		justify-content: space-between;
@@ -152,4 +147,5 @@
 			color: #38ddbf;
 		}
 	}
+
 </style>

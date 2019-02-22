@@ -186,6 +186,7 @@ img{
   .menuItem{
     display: flex;
     padding-left: 10px;
+    width:100%;
     height: 40px;
     line-height:40px;
     font-size: 16px;
@@ -197,6 +198,7 @@ img{
     }
     .menuname{
     padding-left: 8px;
+    flex-grow: 1;
     border-top: 1px solid #EDEDED;
     }
   }
