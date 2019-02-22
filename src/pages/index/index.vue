@@ -8,7 +8,7 @@
 		</swiper>
 		<!--购物券-->
 		<div class="coupon">
-			<div class="coupon-list" v-for="(item,index) in coupon">
+			<div @click="jumpCoupon" class="coupon-list" v-for="(item,index) in coupon">
 				<div class="coupon-list-li">
 					<img :src="item.img" />
 					<div class="rmb"> <span>¥ </span><span>{{item.rmb}}</span></div>
@@ -26,7 +26,7 @@
 				</div>
 				<div class="cant-right">
 					<p>{{giftbag.tit}}</p>
-					<p> <span>{{giftbag.mflq}}</span></p>
+					<p> <span @click="jumpfuli">{{giftbag.mflq}}</span></p>
 				</div>
 			</div>
 		</div>
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<!--vip-->
-		<div class="vip">
+		<div class="vip" @click="jumpVip">
 			<img src="/static/images/indexvip.png" />
 		</div>
 		<!--弹窗-->
@@ -112,7 +112,7 @@
 
 		},
 		mounted: function() {
-			var that = this; 
+			var that = this;
 			that.hideTabBar();
 		},
 		methods: {
@@ -120,6 +120,19 @@
 			hideTabBar: function() {
 				wx.hideTabBar({
 					animation: false //是否需要过渡动画
+				}) 
+			},
+			//
+			jumpCoupon: function() {
+				wx.navigateTo({
+					url: '../index-coupon/main'
+				})
+			},
+			//          免费领取跳转
+			jumpfuli: function() {
+
+				wx.navigateTo({
+					url: '../index-gift/main'
 				})
 			},
 
@@ -128,6 +141,9 @@
 				let that = this;
 				that.isTogo = false
 				that.showTabBar()
+				wx.navigateTo({
+					url: '../index-gift/main'
+				})
 			},
 			//关闭弹窗
 			hidd: function() {
@@ -136,18 +152,25 @@
 				that.showTabBar()
 			},
 			//显示导航栏
-			showTabBar: function()   {
+			showTabBar: function() {
 				let that = this;
 				wx.showTabBar({
 					animation: false //是否需要过渡动画
 				})
 			},
 			//签到跳转
-			jump:function(){
-                wx.navigateTo({
-                	url:"../sign/main"
-                })
-             
+			jump: function() {
+				wx.navigateTo({
+					url: "../sign/main"
+				})
+
+			},
+			//vip跳转
+			jumpVip: function() {
+				wx.navigateTo({
+					url: "../index-vip/main"
+				})
+
 			}
 
 		},
@@ -186,7 +209,7 @@
 			margin-top: -200px;
 			position: relative;
 			top: 50%;
-			.hidd{
+			.hidd {
 				width: 34px;
 				height: 34px;
 				border-radius: 50%;

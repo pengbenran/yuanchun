@@ -1,6 +1,9 @@
 {
-  "pages": [
+   "pages": [ 
     "pages/index/main",
+    "pages/index-gift/main",
+    "pages/index-vip/main",
+    "pages/index-coupon/main",
     "pages/privilege/main",
     "pages/inComing/main",
     "pages/Partner/main",
