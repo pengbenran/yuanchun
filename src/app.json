@@ -1,9 +1,12 @@
 {
   "pages": [
-    "pages/product-detail/main",
     "pages/index/main",
+    "pages/product-detail/main",
     "pages/orderList/main",
     "pages/withdrawal/main",
+    "pages/index-gift/main",
+    "pages/index-vip/main",
+    "pages/index-coupon/main",
     "pages/privilege/main",
     "pages/inComing/main",
     "pages/Partner/main",

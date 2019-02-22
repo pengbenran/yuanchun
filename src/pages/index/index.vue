@@ -9,7 +9,7 @@
 		<!--购物券-->
 		<div class="coupon">
 			<div class="coupon-list">
-				<div class="coupon-list-li" v-for="(item,index) in coupon" :key='item.id' :index="index">
+				<div class="coupon-list-li" v-for="(item,index) in coupon" :key='item.id' :index="index" @click="jumpCoupon">
 					<!-- <img src="/static/images/indexcoupon.png" /> -->
 					<div class="rmb"> <span>¥ </span>{{item.money}}</div>
 					<div class="ticket">购{{item.giveMoney}}平台券</div>
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 		<!--vip-->
-		<div class="vip">
+		<div class="vip" @click="jumpVip">
 			<img src="/static/images/indexvip.png" />
 		</div>
 		<!--弹窗-->
@@ -104,6 +104,19 @@
 			hideTabBar: function() {
 				wx.hideTabBar({
 					animation: false //是否需要过渡动画
+				}) 
+			},
+			//
+			jumpCoupon: function() {
+				wx.navigateTo({
+					url: '../index-coupon/main'
+				})
+			},
+			//          免费领取跳转
+			jumpfuli: function() {
+
+				wx.navigateTo({
+					url: '../index-gift/main'
 				})
 			},
 
@@ -112,6 +125,9 @@
 				let that = this;
 				that.isTogo = false
 				that.showTabBar()
+				wx.navigateTo({
+					url: '../index-gift/main'
+				})
 			},
 			//关闭弹窗
 			hidd: function() {
@@ -120,18 +136,25 @@
 				that.showTabBar()
 			},
 			//显示导航栏
-			showTabBar: function()   {
+			showTabBar: function() {
 				let that = this;
 				wx.showTabBar({
 					animation: false //是否需要过渡动画
 				})
 			},
 			//签到跳转
-			jump:function(){
-                wx.navigateTo({
-                	url:"../sign/main"
-                })
-             
+			jump: function() {
+				wx.navigateTo({
+					url: "../sign/main"
+				})
+
+			},
+			//vip跳转
+			jumpVip: function() {
+				wx.navigateTo({
+					url: "../index-vip/main"
+				})
+
 			}
 
 		}
@@ -140,16 +163,6 @@
 
 <style lang="less">
 	/*checkbox 选项框大小  */
-	
-	checkbox .wx-checkbox-input {
-		width: 14px;
-		height: 14px;
-		border-radius: 50%;
-	}
-	
-	checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
-		color: #ea3a0d;
-	}
 	/*弹窗*/
 	
 	.popup {
@@ -167,7 +180,7 @@
 			margin-top: -200px;
 			position: relative;
 			top: 50%;
-			.hidd{
+			.hidd {
 				width: 34px;
 				height: 34px;
 				border-radius: 50%;
