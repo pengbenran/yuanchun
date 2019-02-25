@@ -14,6 +14,7 @@
 </template>
 
 <script>
+	import Api from '@/api/site'
 export default {
   data () {
     return {
@@ -45,9 +46,12 @@ export default {
         }
       })
     },
+  
+    
     async addAddress(){
       var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
       let that=this
+
       if(that.username==''){
         wx.showToast({
           icon:'none',

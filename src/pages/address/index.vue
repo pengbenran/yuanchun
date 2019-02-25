@@ -31,6 +31,7 @@
 </template>
 
 <script>
+	import Api from '@/api/goods'
 export default {
   data () {
     return {
@@ -48,7 +49,7 @@ export default {
     },
      //跳转
     toAddress(){
-      wx.navigateTo({ url: '../address/main' });
+       wx.navigateTo({ url: '../addressDetail/main' });
     },
     jumpOrder(e){
       let that = this

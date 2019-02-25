@@ -83,6 +83,7 @@ img{
 	width: 100%;
 	padding-top:20px;
 	box-sizing: border-box;
+	box-shadow: 0 0 10px rgba(0,0,0,.5);
 	.avator{
 		width: 80px;
 		height: 80px;
@@ -93,32 +94,36 @@ img{
 }
 .partnerTitle{
 	text-align: center;
-	height: 60px;
-	line-height: 60px;
+	height: 45px;
+	line-height: 45px;
 	color: #7A252C;
-	box-shadow: 0 0 1px #000;
-	width: 300px;
+	box-shadow: 0 0 6px rgba(0,0,0,.4);
+	width: 242px;
 	margin: 0 auto;
 	position: relative;
 	top:-10px;
 	background: #fff;
+	border-radius: 5px;  
 }
 .myTeam{
 	.myTeamTitle{
 		height: 40px;
 		line-height:40px;
 		padding-left: 10px;
-		font-size: 18px;
+		font-size: 14px;
+		color: #333333;		
 	}
 	.teamList{
 		display: flex;
 		justify-content: space-between;
-		height: 50px;
-		padding: 0 10px;
+		padding: 8px 10px;
 		box-sizing:border-box;
-		line-height:50px;
 		font-size: 16px;
 		color:#323232;
+		border-top: 1px solid #f4f4f4;
+		&:nth-last-child(1){
+			border-bottom:1px solid #f4f4f4;
+		}
 		.left{
 			flex-grow: 1;
 			.teamAvator{
