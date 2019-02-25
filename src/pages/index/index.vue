@@ -97,7 +97,7 @@
 					that.coupon=res.memberTiket
 				}
 			})
-			// await that.$refs.loginModel.userLogin()
+			await that.$refs.loginModel.userLogin()
 		},
 		methods: {
 			//隐藏导航栏

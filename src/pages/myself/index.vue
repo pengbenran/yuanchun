@@ -3,22 +3,22 @@
     <div class="header">
       <div class="userInfo">
           <div class="avator">
-            <img src="/static/images/product-list.png">
+            <img :src="userInfo.face">
           </div>  
           <div class="userName">
-            <p class="memberName">元淳面膜</p>
-            <p class="memberLv">合伙人</p>
+            <p class="memberName">{{userInfo.name}}</p>
+            <p class="memberLv">{{userInfo.lvidname}}</p>
           </div>
       </div>
     </div>
     <div class="menu">
       <div class="list">
-        <p class="num">1</p>
+        <p class="num">{{userInfo.point}}</p>
         <p class="name">平台券</p>
       </div>
       <div class="list">
-        <p class="num">1</p>
-        <p class="name">积分</p>
+        <p class="num">{{userInfo.advance}}</p>
+        <p class="name">余额</p>
       </div>
       <div class="list">
         <p class="num">13</p>
@@ -65,8 +65,7 @@
 </template>
 
 <script>
-
-
+import store from '@/store/store'
 export default {
   data () {
     return {
@@ -75,7 +74,8 @@ export default {
       {icon:'/static/images/icon4.png',menuName:'地址管理',jumpUrl:'../address/main'},
       {icon:'/static/images/kefu.png',menuName:'联系客服',jumpUrl:''},
       {icon:'/static/images/mingpian.png',menuName:'个人名片',jumpUrl:'../businessCard/main'},
-      {icon:'/static/images/tequan.png',menuName:'我的特权',jumpUrl:'../privilege/main'}]
+      {icon:'/static/images/tequan.png',menuName:'我的特权',jumpUrl:'../privilege/main'}],
+      userInfo:{}
     }
   },
 
@@ -89,9 +89,10 @@ export default {
     })
    }
   },
-
-  created () {
-   
+  mounted() {
+    let that=this
+    that.userInfo = store.state.userInfo
+    console.log('aaa',that.userInfo)
   }
 }
 </script>

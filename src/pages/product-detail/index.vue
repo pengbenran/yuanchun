@@ -19,29 +19,31 @@
 				<span>¥{{detail.price}}+</span>
 				<div class="ptq">{{detail.unit}}平台卷</div>
 			</div>
-			<div class="tit">
+			<div class="tit fontHidden">
 				{{detail.name}}
 			</div>
 			<div class="kdf">
 				<span>快递费：{{detail.kdf}}元</span>
 				<span>月销{{detail.haveSpec}}笔</span>
-				<span>{{detail.site}}</span>
+				<span>{{detail.brief}}</span>
 			</div>
 		</div>
-		<goodsDetailFooter :GoodsInfo='detail'/>
+		<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection'/>
 	</div>
 </template>
 
 <script>
 	import Api from '@/api/goods'
+	import store from '@/store/store'
 	import goodsDetailFooter from '@/components/goodDetailFooter'
 	export default {
 		data() {
 			return {
 				curr:0,
-				posts:false,
+				isCollection:false,
 				detail: {},
-				banner: []
+				banner: [],
+				userInfo:{}
 			}
 		},
 
@@ -56,8 +58,19 @@
           	let params={}
           	let that=this
           	params.goodsId=goodsId
+          	params.memberId=that.userInfo.memberId
           	Api.getGoodsInfo(params).then(function(res){
           		if(res.code==0){
+          			res.products=res.products.map(item=>{
+          				item.selected=false
+      					return item
+          			})
+          			that.isCollection=res.count==1?true:false
+          			res.products[0].selected=true
+          			res.Goods.deduction=res.products[0].deduction
+          			res.Goods.oldPrice=res.products[0].specs
+          			res.Goods.activePrice=res.products[0].price
+          			res.Goods.specs=res.products[0].name
           			that.banner=res.Gallery
           			res.Goods.products=res.products
           			that.detail=res.Goods
@@ -69,7 +82,8 @@
 		mounted() {
 			let that=this
 			// that.goodsId =that.$root.$mp.query.goodsId
-			 that.goodsId=50
+			 that.goodsId=66
+			that.userInfo = store.state.userInfo
 			that.getGoodsInfo(that.goodsId)
 		}
 	}
@@ -117,8 +131,9 @@
 		}
 		.tit{
 			line-height: 20px;
-			width: 254px;
+			width: 300px;
 			font-size: 13px;
+			height: 45px;
 			color: #333333;
 			
 		}

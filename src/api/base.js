@@ -34,13 +34,6 @@ fly.interceptors.response.use(
 )
   // let base='https://zhifenxiang.guqinet.com'
    let base='http://192.168.2.132/yuanchun'
-
-export const GetCode=(url, params)=>{
-   return fly.get(`${url}`,params).then(res => res.data)  
-}
-export const getLogin=(url,params)=>{
-  return fly.get(`${url}`,params).then(res => res.data)
-}
 export const POST = (url, params) => {
   return fly.post(`${base}${url}`, params,{headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -52,7 +45,9 @@ export const GET = (url, params) => {
 }
 
 export const PUT = (url, params) => {
-  return fly.put(`${base}${url}`, params).then(res => res.data)
+  return fly.put(`${base}${url}`, params,{headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }}).then(res => res.data)
 }
 
 export const DELETE = (url, params) => {
