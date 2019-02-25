@@ -167,6 +167,10 @@ export default {
       that.addr = ''
       that.detailaddr = ''
       that.switch1Checked=false 
+      that.tip="新增地址"
+      wx.setNavigationBarTitle({ 
+       title: "新增地址"//页面标题为路由参数
+     })
     }
   }
 }
