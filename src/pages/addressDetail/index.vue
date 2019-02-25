@@ -35,7 +35,14 @@ export default {
  methods:{
     //switch点击事件
     switch1Change(e){
-      this.isDeafult=e.mp.detail.value ? 1:0
+    	    let that = this
+    	    let params = {}
+	        params.memberId = that.memberId         		      	
+          Api.defutaddress(params).then(function(res){
+           	console.log(res)
+          })
+          
+//       params.memberId =e.mp.detail.value ? 1:0
     },
     //selectAddress选择地址
     selectAddress(){
@@ -46,8 +53,6 @@ export default {
         }
       })
     },
-  
-    
     async addAddress(){
       var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
       let that=this
@@ -76,72 +81,82 @@ export default {
           title: '详细地址不能为空',
         })
       }
-      else{
-        let parms = {}
-        let address = {} 
-        parms.memberId = that.memberId
-        address.memberId = that.memberId
-        address.defAddr = that.isDeafult
-        address.name = that.username
-        address.mobile = that.userphone
-        address.addr = that.addr
-        address.region = that.detailaddr
-        address.province = ''
-        address.city = ''
-        parms.address=address
-        if(that.Type=='edit'){
-         address.addrId= that.addrId 
-          let editAddr=await api.editAddr(parms)
-          if(editAddr.data.code==0){
-           wx.showToast({
-            title: '修改成功',
+      else{      		     	
+        if(that.Type=='edit'){      	
+          let params = {}
+          console.log(1111)
+          params.addrId =  that.addrId
+	        params.memberId = that.memberId
+	        params.defAddr = that.isDeafult
+	        params.name = that.username
+	        params.mobile = that.userphone
+	        params.addr = that.addr  
+	        params.region = that.detailaddr
+	        params.province = ''
+	        params.city = ''            		      	
+           Api.update(params).then(function(res){
+                   
+	      	}) 
+	      	wx.showToast({
+            title: '修改成功', 
             icon: 'success',
             duration: 1500
           })
-         }
         }
         else{
-         let addrresRes=await api.addAddress(parms)
-         if(addrresRes.data.code=='0'){
+	        let params = {}
+	        
+	        params.memberId = that.memberId
+	        params.defAddr = that.isDeafult
+	        params.name = that.username
+	        params.mobile = that.userphone
+	        params.addr = that.addr  
+	        params.region = that.detailaddr
+	        params.province = ''
+	        params.city = ''            		      	
+         	   Api.getSite(params).then(function(res){
+		  		    console.log(res);
+		      	})
            wx.showToast({
             title: '添加成功',
             icon: 'success',
             duration: 1500
           })
+        
          }
-        }
-        wx.navigateBack({
-          delta: 1
-        })
-        //  wx.navigateTo({
-        //   url: '../addressList/main',
-        // })
+				  setTimeout(function () {
+				         wx.redirectTo({
+				           url: '../address/main',
+				        })
+				    }, 1500) 				       		         
       }
 
     },
     async getAddrById(addrId){
       let that=this
-     let addrDetail=await api.getAddrById(addrId)
-     if(addrDetail.data.code==0){
-      console.log(addrDetail.data)
-      that.addrId = addrDetail.data.getaddr.addrId
-      that.username=addrDetail.data.getaddr.name
-      that.userphone = addrDetail.data.getaddr.mobile
-      that.addr = addrDetail.data.getaddr.addr
-      that.detailaddr = addrDetail.data.getaddr.region
-      that.switch1Checked=addrDetail.data.getaddr.defAddr==1?true:false
-     }
-   
+      
+	    let parms = {}     	  
+      parms.addrId = addrId
+	    Api.getSiteDef(parms).then(function(res){
+      that.addrId = res.getaddr.addrId
+      that.username=res.getaddr.name
+      that.userphone = res.getaddr.mobile
+      that.addr = res.getaddr.addr
+      that.detailaddr = res.getaddr.region
+      that.switch1Checked=res.getaddr.defAddr==1?true:false   
+	     	})
+  
     }
  },
   onLoad(options) {
     let that=this
-    // that.memberId = wx.getStorageSync('memberId')
+    that.addrId = options.addrId
+    that.memberId =179
     if(options.addrId!=undefined){
-      // that.getAddrById(options.addrId)
+      that.getAddrById(options.addrId)
       that.Type='edit'
       that.tip="修改地址"
-      wx.setNavigationBarTitle({
+      wx.setNavigationBarTitle({ 
        title: "修改地址"//页面标题为路由参数
      })
     }
