@@ -31,17 +31,18 @@
 </template>
 
 <script>
-	import Api from '@/api/goods'
+	import Api from '@/api/site'
 export default {
   data () {
-    return {
+    return {                              
         noAddrImg:'https://shop.guqinet.com/html/images/shuiguo/address/kong.png',
         selectIndex:2,
-        addressList:[{addr:"啥的说法",addrId:4,city:"",defAddr:1,memberId:783,mobile:"15779556662",name:"彭本燃",province:"",region:"2323"}],
+        addressList:[],
         memberId:'',
         jumpfrom:'',
     }
   },
+  
   methods:{
     selectTo(index){
         let that = this;
@@ -54,7 +55,6 @@ export default {
     jumpOrder(e){
       let that = this
       wx.setStorageSync('addr',that.addressList[e])
- 
       if(that.jumpfrom=='order'){
         wx.navigateTo({ url: '../order/main' });
       }
@@ -68,11 +68,12 @@ export default {
     },
     edits(e){
       let that=this
+      that.grtDefinite(e)
       let url=`../addressDetail/main?addrId=${that.addressList[e].addrId}`
       wx.navigateTo({
-        url:url
-      })
-    },
+          url:url
+       })
+    }, 
     delAddr(e){
       var that= this  
       var parms = {}
@@ -81,41 +82,42 @@ export default {
         title: '提示',
         content: '是否删除该地址',
         success: function (res) {
-          // api.deleteAddress(parms).then(function(res){
-          //   if(res.data.code==0){
-          //    that.addressList=that.addressList.filter((item => item.addrId!=that.addressList[e].addrId ))
-          //    wx.showToast({
-          //     title: '删除成功',
-          //     icon: 'none',
-          //     duration: 1500
-          //   })
-          //   }
-          // })
+          Api.addressAll(parms).then(function(res){
+               if(res.code==0){
+                that.addressList=that.addressList.filter((item => item.addrId!=that.addressList[e].addrId ))
+                wx.showToast({
+                 title: '删除成功',
+                 icon: 'none',
+                 duration: 1500
+               })
+               }
+             })
         }
       })
-    }
+    },
+     	//具体会员地址
+ 	 grtDefinite:function(e){
+ 	 	       let that=this
+	     	   let parms = {}     	  
+           parms.addrId = that.addressList[e].addrId
+	     	   Api.getSiteDef(parms).then(function(res){ 
+	     	    	console.log(res)
+	     	})
+	    }
   },
-  async onShow(){
-   let that=this
-   // that.memberId = wx.getStorageSync('memberId')
-   // let allAdderssRes=await api.getAllAddress(that.memberId)
-   // if(allAdderssRes.data.code==0){
-   //    that.addressList=allAdderssRes.data.memberAddressList
-   // }
-  },
+
   onLoad(){
-   let that=this
-   // let pages = getCurrentPages();
-   // let prevpage = pages[pages.length-2];
-   // if(prevpage.route=="pages/myself/main"){
-   //   that.jumpfrom='myself'
-   // }
-   // else if(prevpage.route=="pages/order/main"){
-   //   that.jumpfrom='order'
-   // }
-   // else if(prevpage.route=="pages/orderOne/main"){
-   //    that.jumpfrom='orderOne'
-   // }
+        let that=this
+        let params = {}
+        params.memberId = 179  
+        //所有会员地址
+	     	Api.getSiteList(params).then(function(res){
+	     				if(res.code==0){
+               that.addressList = res.memberAddressList
+          	} 		   
+	    	})
+	     	
+	    
   }
 
 }
