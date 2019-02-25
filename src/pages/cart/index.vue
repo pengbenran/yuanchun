@@ -1,15 +1,22 @@
 <template>
 		<div class="cart">	
 			<div class="ShopHeader"><text>购物车</text><text @click="Edits">{{EditsName}}</text></div>
-			<cartList :cartLists="cartLists"></cartList>	
+			<cartList :cartLists="cartLists" ref="childs" @onSelect='SeleAllPrice'></cartList>	
 		    <!--结算-->
 		    <div class="footerBnt">
-		    	<div class="footerBnt-left">
-		    		<input type="checkbox" name="" value="" />全选
+		    	<div class="footerBnt-left"  @click="AllSelect(SelectBool)">
+		    		<icon type="success" class="ico" size="21" v-show="SelectBool"/>
+		    		<icon type="circle" class="ico" size="21" v-show="!SelectBool"/> 全选
 		    	</div>	
 	    		<div class="cartBtn">
-	    			<div class="price" v-show='!BtnDelete'>合计：{{AllPrice}}元</div>
-	    			<div class="price MaskInfo" v-show='BtnDelete'>注：请选择删除</div>
+	    			<div class="price" v-if='!BtnDelete'>
+	    				<div style="line-height: 95rpx">合计：</div>
+	    				<div>
+	    					<p>{{specsTotal}}元</p>
+	    					<p>{{priceTotal}}元+{{deductionTotal}}平台劵</p>
+	    				</div>
+	    			</div>
+	    			<div class="MaskInfo" v-else>注：请选择删除</div>
 	    			<div class="btn" @click="next"  v-show='!BtnDelete'>结算</div>
 	    			<div class="btn" @click="Delete" v-show='BtnDelete'>删除</div>
 	    		</div>
@@ -25,10 +32,14 @@
 		data() {
 			return {
 				total:500,
+				SelectBool:false,
 				cartLists: [],
 				userInfo:{},
 				EditsName:'编辑',
 				BtnDelete:false,
+				priceTotal:0,
+				specsTotal:0,
+				deductionTotal:0,
 			}
 		},
 
@@ -40,7 +51,8 @@
 			getCartList(){
 				let that = this;
 				let params={}
-				params.memberId=that.userInfo.memberId;
+				// params.memberId=that.userInfo.memberId;
+				params.memberId=179;
 				Api.getCartList(params).then(function(res){
 					if(res.code != 1){
 						that.cartLists = res.cartList.map(v=>{
@@ -53,6 +65,24 @@
 					}
 				}) 
 				
+			},
+			//选中时子组件触发父组件
+			SeleAllPrice(priceTotal,specsTotal,deductionTotal){
+				let that=this
+				console.log(priceTotal,specsTotal,deductionTotal);
+				that.priceTotal=priceTotal
+				that.specsTotal=specsTotal
+				that.deductionTotal=deductionTotal
+			},
+		    //全部选中
+			AllSelect(bool){
+				let that = this;
+				that.SelectBool = !that.SelectBool
+				that.cartLists.map(v =>{
+					v.selected = v.marketEnable==1 ?  that.SelectBool:false;
+					return v
+				})
+				that.$refs.childs.getTotalPrice();
 			},
 			//编辑删除Edits
 			Edits(){
@@ -67,43 +97,71 @@
 		   //商品删除事件
 		   async Delete(){
 		   	let that = this
-		   	let parms = {}
-		   	let cartIdgood=[]
+		   	let params={}
+		   	let cartArry=[]
 		   	let cart = {}
-		   	that.ShopLists.map(v => {
+		   	that.cartLists.map(v => {
 		   		if(v.selected){
-		   			cartIdgood.push(v.cartId) 
+		   			cartArry.push(v.cartId) 
 		   		}
 		   	})
-		   	parms.cartS = cartIdgood
-		   	let res = await api.CartOrderDele(parms)
-		   	console.log("删除事件",res)
-		   	if(res.data.code == 0){
-		   		that.AllPrice = 0.00;
-		   		that.BtnDelete = !that.BtnDelete;
-		   		that.onLoads();
+		   	if(cartArry.length!=0){
+		   		params.carts=cartArry.join(',')
+		   		let res = await Api.CartOrderDele(params)
+		   		if(res.code == 0){
+		   			wx.showToast({
+		   				title: "删除成功",
+		   				icon:'none',
+		   				durantion: 2000
+		   			})
+		   			that.BtnDelete = false
+		   			that.getCartList();
+		   		}
 		   	}
+		   	else{
+		   		wx.showToast({
+        			title: "请选择要删除的订单",
+        			icon:'none',
+        			durantion: 2000
+        		})
+		   	}
+		   	
 		   },
-			//减
-			jian: function(index) {
-				let that = this;
-				if(that.product[index].num > 1) {
-					that.product[index].num--
-				}
-			},
-			//加
-			jia: function(index) {
-				let that = this;
-				if(that.product[index].num < 99) {
-					that.product[index].num++
-				}
-			},
-			//结算跳转
-			jump:function(){
-				wx.navigateTo({
-					url:"../cart-order/main",
-				})
-		},
+		   //跳转结算
+		   next(){
+		   	let that = this
+		   	var googitem = [];
+		   	var Goods = {};
+		   	let weight=0;
+        	that.cartLists.map(v =>{
+        		if(v.selected){
+        			v.cart = 1;
+        			googitem.push(v) 
+        			weight += v.weight;    
+        		}
+           	})
+        	Goods.googitem = googitem
+        	Goods.shareMoney = weight
+        	Goods.priceTotal=that.priceTotal
+        	Goods.specsTotal=that.specsTotal
+        	Goods.deductionTotal=that.deductionTotal
+	        var gooditemString = JSON.stringify(Goods)
+        	if (googitem.length ==0) {
+        		wx.showToast({
+        			title: "请选择订单",
+        			icon: "success",
+        			durantion: 2000
+        		})
+        	}else {
+        		store.commit("stateGoodItem",gooditemString)
+        		wx.navigateTo({
+        			url: "../cart-order/main?cart=1",
+        			success: function (res) {
+        				that.SelectBool=false;   
+        			},
+        		})
+        	}
+    }
 	},
 	mounted(){
 			let that=this
@@ -148,8 +206,12 @@
 		}
 		.selectBtn{display: flex;align-items: center;padding-left: 15rpx;font-size: 36rpx;font-weight: 100;color: #8e8e8e;}
 		.selectBtn icon{margin-right: 10rpx;}
-		.cartBtn{display: flex;justify-content: center;font-size: 36rpx;font-weight: 100;color: #8e8e8e;}
-		.price{height: 95rpx;line-height: 95rpx;margin-right: 15rpx;}
+		.cartBtn{display: flex;justify-content: center;font-size: 36rpx;font-weight: 100;color: #8e8e8e;
+			.MaskInfo{
+				line-height:95rpx;
+			}
+		}
+		.price{height: 95rpx;margin-right: 15rpx;display: flex;justify-content: space-around;font-size: 16px;}
 		.btn{background-image: -webkit-linear-gradient(0deg, rgb(255,191,3), rgb(252,148,53));height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
 	}
 

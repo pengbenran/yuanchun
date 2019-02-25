@@ -72,7 +72,6 @@ export default {
                  wx.showTabBar({})
                 wx.setStorageSync('memberId', memberRes.memberDo.id)
                 store.commit("storeUserInfo",memberRes.memberDo)
-                store.commit("storeConfig",memberRes.config)
               }
               else {
                 let memberId="00"

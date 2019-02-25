@@ -2,8 +2,9 @@
 	<div class="cart">
 		<div class="product-list-li" v-for="(item,index) in cartLists" :key="item.cartId">
 				<!--选择框-->
-				<div class="product-left">
-					<input type="checkbox" name="" value="" />
+				<div class="product-left" @click="selectCheck(index)">
+					 <icon type="success" class="ico" size="21" v-show='item.selected'/>
+					 <icon type="circle" class="ico" size="21" v-show='!item.selected'/>
 				</div>
 				<!--内容-->
 				<div class="product-canter">
@@ -38,7 +39,6 @@
 		props: ['cartLists'],
 		data() {
 			return {
-
 			}
 		},
 		methods: {
@@ -46,6 +46,38 @@
              	wx.navigateTo({
              		url:'../product-detail/main?goodsId='+goodsId
              	})
+            },
+            //选中
+            selectCheck(index){
+            	let that = this;
+            	if(that.cartLists[index].marketEnable==1){
+            		that.cartLists[index].selected = !that.cartLists[index].selected
+            	}
+            	else{
+            		wx.showToast({
+            			title: "商品已下架无法购买",
+            			icon: "none",
+            			durantion: 2000
+            		})   
+            	}
+            	that.getTotalPrice()
+            },
+            //计算多少钱
+            getTotalPrice(){
+            	let that = this;
+            	let priceTotal = 0;
+            	let specsTotal = 0;
+            	let deductionTotal = 0;
+            	if(that.cartLists != undefined){
+            		let cartListsRes=that.cartLists.map(v =>{
+            			if(v.selected){
+            				priceTotal += v.price * v.num 
+            				specsTotal+= v.specs * v.num
+            				deductionTotal+=v.deduction * v.num
+            			}
+            		})   
+            	}
+            	that.$emit("onSelect",priceTotal,specsTotal,deductionTotal)  
             },
             //减
             async Minu(index,cartId){
@@ -94,8 +126,7 @@
    				return res;
    			},
 		},
-
-		created() {
+		mounted(){
 
 		}
 	}
@@ -109,6 +140,9 @@
 		border-bottom: 1px solid #f6f6f6;
 		padding: 0 20px 20px 15px;
 		box-sizing: border-box;
+		.product-left{
+			margin-right: 5px;
+		}
 		.product-canter {
 	        flex-grow: 1;
 			margin-top: 20px;

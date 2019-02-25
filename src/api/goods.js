@@ -33,7 +33,7 @@ export default {
       return API.PUT('/api/shoppingCart/modification',params)
     },
     //购物车商品删除
-    CartOrderDele(parms){
+    CartOrderDele(params){
       return API.POST('/api/shoppingCart/deleteAll',params)   
     }
 }

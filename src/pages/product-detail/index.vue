@@ -23,7 +23,7 @@
 				{{detail.name}}
 			</div>
 			<div class="kdf">
-				<span>快递费：{{detail.kdf}}元</span>
+				<span>包邮</span>
 				<span>月销{{detail.haveSpec}}笔</span>
 				<span>{{detail.brief}}</span>
 			</div>
@@ -46,9 +46,7 @@
 				userInfo:{}
 			}
 		},
-
 		components: {goodsDetailFooter},
-
 		methods: {
           btnTab:function(index){
           	let that = this
