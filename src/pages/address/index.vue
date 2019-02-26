@@ -7,7 +7,7 @@
             <text @click="selectTo(1)" v-show='selectIndex==2'>删除地址</text><text  @click="selectTo(2)" v-show='selectIndex==1'>取消</text>
         </div>
     </div>
-    <div class="addressList" v-if='addressList.length!=0' >
+    <div class="addressList" v-if='addressList.length!=0'>
         <div class="item" v-for="(item,index) in addressList" :index='index' :key='item'>
             <div class="left" @click="jumpOrder(index)">
                 <div class="title">{{item.addr}}</div>
@@ -68,7 +68,6 @@ export default {
     },
     edits(e){
       let that=this
-      that.grtDefinite(e)
       let url=`../addressDetail/main?addrId=${that.addressList[e].addrId}`
       wx.navigateTo({
           url:url
@@ -106,8 +105,8 @@ export default {
 	    }
   },
 
-  onLoad(){
-        let that=this
+  onShow(){
+  	 let that=this
         let params = {}
         params.memberId = 179  
         //所有会员地址
@@ -116,8 +115,7 @@ export default {
                that.addressList = res.memberAddressList
           	} 		   
 	    	})
-	     	
-	    
+	     	that.selectIndex = 2
   }
 
 }

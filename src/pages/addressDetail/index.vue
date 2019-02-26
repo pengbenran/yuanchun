@@ -35,14 +35,7 @@ export default {
  methods:{
     //switch点击事件
     switch1Change(e){
-    	    let that = this
-    	    let params = {}
-	        params.memberId = that.memberId         		      	
-          Api.defutaddress(params).then(function(res){
-           	console.log(res)
-          })
-          
-//       params.memberId =e.mp.detail.value ? 1:0
+    	   this.isDeafult=e.mp.detail.value ? 1:0
     },
     //selectAddress选择地址
     selectAddress(){
@@ -84,7 +77,6 @@ export default {
       else{      		     	
         if(that.Type=='edit'){      	
           let params = {}
-          console.log(1111)
           params.addrId =  that.addrId
 	        params.memberId = that.memberId
 	        params.defAddr = that.isDeafult
@@ -104,8 +96,7 @@ export default {
           })
         }
         else{
-	        let params = {}
-	        
+	        let params = {}	        
 	        params.memberId = that.memberId
 	        params.defAddr = that.isDeafult
 	        params.name = that.username
@@ -125,16 +116,15 @@ export default {
         
          }
 				  setTimeout(function () {
-				         wx.redirectTo({
-				           url: '../address/main',
-				        })
+			        wx.navigateBack({
+             delta: 1
+          })
 				    }, 1500) 				       		         
       }
 
     },
     async getAddrById(addrId){
-      let that=this
-      
+      let that=this    
 	    let parms = {}     	  
       parms.addrId = addrId
 	    Api.getSiteDef(parms).then(function(res){
@@ -144,8 +134,7 @@ export default {
       that.addr = res.getaddr.addr
       that.detailaddr = res.getaddr.region
       that.switch1Checked=res.getaddr.defAddr==1?true:false   
-	     	})
-  
+	     })
     }
  },
   onLoad(options) {
@@ -167,6 +156,11 @@ export default {
       that.addr = ''
       that.detailaddr = ''
       that.switch1Checked=false 
+      that.Type=''
+      that.tip="新增地址"
+      wx.setNavigationBarTitle({ 
+       title: "新增地址"//页面标题为路由参数
+     })
     }
   }
 }
