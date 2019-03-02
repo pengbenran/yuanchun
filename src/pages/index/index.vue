@@ -13,7 +13,7 @@
 					<!-- <img src="/static/images/indexcoupon.png" /> -->
 					<div class="rmb"> <span>¥ </span>{{item.money}}</div>
 					<div class="ticket">购{{item.giveMoney}}平台券</div>
-					<div class="go">立即抢购</div>
+					<div class="go">立即抢购</div> 
 				</div>
 			</div>
 		</div>
