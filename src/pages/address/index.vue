@@ -115,10 +115,11 @@ export default {
 	     				if(res.code==0){
                that.addressList = res.memberAddressList
           	} 		   
-	    	})
-	     	
-	    
-  }
+	    	})	    
+  },
+  onPullDownRefresh: function(){  
+      wx.stopPullDownRefresh()
+    },
 
 }
 </script>

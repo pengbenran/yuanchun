@@ -1,20 +1,30 @@
 <template>
 	<div>
-		<div class="orderContain">
-			<div class="orderList">
+		<div class="orderContain" v-for="(item,index) in orderList" :index="index" :key="item.orderId">
+			<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.productId">
 				<div class="goodImg">
-					<img src="/static/images/product-list.png">
+					<img :src="innerItem.image">
 				</div>
 				<div class="goodDetail">
-					<p class="fontHidden">元淳孕妇爽肤水保湿水天然孕妇护肤品化妆品补水洋甘菊专用柔肤水</p>
-					<p class="number">X1</p>
-					<p class="price">	
-						￥89
-					</p>
+					<div class="top">
+						<div class="left">
+							<p class="fontHidden">{{innerItem.name}}</p>
+							<p class="fontHidden1">{{innerItem.specvalue}}</p>
+						</div>
+						<div class="number">X{{innerItem.num}}</div>
+					</div>
+					<div class="price">
+						<span>¥{{innerItem.specs}}</span>
+					</div>
+					<div class="price1">
+						<span>¥{{innerItem.price}}+</span>
+						<div class="ptq">{{innerItem.deduction}}平台卷</div>
+					</div>
 				</div>
 			</div>
 			<div class="orderFooter">
-				<p>共计1件商品 合计89</p>
+				<p v-if="item.paymentType==1">共计{{item.count}}件商品 合计:￥{{item.orderAmount}}</p>
+				<p v-else>共计2件商品 合计:￥{{item.orderAmount}}+{{item.shippingAmount}}</p>
 				<div class="btn">
 					<button>取消订单</button>
 					<button>提交付款</button>
@@ -26,7 +36,7 @@
 </template>
 <script>
 	export default {
-		props: [],
+		props: ['orderList'],
 		data() {
 			return {
 
@@ -57,18 +67,43 @@ img{
 			overflow: hidden;
 		}
 		.goodDetail{
-			width:240px;
 			font-size: 16px;
 			padding:0 10px;
 			box-sizing: border-box;
 			line-height: 25px;
-			.number{
-				text-align: right;
+			.top{
+				display: flex;
+				.number{
+				text-align: center;
+				line-height:50px;
+				flex-grow: 1;
+			    }
+			    .left{
+			    	width:200px;
+			    }
+			}		
+			.price {
+				span {
+					color: #a82429;
+					font-size: 16px;
+				}
 			}
-			.price{
-				color: #FF0928;
-				font-size: 20px;
-				text-align: right;
+			.price1 {
+				color: #a82429;
+				font-size: 16px;
+				display: flex;
+				.ptq {
+					background-color: #801d20;
+					height: 20px;
+					text-align: center;
+					border-radius: 5px;
+					line-height: 20px;
+					padding: 0 5px;
+					color: #ffffff;
+					font-size: 10px;
+					display: inline-block;
+					vertical-align: middle;
+				}
 			}
 		}
 	}

@@ -44,14 +44,6 @@ export default {
                     that.isSubmit=false
                     that.isMember=false
                     that.userLogin()
-                    if(wx.getStorageSync('distribeId')==null){
-
-                    }
-                    else{
-                      // Api.promotion(res.data.memberId,wx.getStorageSync('distribeId')).then(function(res){
-                       
-                      // })
-                    }
                   }
                 }) 
               }
@@ -70,8 +62,9 @@ export default {
             Api.getCode(res.code).then(function(memberRes){
               if(memberRes.code!=1){
                  wx.showTabBar({})
-                wx.setStorageSync('memberId', memberRes.memberDo.id)
+                wx.setStorageSync('memberId', memberRes.memberDo.memberId)
                 store.commit("storeUserInfo",memberRes.memberDo)
+                that.$parent.getNewPersonGift();
               }
               else {
                 let memberId="00"

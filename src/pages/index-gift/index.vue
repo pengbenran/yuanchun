@@ -1,42 +1,28 @@
 <template>
-	
-	
 	<div class="index-gift">
 		<div class="top">
 			<img src="/static/images/gift1.png" />
 			<div class="tit">双重大礼 赶紧领取</div>
 		</div>
-
-		<div class="cant">
-			
-			<div class="inp">
+		<div class="cant">		
+			<div class="inp" v-for="(item,index) in giftList">
 				<span><img src="/static/images/gift.png"/></span>
-				<span><input type="checkbox" name="checkbox"/></span>
-				<div class="tit">领面膜</div>
+				<span><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
+				<div class="tit fontHidden1">{{item.name}}</div>
 			</div>
-			
-				<div class="inp">
-					<span><img src="/static/images/gift.png"/></span>
-					<span><input type="checkbox" name="checkbox"/></span>
-					<div class="tit"> 
-						<p class="txt">领面膜</p>
-						<p class="txt">3.99购100元平台券</p>
-					</div>
-				</div>
-			
-			
 		</div>
-		<div class="btn">
+		<div class="btn" @click="jump">
 			立即领取
 		</div>
 	</div>
 </template>
 
 <script>
+	import store from '@/store/store'
 	export default {
 		data() {
 			return {
-
+				giftList:[{name:'3.99购100平台券',ischeck:false,image:'https://shop.guqinet.com/shopimages/test/0ef6cbbb-5d27-4930-bace-60b9b34062e2.png',price:3.99,freight:0},{name:'领面膜',ischeck:false,image:'https://shop.guqinet.com/shopimages/test/0ef6cbbb-5d27-4930-bace-60b9b34062e2.png',price:0,freight:13}]
 			}
 		},
 
@@ -45,7 +31,23 @@
 		},
 
 		methods: {
-
+			jump(){
+				let chooseGift=[]
+				let that=this
+				for(var i in that.giftList){
+					if(that.giftList[i].ischeck){
+						chooseGift.push(that.giftList[i])
+					}
+				}
+				store.commit("stateNewPersonGift",chooseGift)
+				wx.navigateTo({
+					url: '../newPersonGift/main'
+				})
+			},
+			isChoose(index){
+				let that=this
+				that.giftList[index].ischeck=!that.giftList[index].ischeck
+			}
 		},
 
 		created() {
@@ -81,30 +83,17 @@
 		.cant {
 			.inp {
 				position: relative;
-				&:nth-child(1) {
-					.tit{
-						position: absolute;top: 50%;left: 50%;
-						font-size: 17px;
-						color: #ffffff;
-						margin-left: -15px;
-						margin-top: -11px;
-					}
-				}
-				&:nth-child(2) {
-					margin-top: 30px;
-					.tit{
-						position: absolute;top: 50%;left: 50%;
-						 margin-top: -20px;
-						 margin-left: -40px;
-						line-height: 20px;
-						
-						.txt{
-							font-size: 12px;
-							color: #FFFFFF;
-          
-						}
-					}
-				}
+				margin-bottom: 20px;
+				.tit{
+					position: absolute;
+					top:0;
+					left: 32%;
+					line-height:92px;
+					height: 92px;
+					font-size: 17px;
+					color: #ffffff;
+					width:170px;
+				}		
 				span {
 					margin: 0 auto;
 					display: block;
@@ -118,9 +107,8 @@
 					}
 					&:nth-child(2) {
 						position: absolute;
-						top: 50%;
-						margin-top: -14px;
-						right: 50px;
+						top: 31%;
+						right: 13%;
 					}
 				}
 			}

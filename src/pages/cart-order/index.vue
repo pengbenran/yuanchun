@@ -45,16 +45,16 @@
 			<!--买家留言-->
 			<div class="leave">
 				<span>买家留言:</span>
-				<span><input type="text" placeholder="点击留言"/></span>
+				<span><input type="text" placeholder="点击留言" /></span>
 			</div>
 			<!--支付方式-->
 			<div class="PayType">
 				<div class="PayItemTitle">支付方式</div>
-				<div class="Item"  @click="selectPay(1)">
+				<div class="Item"  @click="selectPay(0)">
 					<div class="Items">￥{{goodsItem.specsTotal}}</div>
 					<div class="ItemSelect"><icon type="success" size="21" v-show='!PayBool'/><icon type="circle" size="21" v-show='PayBool'/></div>
 				</div>
-				<div class="Item" @click="selectPay(0)">
+				<div class="Item" @click="selectPay(1)">
 					<div class="Items">
 						￥{{goodsItem.priceTotal}}+{{goodsItem.deductionTotal}}平台劵
 					</div>
@@ -63,27 +63,32 @@
 			</div>
 		</div>
 		<div class="footerBnt">	
-			<div class="cartBtn" v-if="PayIndex==1">
+			<div class="cartBtn" v-if="PayIndex==0">
 				合计：{{goodsItem.specsTotal}}元
 			</div>
 			<div class="cartBtn" v-else>
 				合计：{{goodsItem.priceTotal}}元+{{goodsItem.deductionTotal}}平台劵
 			</div>
-			<div class="btn" @click="next">立即购买</div>
+			<div class="btn" @click="toast">立即购买</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import store from '@/store/store'
+	import Api from '@/api/order'
 	export default {
 		data() {
 			return {
 				PayBool:false,
-				PayIndex:1,
+				PayIndex:0,
 				goodsItem:{},
 				addr:{name:'彭',mobile:'15779556662',addr:'江西宜春'},
-				AddressBtn:false
+				AddressBtn:false,
+				canbuy:true,
+				InputMask:'',
+				order:{},
+				userInfo:{}
 			}
 		},
 
@@ -93,23 +98,150 @@
 			//支付方式选择
 			selectPay(index){
 				let that = this;
-				that.PayBool = !that.PayBool;
-				that.PayIndex = index;
-				if(index == 0){
-          		 //当选择余额支付的时候判断余额
+				// 选择了平台劵支付
+				if(index == 1&&that.userInfo.point<that.goodsItem.deductionTotal){
+					wx.showModal({
+						title: '提示',
+						content: '平台券不足，是否立即充值',
+						confirmText:'去充值',
+						success(res) {
+							if (res.confirm) {
+								wx.navigateTo({url: '../index-coupon/main'});
+							} else if (res.cancel) {
+								
+							}
+						}
+					})
+		        }
+		        else{
+		        	that.PayIndex = index;
+		        	that.PayBool = !that.PayBool;
+		        }
+		   },
+		   toast(){
+		   	let that = this;
+		   		if(that.AddressBtn){
+		   			wx.showToast({ title: '请添加地址'})
+		   		}else{	
+		   		    that.OrderUp();  				
+		   		} 
+		   },
+		      //订单提交参数赋值
+		     OrderUp(){
+		      	let that = this;
+		      	let bean = {}
+		      	let goodObj = {}
+		      	let orderParms = {}
+		      	if(that.canbuy){
+		      		that.canbuy=false
+		      		wx.showLoading({
+		      			title: '请稍等',
+		      		})
+		      		bean.gainedpoint = that.goodsItem.fenrunAmount
+		      		bean.consumepoint=that.goodsItem.twoAmount
+		      		bean.memberId = that.userInfo.memberId
+		      		// (是否使用平台券)
+		      		if(that.PayIndex==0){
+		      			bean.shippingAmount=0
+		      			bean.orderAmount = that.goodsItem.specsTotal
+		      			bean.needPayMoney=that.goodsItem.specsTotal
+		      			bean.paymentType=1
+		      		}
+		      		else{
+		      			bean.shippingAmount = that.goodsItem.deductionTotal
+		      			bean.needPayMoney=that.goodsItem.priceTotal
+		      			bean.orderAmount = that.goodsItem.priceTotal
+		      			bean.paymentType=2
+		      		}	
+		      		bean.clickd = that.InputMask 
+		      		bean.orderType = 1
+		      		bean.shipAddr = that.addr.addr
+		      		bean.shipMobile = that.addr.mobile 
+		      		bean.shipName= that.addr.name	
+		      		bean.itemsJson = JSON.stringify(that.goodsItem.googitem)	
+			        that.saveOrder(bean)
+			      }
 
-		       }
-		   },
-		   // 选择收货地址
-		   toAddress(){
-		   	let that=this
-		   	wx.navigateTo({ url: '../address/main' });
-		   },
+ 				 },
+     			//提交订单并支付
+     			async saveOrder(bean){
+     				let that = this;
+     				let res = await Api.OrderSave(bean)
+     				wx.hideLoading()
+     				if(res.code == 0){
+     					wx.showToast({ 
+     						title: '订单提交成功',
+     						icon:'success',
+     						duration: 2000
+     					})
+     					that.order = res.order
+      					that.wxPay()
+     				}	
+  				},
+   				//微信支付方法封装
+   				wxPay(){
+   					let that = this;
+   					let params ={}
+   					params.orderid = that.order.orderId
+   					params.sn = that.order.sn
+   					// params.total_fee = that.order.needPayMoney * 100
+   					params.total_fee=1
+			        //请求支付
+			        params.openId=that.userInfo.openId
+			        Api.ConfirmPay(params).then(function(PayRes){
+			        	wx.requestPayment({
+			                timeStamp: PayRes.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
+			                nonceStr: PayRes.nonceStr, //随机字符串，长度为32个字符以下,
+			                package: PayRes.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
+			                signType: PayRes.signType, //签名算法，暂支持 MD5,
+			                paySign: PayRes.paySign, //签名,具体签名方案参见小程序支付接口文档,
+			                success: res => {
+			                	that.payReturen()   
+			                	that.canbuy=true
+			                },
+			                fail: function (res) {
+	                        // fail   
+	                        wx.showToast({ 
+	                        	title: '支付失败',
+	                        	icon:'none',
+	                        	duration: 2000
+	                        })
+	                        that.canbuy=true
+	                    },
+	                });
+			        })
+			    },
+			      payReturen(){
+			      	let that=this
+			      	let orderParams = {}
+			      	orderParams.orderId = that.order.orderId
+			      	orderParams.memberId = that.userInfo.memberId
+			      	orderParams.paymoney = that.order.needPayMoney
+			      	Api.PaypassOrder(orderParams).then(function(res){
+			      		console.log("res",res);
+			      		if(res.code == 0){
+			      			wx.showToast({ 
+			      				title: '支付成功',
+			      				icon:'success',
+			      				duration: 2000
+			      			})
+   						// setTimeout(function(){
+   						// 	wx.navigateTo({ url: '/pages/paysuccess/main?paymoney='+that.AllPrice });
+   						// },1000)
+    				 }
+    				}) 
+			      },
+		   		// 选择收货地址
+		   		toAddress(){
+		   			let that=this
+		   			wx.navigateTo({ url: '../address/main' });
+		   		},
 			
 		},
 		mounted() {
 			let that=this
 			that.goodsItem =JSON.parse(store.state.goodItem)
+			that.userInfo=store.state.userInfo
 			console.log('ssss',that.goodsItem)
 			// that.userInfo = store.state.userInfo
 
