@@ -32,6 +32,7 @@
 
 <script>
 	import Api from '@/api/site'
+	import store from '@/store/store'
 export default {
   data () {
     return {                              
@@ -80,8 +81,9 @@ export default {
       wx.showModal({
         title: '提示',
         content: '是否删除该地址',
-        success: function (res) {
-          Api.addressAll(parms).then(function(res){
+        success(res) {
+        if (res.confirm){       
+          Api.addressAll(parms).then(function(res){         	
                if(res.code==0){
                 that.addressList=that.addressList.filter((item => item.addrId!=that.addressList[e].addrId ))
                 wx.showToast({
@@ -91,6 +93,7 @@ export default {
                })
                }
              })
+          }
         }
       })
     },
@@ -104,19 +107,20 @@ export default {
 	     	})
 	    }
   },
-
   onShow(){
   	 let that=this
         let params = {}
-        params.memberId = 179  
+        that.memberId = store.state.userInfo.memberId
+        params.memberId = that.memberId 
         //所有会员地址
-	     	Api.getSiteList(params).then(function(res){
-	     				if(res.code==0){
-               that.addressList = res.memberAddressList
-          	} 		   
-	    	})
+	     	Api.getSiteList(params).then(function(res) {
+	     		if(res.code == 0) {
+	     			that.addressList = res.memberAddressList
+	     		}
+	     	})
 	     	that.selectIndex = 2
-  }
+	     	},
+	     
 
 }
 </script>

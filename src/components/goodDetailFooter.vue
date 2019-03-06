@@ -87,100 +87,150 @@
 				that.btnIndex=index
 			     //父组件控制子组件
 			     // that.$refs.childs.emitEvent(index);
-			 },
-			 jumpIndex(){
+			},
+			jumpIndex(){
 			 	wx.switchTab({ url: '../index/main' });
-			 },
-			 hideModel(){
+			},
+			hideModel(){
 			 	let that=this
  				that.modelShow=false;
-			 },
-			    //点击加入购物车
-			    async toCart(){
-			    	let that = this;
-			    	let productsSelect=that.GoodsInfo.products.find((item)=>{
-			    		if(item.selected){
-			    			return item
-			    		}
-			    	})
-			    	if(productsSelect.enableStore == 0){
-			    		wx.showToast({
-			 				title: '库存不足',
-			 				icon: 'none',
-			 				duration: 2000
-			 			})
-			    	}else{
-			    		let cartparms = {};
-			    		cartparms.productId =productsSelect.productId
-			    		cartparms.original = that.GoodsInfo.thumbnail
-			    		cartparms.memberId = that.userInfo.memberId
-			    		cartparms.goodsId = that.GoodsInfo.goodsId
-			    		cartparms.image = that.GoodsInfo.thumbnail
-			    		cartparms.num = that.pic
-			    		cartparms.point = that.GoodsInfo.point
-			    		cartparms.weight = productsSelect.fenrunAmount*that.pic
-			    		cartparms.name = that.GoodsInfo.name
-			    		cartparms.price = productsSelect.price
+			},
+			// 立即购买
+			async toNext(){
+				let that = this;
+				let productsSelect=that.GoodsInfo.products.find((item)=>{
+					if(item.selected){
+						return item
+					}
+				})
+				if(that.pic > productsSelect.enableStore){
+					wx.showToast({
+						title: '库存不足',
+						icon: 'none',
+						duration: 2000
+					})
+				}else{
+					let goodarr=[]
+					let goodlist={}
+					let Goods={}
+					goodlist.pic = that.pic
+					goodlist.num = that.pic;
+					goodlist.price = productsSelect.price;
+					goodlist.image = that.GoodsInfo.thumbnail
+					goodlist.name = that.GoodsInfo.name
+					goodlist.goodsId = that.GoodsInfo.goodsId
+					goodlist.productId = productsSelect.productId
+					goodlist.gainedpoint = that.pic * that.GoodsInfo.point
+					goodlist.specvalue = that.GoodsInfo.specs
+					goodlist.price = productsSelect.price
+					goodlist.specs = productsSelect.specs
+					goodlist.deduction = productsSelect.deduction
+					goodarr[0] = goodlist;
+					Goods.googitem = goodarr
+					Goods.shareMoney = productsSelect.fenrunAmount*that.pic
+					Goods.priceTotal=productsSelect.price*that.pic
+					Goods.specsTotal=productsSelect.specs*that.pic
+					Goods.deductionTotal=productsSelect.deduction*that.pic
+					store.commit("stateGoodItem",JSON.stringify(Goods))
+					wx.navigateTo({
+						url: "../cart-order/main?cart=0"
+					})
+				}
+			},
+			//点击加入购物车
+			async toCart(){
+				let that = this;
+				let productsSelect=that.GoodsInfo.products.find((item)=>{
+					if(item.selected){
+						return item
+					}
+				})
+				if(productsSelect.enableStore == 0){
+					wx.showToast({
+						title: '库存不足',
+						icon: 'none',
+						duration: 2000
+					})
+				}else{
+					let cartparms = {};
+					cartparms.productId =productsSelect.productId
+					cartparms.original = that.GoodsInfo.thumbnail
+					cartparms.memberId = that.userInfo.memberId
+					cartparms.goodsId = that.GoodsInfo.goodsId
+					cartparms.image = that.GoodsInfo.thumbnail
+					cartparms.num = that.pic
+					cartparms.point = that.GoodsInfo.point
+					cartparms.weight = productsSelect.fenrunAmount*that.pic
+					cartparms.name = that.GoodsInfo.name
+					cartparms.price = productsSelect.price
 				          cartparms.cart = 1//判断购物车订单
 				          cartparms.specvalue = that.GoodsInfo.specs
 				          let res = await Api.toCartSave(cartparms)
 				          wx.showToast({
-			 				title: '添加成功',
-			 				icon: 'success',
-			 				duration: 2000
-			 			})
+				          	title: '添加成功',
+				          	icon: 'success',
+				          	duration: 2000
+				          })
 				      }
-				  },
-			 async AreaselectClick(Pindex){
-			 	let that = this;
-			 	that.GoodsInfo.products = that.GoodsInfo.products.map((v) =>{      
-			 		v.selected = false
-			 		return v 
-			 	})
-			 	that.GoodsInfo.products[Pindex].selected = true  
-			 	that.GoodsInfo.oldPrice=that.GoodsInfo.products[Pindex].specs;
-			 	that.GoodsInfo.activePrice=that.GoodsInfo.products[Pindex].price;
-			 	that.GoodsInfo.deduction=that.GoodsInfo.products[Pindex].deduction
-			 	that.GoodsInfo.enableStore=that.GoodsInfo.products[Pindex].enableStore;
-			 	that.GoodsInfo.specs=that.GoodsInfo.products[Pindex].name   
-			 },
-			 async collection(){
-			 	let that=this
-			 	let favorite = {}
-			 	favorite.memberId = that.userInfo.memberId
-			 	favorite.goodsId = that.GoodsInfo.goodsId
-			 	console.log(that.posts);
-			 	if(that.posts){
-			 		let delCollectionRes=await Api.delCollection(favorite)
-			 		if(delCollectionRes.code==0){
-			 			wx.showToast({
-			 				title: '取消收藏',
-			 				icon: 'success',
-			 				duration: 2000
-			 			})
-			 			that.posts=!that.posts
-			 		}
-			 	}
-			 	else{
-			 		let addCollectionRes=await Api.addCollection(favorite)
-			 		if(addCollectionRes.code==0){
-			 			wx.showToast({
-			 				title: '收藏成功',
-			 				icon: 'success',
-			 				duration: 2000
-			 			})
-			 			that.posts=!that.posts
-			 		}
-			 	}
-			 },
-			 kefu(){
-     		//触发打电话
-     		let that = this;
-     		let indexData = wx.getStorageSync('indexdata');
-     		wx.makePhoneCall({
-     			phoneNumber: indexData.mobile,
-     		})
-     	},
+				},
+				async AreaselectClick(Pindex){
+					let that = this;
+					that.GoodsInfo.products = that.GoodsInfo.products.map((v) =>{      
+						v.selected = false
+						return v 
+					})
+					that.GoodsInfo.products[Pindex].selected = true  
+					that.GoodsInfo.oldPrice=that.GoodsInfo.products[Pindex].specs;
+					that.GoodsInfo.activePrice=that.GoodsInfo.products[Pindex].price;
+					that.GoodsInfo.deduction=that.GoodsInfo.products[Pindex].deduction
+					that.GoodsInfo.enableStore=that.GoodsInfo.products[Pindex].enableStore;
+					that.GoodsInfo.specs=that.GoodsInfo.products[Pindex].name   
+				},
+				async collection(){
+					let that=this
+					let favorite = {}
+					favorite.memberId = that.userInfo.memberId
+					favorite.goodsId = that.GoodsInfo.goodsId
+					console.log(that.posts);
+					if(that.posts){
+						let delCollectionRes=await Api.delCollection(favorite)
+						if(delCollectionRes.code==0){
+							wx.showToast({
+								title: '取消收藏',
+								icon: 'success',
+								duration: 2000
+							})
+							that.posts=!that.posts
+						}
+					}
+					else{
+						let addCollectionRes=await Api.addCollection(favorite)
+						if(addCollectionRes.code==0){
+							wx.showToast({
+								title: '收藏成功',
+								icon: 'success',
+								duration: 2000
+							})
+							that.posts=!that.posts
+						}
+					}
+				},
+				kefu(){
+     			//触发打电话
+	     			let that = this;
+	     			let indexData = wx.getStorageSync('indexdata');
+	     			wx.makePhoneCall({
+	     				phoneNumber: indexData.mobile,
+	     			})
+	     		},
+	     		Plus(){
+	     			this.pic +=1
+	     		},
+	     		Minu(){
+	     			if(this.pic>0){
+	     				this.pic -=1
+	     			}
+	     		}
 		},
 		mounted(){
 			let that=this

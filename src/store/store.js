@@ -6,7 +6,7 @@ export default new Vuex.Store({
   state:{
   	userInfo:{},
   	config:{},
-    goodDetail:{},
+    goodItem:{},
     codeUnionid:'',
     appointment:{},
     UserTagList:[],
@@ -16,11 +16,8 @@ export default new Vuex.Store({
    storeUserInfo(state,userInfo){
    	state.userInfo=userInfo
    },
-   storeConfig(state,config){
-   	state.config=config
-   },
-   stateGoodDetail(state,goodDetail){
-    state.goodDetail=goodDetail
+   stateGoodItem(state,goodItem){
+    state.goodItem=goodItem
    },
    statecodeUnionid(state,codeUnionid){
     state.codeUnionid=codeUnionid
