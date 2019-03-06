@@ -6,6 +6,7 @@
 				<img :src="item.imageUrl" mode='widthFix' />
 			</swiper-item>
 		</swiper>
+		
 		<!--购物券-->
 		<div class="coupon">
 			<div class="coupon-list">
@@ -17,6 +18,7 @@
 				</div>
 			</div>
 		</div>
+
 		<!--新人礼包-->
 		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
 			<div class="img">
@@ -30,6 +32,7 @@
 			</div>
 		</div>
 		<div class="xian"></div>
+
 		<!--签到-->
 		<div class="sign" @click="jump">
 			<div class="sign-wp">
@@ -43,10 +46,12 @@
 				</div>
 			</div>
 		</div>
+
 		<!--vip-->
 		<div class="vip" @click="jumpVip">
 			<img src="/static/images/indexvip.png" />
 		</div>
+		
 		<!--弹窗-->
 		<div class="popup" catchtouchmove="true" v-if="isTogo">
 			<div class="popup-wp">
@@ -328,6 +333,8 @@
 		.img {
 			width: 90px;
 			height: 90px;
+			border-radius: 4px;
+			overflow: hidden;
 			image {
 				width: 100%;
 				height: 100%;
@@ -382,6 +389,8 @@
 		padding: 10px;
 		box-sizing: border-box;
 		.sign-wp {
+			border-radius: 5px;
+			box-shadow: 0 3px 10px rgba(0, 0, 0, 0.322);
 			background: linear-gradient(#6e1b22, #7c272f);
 			width: 100%;
 			height: 66px;

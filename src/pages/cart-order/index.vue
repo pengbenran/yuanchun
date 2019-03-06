@@ -24,7 +24,7 @@
 						<img :src="item.image" />
 					</div>
 					<div class="content">
-						<div class="tit fontHidden1">{{item.name}}</div>
+						<div class="fontHidden1">{{item.name}}</div>
 						<div class="describe fontHidden1">{{item.specvalue}}</div>
 						<div class="price">
 							<span>¥{{item.specs}}</span>
@@ -45,7 +45,7 @@
 			<!--买家留言-->
 			<div class="leave">
 				<span>买家留言:</span>
-				<span><input type="text" placeholder="点击留言" /></span>
+				<span class="leave_input"><input type="text" placeholder="点击留言"/></span>
 			</div>
 			<!--支付方式-->
 			<div class="PayType">
@@ -273,14 +273,15 @@
 		justify-content: space-between;
 		align-items: center;
 		border-bottom: 1px solid #f6f6f6;
-		padding: 0 20px 9px 15px;
+		padding: 10px;
 		.product-canter {
-			margin-top: 9px;
 			display: flex;
 			justify-content: space-between;
 			.img {
 				width: 80px;
 				height: 80px;
+				border-radius: 5px;
+				overflow: hidden;
 				img {
 					width: 100%;
 					height: 100%;
@@ -342,6 +343,10 @@
 			align-items: center;
 			width: 100%;
 			height: 35px;
+			// input{width: 80%;}
+			.leave_input{width: 60%;}
+            .leave_input span{font-size: 15px;}
+			.leave_input input{font-size: 12px;}
 			span {
 				display: block;
 				&:nth-child(1) {
