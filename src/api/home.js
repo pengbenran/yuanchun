@@ -8,10 +8,13 @@ export default {
 	weCatLogin(params){
 		return API.GET('/api/member/weChatLogin',params)
 	},
+	getTicket(){
+		return API.GET('/api/index/getTicket')
+	},
 	getIndex(){
 		return API.GET('/api/index/main')
 	},
 	getShopMain(){
 		return API.GET('/api/Goods/getShopMain')
-	}
+	},
 }

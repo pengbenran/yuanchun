@@ -1,16 +1,16 @@
 <template>
 	<div class="index-coupon">
 		<!--切换-->
-		<div class="tab">
+		<!-- <div class="tab">
 			<span :class="curr==index?'on':''" v-for="(item,index) in tits" @click="tabs(index)">{{item.tit}}</span>
-		</div>
+		</div> -->
 		<!--数据-->
 		<div class="index-coupon-list">
-			<div class="index-coupon-list-li" v-for="(item,index) in coupon">
+			<div class="index-coupon-list-li" v-for="(item,index) in memberTiket">
 				<div class="cant">
-					<p>{{item.pic}}元抢购平台卷</p>
+					<p>{{item.money}}元抢购平台卷</p>
 					<p>
-						<span>{{item.rmb}}</span>
+						<span>{{item.giveMoney}}</span>
 						<span>元</span>
 						<span class="xian"></span>
 					</p>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import API from '@/api/home'
+import {ToastShow} from '@/utils/index'
 	export default {
 		data() {
 			return {
@@ -47,7 +49,8 @@
 					{
 						tit: '我的平台券'
 					}
-				]
+				],
+				memberTiket:[]
 			}
 		},
 
@@ -59,11 +62,31 @@
 			tabs: function(index) {
 				let that = this;
 				that.curr = index
-			}
+			},
+
+			/**
+			 * 平台卷请求方法
+			 */
+			getTicket(){
+				let that = this;
+				API.getTicket().then(res => {
+				   console.log(res,"打印成功数据")
+				   if(res.code == 0){
+				     that.memberTiket = res.memberTiket
+				   }else{
+					   ToastShow('失败','none')
+				   }
+				}).catch(err => {
+					ToastShow('失败','none')
+				})
+			},
 		},
 
 		created() {
-
+			 /**
+			  * 加载平台卷
+			  */
+             this.getTicket();
 		}
 	}
 </script>

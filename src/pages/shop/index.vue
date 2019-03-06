@@ -188,6 +188,9 @@
 					line-height: 26px;
 				}
 			}
+			img{
+				border-radius: 5px;
+			}
 		}
 	}
 	/*海报*/
