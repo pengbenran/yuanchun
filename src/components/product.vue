@@ -54,6 +54,8 @@
 		.img {
 			width: 110px;
 			height: 110px;
+			border-radius: 5px;
+			overflow: hidden;
 			img {
 				width: 100%;
 				height: 100%;

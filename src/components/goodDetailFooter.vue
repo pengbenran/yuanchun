@@ -124,10 +124,12 @@
 					goodlist.specvalue = that.GoodsInfo.specs
 					goodlist.price = productsSelect.price
 					goodlist.specs = productsSelect.specs
+					goodlist.cart=0
 					goodlist.deduction = productsSelect.deduction
 					goodarr[0] = goodlist;
 					Goods.googitem = goodarr
-					Goods.shareMoney = productsSelect.fenrunAmount*that.pic
+					Goods.fenrunAmount = productsSelect.fenrunAmount*that.pic
+					Goods.twoAmount = productsSelect.twoAmount*that.pic
 					Goods.priceTotal=productsSelect.price*that.pic
 					Goods.specsTotal=productsSelect.specs*that.pic
 					Goods.deductionTotal=productsSelect.deduction*that.pic
@@ -160,18 +162,19 @@
 					cartparms.image = that.GoodsInfo.thumbnail
 					cartparms.num = that.pic
 					cartparms.point = that.GoodsInfo.point
-					cartparms.weight = productsSelect.fenrunAmount*that.pic
+					cartparms.weight =0
 					cartparms.name = that.GoodsInfo.name
 					cartparms.price = productsSelect.price
-				          cartparms.cart = 1//判断购物车订单
-				          cartparms.specvalue = that.GoodsInfo.specs
-				          let res = await Api.toCartSave(cartparms)
-				          wx.showToast({
-				          	title: '添加成功',
-				          	icon: 'success',
-				          	duration: 2000
-				          })
-				      }
+					//判断购物车订单
+					cartparms.cart = 1
+					cartparms.specvalue = that.GoodsInfo.specs
+					let res = await Api.toCartSave(cartparms)
+					wx.showToast({
+						title: '添加成功',
+						icon: 'success',
+						duration: 2000
+					})
+				}
 				},
 				async AreaselectClick(Pindex){
 					let that = this;

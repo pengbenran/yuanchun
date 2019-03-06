@@ -63,13 +63,13 @@
 					}else{
 						that.cartLists = [];
 					}
+					wx.stopPullDownRefresh()
 				}) 
 				
 			},
 			//选中时子组件触发父组件
 			SeleAllPrice(priceTotal,specsTotal,deductionTotal){
 				let that=this
-				console.log(priceTotal,specsTotal,deductionTotal);
 				that.priceTotal=priceTotal
 				that.specsTotal=specsTotal
 				that.deductionTotal=deductionTotal
@@ -132,16 +132,21 @@
 		   	let that = this
 		   	var googitem = [];
 		   	var Goods = {};
-		   	let weight=0;
+		   	let fenrunAmount=0;
+		   	let twoAmount=0
         	that.cartLists.map(v =>{
         		if(v.selected){
         			v.cart = 1;
         			googitem.push(v) 
-        			weight += v.weight;    
+        			fenrunAmount += v.fenrunAmount*v.num; 
+        			twoAmount+=v.twoAmount*v.num   
         		}
            	})
         	Goods.googitem = googitem
-        	Goods.shareMoney = weight
+        	// 1度合伙人分润
+        	Goods.fenrunAmount = fenrunAmount
+        	// 2度合伙人分润
+        	Goods.twoAmount = twoAmount
         	Goods.priceTotal=that.priceTotal
         	Goods.specsTotal=that.specsTotal
         	Goods.deductionTotal=that.deductionTotal
@@ -164,10 +169,14 @@
     }
 	},
 	mounted(){
-			let that=this
-			that.userInfo=store.state.userInfo
-			that.getCartList()
-		}
+		let that=this
+		that.userInfo=store.state.userInfo
+		that.getCartList()
+	},
+	onPullDownRefresh: function(){
+		let that=this
+		that.getCartList()
+	},
 	}
 </script>
 

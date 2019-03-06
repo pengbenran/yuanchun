@@ -124,6 +124,9 @@
 			that.nowPage[that.kindIndex]+=1
 			that.getGoodsAll(that.catId,that.nowPage[that.kindIndex],that.limit)
 		},
+		onPullDownRefresh: function(){	
+			wx.stopPullDownRefresh()
+		},
 	}
 </script>
 
@@ -187,6 +190,9 @@
 					color: #666666;
 					line-height: 26px;
 				}
+			}
+			img{
+				border-radius: 5px;
 			}
 		}
 	}

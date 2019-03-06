@@ -6,6 +6,7 @@
 				<img :src="item.imageUrl" mode='widthFix' />
 			</swiper-item>
 		</swiper>
+		
 		<!--购物券-->
 		<div class="coupon">
 			<div class="coupon-list">
@@ -17,6 +18,7 @@
 				</div>
 			</div>
 		</div>
+
 		<!--新人礼包-->
 		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
 			<div class="img">
@@ -25,11 +27,12 @@
 			<div class="cant">
 				<div class="cant-right">
 					<p class="fontHidden"><span class="cant-tip">新人礼</span>{{item.repacketName}}</p>
-					<button> 免费领取</button>
+					<div class="btn" @click="jumpNewPersonGift(index)">免费领取</div>
 				</div>
 			</div>
 		</div>
 		<div class="xian"></div>
+
 		<!--签到-->
 		<div class="sign" @click="jump">
 			<div class="sign-wp">
@@ -43,10 +46,12 @@
 				</div>
 			</div>
 		</div>
+
 		<!--vip-->
 		<div class="vip" @click="jumpVip">
 			<img src="/static/images/indexvip.png" />
 		</div>
+		
 		<!--弹窗-->
 		<div class="popup" catchtouchmove="true" v-if="isTogo">
 			<div class="popup-wp">
@@ -68,6 +73,7 @@
 </template>
 <script>
 	import Api from "@/api/home";
+	import store from '@/store/store'
 	import loginModel from "@/components/loginModel"; 
 	export default {
 		data() {
@@ -76,7 +82,8 @@
 				msg: [],
 				giftbag:[],
 				coupon: [],
-				banner: []
+				banner: [],
+				userInfo:{}
 			}
 		},
 
@@ -88,16 +95,11 @@
 			wx.showLoading({
 				title: '加载中',
 			})
-			that.hideTabBar();
-			Api.getIndex().then(function(res){
-				if(res.code==0){
-					wx.hideLoading();
-					that.banner=res.banner
-					that.giftbag=res.giftPackage
-					that.coupon=res.memberTiket
-				}
-			})
-			await that.$refs.loginModel.userLogin()
+			that.hideTabBar()
+			that.getBanner()
+			that.getTicket()
+			that.getUserInfo()
+			wx.hideLoading();
 		},
 		methods: {
 			//隐藏导航栏
@@ -106,17 +108,49 @@
 					animation: false //是否需要过渡动画
 				}) 
 			},
-			//
+			// 获取banner图
+			getBanner(){
+				let that=this
+				Api.getBanner().then(function(res){
+					that.banner=res.banner
+				})
+			},
+			// 获取平台券接口
+			getTicket(){
+				let that=this
+				Api.getTicket().then(function(res){
+					that.coupon=res.memberTiket
+				})
+			},
+			// 获取新人礼
+			getNewPersonGift(){
+				let params={}
+				let that=this
+				params.memberId=store.state.userInfo.memberId
+				Api.getNewPersonGift(params).then(function(res){
+					that.giftbag=res.giftPackage
+					wx.stopPullDownRefresh()
+				})
+			},
+
+			// 获取用户信息
+			async getUserInfo(){
+				let that=this
+				await that.$refs.loginModel.userLogin()	
+			},
 			jumpCoupon: function() {
 				wx.navigateTo({
 					url: '../index-coupon/main'
 				})
 			},
-			//          免费领取跳转
-			jumpfuli: function() {
-
+			//免费领取跳转
+			jumpNewPersonGift: function(index) {
+				let chooseGift=[]
+				let that=this
+				chooseGift.push(that.giftbag[index])
+				store.commit("stateNewPersonGift",chooseGift)
 				wx.navigateTo({
-					url: '../index-gift/main'
+					url: '../newPersonGift/main'
 				})
 			},
 
@@ -154,10 +188,14 @@
 				wx.navigateTo({
 					url: "../index-vip/main"
 				})
-
 			}
-
-		}
+		},
+		onPullDownRefresh: function(){
+			let that=this
+			console.log(11111);
+			// wx.startPullDownRefresh()
+			that.getUserInfo()
+		},
 	}
 </script>
 
@@ -295,6 +333,8 @@
 		.img {
 			width: 90px;
 			height: 90px;
+			border-radius: 4px;
+			overflow: hidden;
 			image {
 				width: 100%;
 				height: 100%;
@@ -319,7 +359,7 @@
 					}
 					
 				}
-				button{
+				.btn{
 					width: 79px;
 					height: 20px;
 					background-color: #6e1b22;
@@ -349,6 +389,8 @@
 		padding: 10px;
 		box-sizing: border-box;
 		.sign-wp {
+			border-radius: 5px;
+			box-shadow: 0 3px 10px rgba(0, 0, 0, 0.322);
 			background: linear-gradient(#6e1b22, #7c272f);
 			width: 100%;
 			height: 66px;

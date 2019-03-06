@@ -119,8 +119,10 @@ export default {
 	     		}
 	     	})
 	     	that.selectIndex = 2
-	     	},
-	     
+	     },
+  onPullDownRefresh: function(){  
+      wx.stopPullDownRefresh()
+   },
 
 }
 </script>

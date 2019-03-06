@@ -1,20 +1,20 @@
 {
   "pages": [
-  
-    "pages/index/main",   
+    "pages/index/main",
     "pages/obligation-detail/main",
-    "pages/cart/main", 
+    "pages/index-gift/main",
+    "pages/newPersonGift/main",
+    "pages/cart/main",
     "pages/product-detail/main",
     "pages/orderList/main",
     "pages/withdrawal/main",
-    "pages/index-gift/main",
     "pages/index-vip/main",
     "pages/vipUp/main",
-    "pages/index-coupon/main",
     "pages/privilege/main",
     "pages/inComing/main",
     "pages/Partner/main",
     "pages/sign/main",
+    "pages/index-coupon/main",
     "pages/recommendationCode/main",
     "pages/businessCard/main",
     "pages/addressDetail/main",
@@ -27,7 +27,8 @@
     "backgroundTextStyle": "light", 
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "backgroundTextStyle":"dark"
   },
   "tabBar": {
     "selectedColor":"#901414", 

@@ -8,8 +8,8 @@ export default new Vuex.Store({
   	config:{},
     goodItem:{},
     codeUnionid:'',
-    appointment:{},
-    UserTagList:[],
+    personGift:[],
+    orderStatus:{},
     goodsId:''
   },
   mutations:{
@@ -25,11 +25,11 @@ export default new Vuex.Store({
     stategoodsid(state,goodsId){
     state.goodsId=goodsId
    },
-   stateappointment(state,appointment){
-    state.appointment=appointment
+   stateNewPersonGift(state,personGift){
+    state.personGift=personGift
    },
-   stateUserTagList(state,UserTagList){
-    state.UserTagList = UserTagList
+   stateOrderStatus(state,orderStatus){
+    state.orderStatus = orderStatus
    }
 }
 })
