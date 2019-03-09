@@ -63,6 +63,7 @@
 				  if(res.code == 0){
 					  console.log("打印签到后的信息")
 					  that.userInfo.mp = res.point;
+					  that.getSign();
 					  ToastShow('成功','success')
 				  }else{
 					  ToastShow('今日已签到','loading')

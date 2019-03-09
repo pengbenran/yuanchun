@@ -46,7 +46,7 @@
 		</div>
 		<div class="footerBnt">	
 			<div class="cartBtn">
-				合计：100元
+				合计：{{moneySum}}元
 			</div>
 			<div class="btn" @click="toast">立即购买</div>
 		</div>
@@ -64,7 +64,8 @@
 				AddressBtn:false,
 				canbuy:true,
 				userInfo:{},
-				personGiftIdArry:[]
+				personGiftIdArry:[],
+                moneySum:0
 			}
 		},
 
@@ -97,10 +98,15 @@
 		mounted() {
 			let that=this
 			that.personGift =store.state.personGift
-			let personGiftId=[]
+			console.log("查看数据",that.personGift)
+			let personGiftId = [];
+			let moneySum = 0
 			for(var i in that.personGift){
 				personGiftId=personGiftId.push(that.personGift[i].repacketId)
+			
+				moneySum += that.personGift[i].conditionAmount
 			}
+			that.moneySum = moneySum
 			that.personGiftIdArry=personGiftId
 			that.userInfo=store.state.userInfo
 			console.log('ssss',that.personGift)

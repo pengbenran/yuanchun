@@ -1,9 +1,5 @@
 <template>
 	<div class="index-coupon">
-		<!--切换-->
-		<!-- <div class="tab">
-			<span :class="curr==index?'on':''" v-for="(item,index) in tits" @click="tabs(index)">{{item.tit}}</span>
-		</div> -->
 		<!--数据-->
 		<div class="index-coupon-list">
 			<div class="index-coupon-list-li" v-for="(item,index) in memberTiket">
@@ -15,7 +11,7 @@
 						<span class="xian"></span>
 					</p>
 				</div>
-				<div class="btn">
+				<div class="btn" @click="submit(item)">
 					立即购买
 				</div>
 			</div>
@@ -26,31 +22,15 @@
 <script>
 import API from '@/api/home'
 import {ToastShow} from '@/utils/index'
+import store from '@/store/store'
+import PayApi from '@/api/order'
+import Utils from '@/utils/index'
 	export default {
 		data() {
 			return {
-				curr: 0,
-				coupon: [{
-						pic: '48',
-						rmb: '100'
-					},
-					{
-						pic: '48',
-						rmb: '100'
-					},
-					{
-						pic: '48',
-						rmb: '100'
-					},
-				],
-				tits: [{
-						tit: '购买'
-					},
-					{
-						tit: '我的平台券'
-					}
-				],
-				memberTiket:[]
+				memberTiket:[],
+				userInfo:{},
+				submitBool:true
 			}
 		},
 
@@ -65,6 +45,81 @@ import {ToastShow} from '@/utils/index'
 			},
 
 			/**
+			 * 提交
+			 */
+			submit(item){
+				if(this.submitBool){
+					this.submitBool = false;
+                    this.wxPay(item)
+				}
+			},
+
+			/**
+			 * 支付
+			 * 微信支付方法封装
+			 */
+			wxPay(item){ 
+				let that = this;
+				let params ={}
+				params.orderid = Utils.random_No(6)
+				params.sn = Utils.random_No(6)
+				// params.total_fee = item.money * 100
+				params.total_fee=1
+				//请求支付
+				params.openId=that.userInfo.openId
+				PayApi.ConfirmPay(params).then(function(PayRes){
+					wx.requestPayment({
+						timeStamp: PayRes.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
+						nonceStr: PayRes.nonceStr, //随机字符串，长度为32个字符以下,
+						package: PayRes.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
+						signType: PayRes.signType, //签名算法，暂支持 MD5,
+						paySign: PayRes.paySign, //签名,具体签名方案参见小程序支付接口文档,
+						success: res => {
+							that.ticketTopUp(item)
+							console.log(res,"支付成功")
+							
+						},
+						fail: function (res) {
+						that.submitBool = true;
+						// fail   
+						wx.showToast({ 
+							title: '支付失败',
+							icon:'none',
+							duration: 2000
+						})
+					},
+				});
+				})
+			},
+
+			/**
+			 * 生成平台卷订单
+			 */
+            ticketTopUp(item){
+				let that = this;
+				wx.showLoading({title: '加载中'})
+				let data = Object.assign({},item,{memberId:that.userInfo.memberId})
+				API.ticketTopUp(data).then(res => {
+					console.log("提交订单",res)
+					if(res.code == 0){
+						wx.showToast({ 
+							title: '充值成功',
+							icon:'none',
+							duration: 2000
+						})
+						wx.switchTab({
+						   url: '../myself/main'
+						})
+					}else{
+						ToastShow('失败','none')
+					}
+					that.submitBool = true;
+				}).catch(err => {
+					ToastShow('失败','none')
+				})
+			},
+
+			/**
 			 * 平台卷请求方法
 			 */
 			getTicket(){
@@ -72,7 +127,8 @@ import {ToastShow} from '@/utils/index'
 				API.getTicket().then(res => {
 				   console.log(res,"打印成功数据")
 				   if(res.code == 0){
-				     that.memberTiket = res.memberTiket
+					 that.memberTiket = res.memberTiket
+					 wx.hideLoading()
 				   }else{
 					   ToastShow('失败','none')
 				   }
@@ -80,14 +136,19 @@ import {ToastShow} from '@/utils/index'
 					ToastShow('失败','none')
 				})
 			},
-		},
 
-		created() {
+			/**
+			 * 立即购买平台卷
+			 */
+			
+		},
+		mounted(){
 			 /**
 			  * 加载平台卷
 			  */
-             this.getTicket();
-		}
+			 this.getTicket();
+			 this.userInfo=store.state.userInfo
+		},
 	}
 </script>
 

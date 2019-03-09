@@ -24,5 +24,11 @@ export default {
 	// 领取新人礼
 	memberRedGet(params){
 		return API.POST('/api/redPacket/MemberRedGet',params)
-	}
+	},
+
+	//购买平台卷
+	ticketTopUp(params){
+		return API.POST('/api/member/topUp',params)
+	},
+
 }
