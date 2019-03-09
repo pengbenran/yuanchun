@@ -1,14 +1,14 @@
 {
   "pages": [
+     
     "pages/index/main",
-    "pages/obligation-detail/main",
     "pages/index-gift/main",
+    "pages/obligation-detail/main",
     "pages/newPersonGift/main",
     "pages/cart/main",
     "pages/product-detail/main",
     "pages/orderList/main",
     "pages/withdrawal/main",
-    "pages/index-vip/main",
     "pages/vipUp/main",
     "pages/privilege/main",
     "pages/inComing/main",

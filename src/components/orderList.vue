@@ -1,40 +1,76 @@
 <template>
 	<div>
 		<div class="orderContain" v-for="(item,index) in orderList" :index="index" :key="item.orderId">
-			<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.productId">
-				<div class="goodImg">
-					<img :src="innerItem.image">
-				</div>
-				<div class="goodDetail">
-					<div class="top">
-						<div class="left">
-							<p class="fontHidden">{{innerItem.name}}</p>
-							<p class="fontHidden1">{{innerItem.specvalue}}</p>
+			<blockquote v-if="item.orderType==1">
+				<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.productId">
+					<div class="goodImg">
+						<img :src="innerItem.image">
+					</div>
+					<div class="goodDetail">
+						<div class="top">
+							<div class="left">
+								<p class="fontHidden">{{innerItem.name}}</p>
+								<p class="fontHidden1">{{innerItem.specvalue}}</p>
+							</div>
+							<div class="number">X{{innerItem.num}}</div>
 						</div>
-						<div class="number">X{{innerItem.num}}</div>
-					</div>
-					<div class="price">
-						<span>¥{{innerItem.specs}}</span>
-					</div>
-					<div class="price1">
-						<span>¥{{innerItem.price}}+</span>
-						<div class="ptq">{{innerItem.deduction}}平台卷</div>
+						<div class="price">
+							<span>¥{{innerItem.specs}}</span>
+						</div>
+						<div class="price1">
+							<span>¥{{innerItem.price}}+</span>
+							<div class="ptq">{{innerItem.deduction}}平台卷</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="orderFooter">
-				<p v-if="item.paymentType==1">共计{{item.count}}件商品 合计:￥{{item.orderAmount}}</p>
-				<p v-else>共计2件商品 合计:￥{{item.orderAmount}}+{{item.shippingAmount}}</p>
-				<div class="btn">
-					<button>取消订单</button>
-					<button>提交付款</button>
+				<div class="orderFooter">
+					<p v-if="item.paymentType==1">共计{{item.count}}件商品 合计:￥{{item.orderAmount}}</p>
+					<p v-else>共计{{item.count}}件商品 合计:￥{{item.orderAmount}}+{{item.shippingAmount}}</p>
+					<div class="btn" v-if="item.status==0">
+						<div class="btnleft" @click="cancelOrder(item.orderId,index)">取消订单</div>
+						<div class="btnright" @click="payOrder(item.orderId,item.shippingAmount,item.sn,item.needPayMoney,index)">提交付款</div>
+					</div>
+					<div class="btn" v-else>
+						<div class="btnleft" @click="cancelOrder(item.orderId,index)">查看物流</div>
+						<div class="btnright" @click="checkOrder(item.orderId)">查看订单</div>
+					</div>
+					<div class="clear"></div>
 				</div>
-				<div class="clear"></div>
-			</div>
+			</blockquote>
+			<blockquote v-if="item.orderType==3">
+				<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.repacketId">
+					<div class="goodImg">
+						<img :src="innerItem.voucherType">
+					</div>
+					<div class="goodDetail">
+						<div class="top">
+							<div class="left">
+								<p class="fontHidden">{{innerItem.repacketName}}</p>
+							</div>
+							<div class="number">X1</div>
+						</div>
+						<div class="price">
+							<span>¥{{innerItem.conditionAmount}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="orderFooter">
+					<p>共计{{item.count}}件商品 合计:￥{{item.orderAmount}}</p>
+					<div class="btn">
+						<button>取消订单</button>
+						<button>提交付款</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</blockquote>
+			
 		</div>
 	</div>
 </template>
 <script>
+	import Api from "@/api/order"
+	import store from '@/store/store'
+	import utils from '@/utils/index'
 	export default {
 		props: ['orderList'],
 		data() {
@@ -42,8 +78,117 @@
 
 			}
 		},
-		created() {
+		methods:{
+			// 取消订单
+			cancelOrder(orderId,index){
+				let that=this
+				wx.showModal({
+					title: '提示',
+					content: '是否取消订单?',
+					success(res) {
+						if (res.confirm) {
+							wx.showLoading({title: '请稍等'})
+							let params = {orderId:orderId}
+							Api.cancelOrder(params).then(res =>{
+								if(res.code == 0){
+									that.orderList.splice(index,1); //删除下标的指定数组  
+									wx.showToast({
+										title:'取消成功',
+										icon:'success',
+										duration:2000
+									})
+									wx.hideLoading()
+								}
+							})
+						} else if (res.cancel) {
 
+						}
+					}
+				})
+			},
+			// 查看订单
+			checkOrder(){
+
+			},
+			// 立即支付订单
+			payOrder(orderId,shippingAmount,sn,needPayMoney,index){
+				// 判断用户的平台券是否少于需支付的拼团券
+				let that=this
+			 	if(that.userInfo.point<shippingAmount){
+			 		wx.showModal({
+			 			title: '提示',
+			 			content: '平台券不足',
+			 			success(res) {
+			 				if (res.confirm) {
+			 					wx.navigateTo({
+			 						url:'../index-coupon/main',
+			 					})
+			 				}
+			 				else{
+
+			 				}
+			 			}
+			 		})
+			 	}
+			 	else{
+			 		let params={}
+			 		wx.showLoading({ title: '加载中',})
+			 		params.sn = sn
+			 		params.openId=that.userInfo.openId
+			 		// params.payAmount = needPayMoney*100
+			 		params.payAmount = 1
+			 		params.shippingAmount=shippingAmount
+			 		Api.ConfirmPay(params).then(function(parRes){
+			 			if(parRes.code==0){
+			 				wx.requestPayment({
+			 					timeStamp: parRes.Map.timeStamp,
+			 					nonceStr: parRes.Map.nonceStr,
+			 					package: parRes.Map.package,
+			 					signType: parRes.Map.signType, 
+			 					paySign: parRes.Map.paySign,
+			 					success: function (res) {
+			 						wx.showToast({
+			 							title: '支付成功',
+			 							icon: 'success',
+			 							duration: 2000
+			 						})
+			 						that.orderList.splice(index,1)
+			 						that.passOrder(orderId,shippingAmount,needPayMoney)
+			 					},
+			 					fail: function (res) {
+			 						console.log(res);
+			 						wx.showToast({
+			 							title: '支付失败',
+			 							icon: 'success',
+			 							duration: 2000
+			 						})
+			 					},
+			 					complete: function (complete) {
+			 						wx.hideLoading()
+			 					}
+			 				})
+			 			}
+			 			
+			 		})
+			 	}
+			},
+			// 修改订单状态
+			passOrder(OrderId,shippingAmount,needPayMoney){	
+	        	let that=this
+	        	let statuParam={}
+	        	statuParam.orderId=OrderId
+	        	statuParam.shippingAmount=shippingAmount
+	        	statuParam.paymoney=needPayMoney
+	        	Api.PaypassOrder(statuParam).then(function(res){
+	        		utils.updateUserInfo()
+	        		console.log(res)
+	        	})
+				
+			}
+		},
+		mounted() {
+			let that=this
+			that.userInfo = store.state.userInfo
 		}
 	}
 </script>
@@ -119,21 +264,22 @@ img{
 		.btn{
 			float: right;
 			font-size: 16px;
-			button{
+			div{
 				width:100px;
 				height: 34px;
-				outline: none;
-				border: 1px solid #929292;
-				padding:0;
 				display: inline-block;
 				border-radius: 17px;
 				margin-right:10px; 
 				line-height:34px;
 				background: #fff;
 				font-size: 16px;
+				text-align: center;
+			}
+			.btnleft{
+				border: 1px solid #929292;
 				color:#929292;
 			}
-			button:nth-child(2){
+			.btnright{
 				border: 1px solid #720E13;
 				color:#720E13;
 			}

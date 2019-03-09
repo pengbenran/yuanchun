@@ -7,8 +7,8 @@
 		<div class="cant">		
 			<div class="inp" v-for="(item,index) in giftList">
 				<span><img src="/static/images/gift.png"/></span>
-				<span><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
-				<div class="tit fontHidden1">{{item.name}}</div>
+				<span v-if="item.state!=2"><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
+				<div class="tit fontHidden">{{item.repacketName}}</div>
 			</div>
 		</div>
 		<div class="btn" @click="jump">
@@ -19,10 +19,11 @@
 
 <script>
 	import store from '@/store/store'
+	import Api from "@/api/home";
 	export default {
 		data() {
 			return {
-				giftList:[{name:'3.99购100平台券',ischeck:false,image:'https://shop.guqinet.com/shopimages/test/0ef6cbbb-5d27-4930-bace-60b9b34062e2.png',price:3.99,freight:0},{name:'领面膜',ischeck:false,image:'https://shop.guqinet.com/shopimages/test/0ef6cbbb-5d27-4930-bace-60b9b34062e2.png',price:0,freight:13}]
+				giftList:[]
 			}
 		},
 
@@ -39,19 +40,42 @@
 						chooseGift.push(that.giftList[i])
 					}
 				}
-				store.commit("stateNewPersonGift",chooseGift)
-				wx.navigateTo({
-					url: '../newPersonGift/main'
+				if(chooseGift.length!=0){
+					store.commit("stateNewPersonGift",chooseGift)
+					wx.navigateTo({
+						url: '../newPersonGift/main'
+					})
+				}
+				else{
+					wx.showToast({
+						title: '您已经领取过了哦',
+						icon: 'none',
+						duration: 2000
+					})
+				}		
+			},
+			// 获取新人礼
+			getNewPersonGift(){
+				let params={}
+				let that=this
+				params.memberId=store.state.userInfo.memberId
+				Api.getNewPersonGift(params).then(function(res){
+					for(var i in res.giftPackage){
+						res.giftPackage[i].ischeck=false
+					}
+					that.giftList=res.giftPackage
 				})
 			},
 			isChoose(index){
 				let that=this
 				that.giftList[index].ischeck=!that.giftList[index].ischeck
-			}
+			},
+
 		},
 
-		created() {
-
+		mounted() {
+			let that=this
+			that.getNewPersonGift()
 		}
 	}
 </script>
@@ -88,9 +112,10 @@
 					position: absolute;
 					top:0;
 					left: 32%;
-					line-height:92px;
-					height: 92px;
-					font-size: 17px;
+					line-height:25px;
+					padding: 21px 0 0 0;
+					box-sizing: border-box;
+					font-size: 15px;
 					color: #ffffff;
 					width:170px;
 				}		

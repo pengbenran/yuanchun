@@ -2,12 +2,12 @@
 	<div class="privilege">
 		<div class="header">
 			<div class="avator">
-				<img src="/static/images/product-list.png">
+				<img :src="userInfo.face">
 			</div>
-			<div class="headerTitle">谷琴中国</div>
+			<div class="headerTitle">{{userInfo.name}}</div>
 		</div>
 		<div class="banlance">
-			<p class="number">9999</p>
+			<p class="number">{{userInfo.advance}}</p>
 			<p>余额(元)</p>
 		</div>
 		<div class="withdrawal">
@@ -44,14 +44,16 @@
 	</div>
 </template>
 <script>
+	import store from '@/store/store'
 	export default {
 		data(){
 			return{
-
+				userInfo:{}
 			}
 		},
 		mounted(){
-
+			let that=this
+			that.userInfo = store.state.userInfo
 		},
 		methods:{
 			jump(url){

@@ -1,12 +1,12 @@
 <template>
-	<div>
+	<div style="padding-bottom: 40px;">
 		<!--轮播图-->
 		<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22">
 			<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index">
 				<img :src="item.imageUrl" mode='widthFix' />
 			</swiper-item>
 		</swiper>
-		
+
 		<!--购物券-->
 		<div class="coupon">
 			<div class="coupon-list">
@@ -14,15 +14,15 @@
 					<!-- <img src="/static/images/indexcoupon.png" /> -->
 					<div class="rmb"> <span>¥ </span>{{item.money}}</div>
 					<div class="ticket">购{{item.giveMoney}}平台券</div>
-					<div class="go">立即抢购</div> 
+					<div class="go">立即抢购</div>
 				</div>
 			</div>
 		</div>
 
 		<!--新人礼包-->
-		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
+		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index" v-if="item.state!=2">
 			<div class="img">
-				<img :src="item.voucherType" />
+				<img :src="item.voucherType"/>
 			</div>
 			<div class="cant">
 				<div class="cant-right">
@@ -46,12 +46,6 @@
 				</div>
 			</div>
 		</div>
-
-		<!--vip-->
-		<div class="vip" @click="jumpVip">
-			<img src="/static/images/indexvip.png" />
-		</div>
-		
 		<!--弹窗-->
 		<div class="popup" catchtouchmove="true" v-if="isTogo">
 			<div class="popup-wp">
@@ -63,35 +57,80 @@
 				<div class="tit">
 					<span>恭喜您获得新人礼包</span>
 				</div>
+
 				<div class="more">
 					<img @click="more" src="/static/images/indexmore.png" />
 				</div>
 			</div>
 		</div>
-		<loginModel ref="loginModel"></loginModel> 
+		<!--商品-->
+		<div class="recommend">
+			<div class="recommend-li">
+				<div class="img"><img :src="recommend.img" /></div>
+				<div class="pic">
+					<span>¥</span>
+					<span>{{recommend.pic}}</span>
+				</div>
+				<div class="tit">{{recommend.tit}}</div>
+				<div class="btn">立即购买</div>
+				<!--详情-->
+				<div class="detail">
+					<div class="detail-shop">商品详情</div>
+					<div class="more" @click="more">
+						<span>查看详情</span>
+						<span class="iconfont" :class="isMore?'on':''"> &#xe72b;</span>
+					</div>
+					<!--展开详情-->
+					<div class="more-check" v-show="isMore" :style="{height:height+'px',opacity:opacity}">
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+						<p>法发顺丰</p>
+					</div>
+					</transition>
+
+				</div>
+			</div>
+		</div>
+
+		<loginModel ref="loginModel"></loginModel>
+
 	</div>
 </template>
 <script>
 	import Api from "@/api/home";
 	import store from '@/store/store'
-	import loginModel from "@/components/loginModel"; 
+	import loginModel from "@/components/loginModel";
 	export default {
 		data() {
+
 			return {
+				isTogo: false,
+				opacity: 0,
+				isMore: false,
 				isTogo: true,
 				msg: [],
-				giftbag:[],
+				giftbag: [],
 				coupon: [],
 				banner: [],
-				userInfo:{}
+				userInfo: {},
+				recommend: {
+					img: "/static/images/product-list.png",
+					pic: 300,
+					tit: '元淳会员大礼包，价值300元的面膜，300元的平台卷，成为终身会员'
+				}
 			}
 		},
-
 		components: {
 			loginModel
 		},
-		async mounted(){
-			var that = this; 
+		async mounted() {
+			var that = this;
 			wx.showLoading({
 				title: '加载中',
 			})
@@ -106,20 +145,20 @@
 			hideTabBar: function() {
 				wx.hideTabBar({
 					animation: false //是否需要过渡动画
-				}) 
+				})
 			},
 			// 获取banner图
-			getBanner(){
-				let that=this
-				Api.getBanner().then(function(res){
-					that.banner=res.banner
+			getBanner() {
+				let that = this
+				Api.getBanner().then(function(res) {
+					that.banner = res.banner
 				})
 			},
 			// 获取平台券接口
-			getTicket(){
-				let that=this
-				Api.getTicket().then(function(res){
-					that.coupon=res.memberTiket
+			getTicket() {
+				let that = this
+				Api.getTicket().then(function(res) {
+					that.coupon = res.memberTiket
 				})
 			},
 			// 获取新人礼
@@ -128,15 +167,23 @@
 				let that=this
 				params.memberId=store.state.userInfo.memberId
 				Api.getNewPersonGift(params).then(function(res){
-					that.giftbag=res.giftPackage
-					wx.stopPullDownRefresh()
+					if(res.code==0){
+						if(res.giftPackage.length==0){
+							that.isTogo = false
+						}
+						else{
+							that.isTogo = true
+						}
+						that.giftbag=res.giftPackage
+						
+					}
 				})
 			},
-
 			// 获取用户信息
-			async getUserInfo(){
-				let that=this
-				await that.$refs.loginModel.userLogin()	
+			async getUserInfo() {
+				let that = this
+				await that.$refs.loginModel.userLogin()
+
 			},
 			jumpCoupon: function() {
 				wx.navigateTo({
@@ -145,10 +192,10 @@
 			},
 			//免费领取跳转
 			jumpNewPersonGift: function(index) {
-				let chooseGift=[]
-				let that=this
+				let chooseGift = []
+				let that = this
 				chooseGift.push(that.giftbag[index])
-				store.commit("stateNewPersonGift",chooseGift)
+				store.commit("stateNewPersonGift", chooseGift)
 				wx.navigateTo({
 					url: '../newPersonGift/main'
 				})
@@ -183,19 +230,28 @@
 				})
 
 			},
-			//vip跳转
-			jumpVip: function() {
-				wx.navigateTo({
-					url: "../index-vip/main"
-				})
+			more() {
+				let that = this
+				that.isMore = !that.isMore
+				let op = 0.1
+				if(that.isMore) {
+					let interval = setInterval(function() {
+						op += 0.1
+						that.opacity = parseFloat(op)
+						if(op > 1) {
+							clearInterval(interval)
+						}
+					}, 40);
+				} else {
+                     that.opacity=0
+				}
+
 			}
 		},
-		onPullDownRefresh: function(){
-			let that=this
-			console.log(11111);
-			// wx.startPullDownRefresh()
+		onPullDownRefresh: function() {
+			let that = this
 			that.getUserInfo()
-		},
+		}
 	}
 </script>
 
@@ -207,7 +263,7 @@
 		position: fixed;
 		z-index: 99;
 		top: 0;
-		bottom:0;
+		bottom: 0;
 		left: 0;
 		right: 0;
 		background-color: rgba(0, 0, 0, .7);
@@ -272,7 +328,7 @@
 	}
 	/*购物券*/
 	
-	.coupon {	
+	.coupon {
 		background-color: #f5f5f5;
 		height: 70px;
 		position: relative;
@@ -286,12 +342,12 @@
 			.coupon-list-li {
 				text-align: center;
 				background: #6e1b22;
-				width:80px;
+				width: 80px;
 				height: 80px;
 				border-radius: 40px 40px 35px 35px;
-				color:#fff;
+				color: #fff;
 				.rmb {
-					top: 0;	
+					top: 0;
 					left: 10px;
 					span {
 						&:nth-child(1) {
@@ -305,7 +361,7 @@
 				.ticket {
 					font-size: 10px;
 					height: 18px;
-					line-height:18px;
+					line-height: 18px;
 				}
 				.go {
 					font-size: 8px;
@@ -347,6 +403,7 @@
 					font-size: 11px;
 					color: #333333;
 					line-height:20px;
+					height: 40px;
 					.cant-tip{
 						width: 40px;
 						height: 15px;
@@ -354,12 +411,11 @@
 						text-align: center;
 						line-height: 15px;
 						background-color: #6e1b22;
-						color: #FFFFFF;		
+						color: #FFFFFF;
 						display: inline-block;
 					}
-					
 				}
-				.btn{
+				.btn {
 					width: 79px;
 					height: 20px;
 					background-color: #6e1b22;
@@ -368,7 +424,7 @@
 					border-radius: 5px;
 					font-size: 13px;
 					color: #ffffff;
-					padding:0;
+					padding: 0;
 					border: 0;
 					outline: none;
 					float: right;
@@ -435,16 +491,89 @@
 			}
 		}
 	}
-	/*vip*/
+	/*商品*/
 	
-	.vip {
-		margin: 0 auto;
-		width: 324px;
-		height: 206px;
-		padding-bottom: 34px;
-		img {
-			width: 100;
-			height: 100%;
+	.recommend {
+		width: 100%;
+		.recommend-li {
+			width: 100%;
+			.img {
+				width: 375px;
+				height: 375px;
+				img {
+					width: 100%;
+					height: 100%;
+				}
+			}
+			.pic {
+				padding: 0 9px;
+				width: 100%;
+				box-sizing: border-box;
+				color: #fe2448;
+				font-size: 22px;
+				margin-top: 10px;
+				span {
+					&:nth-child(1) {
+						font-size: 17px;
+						margin-right: 3px;
+					}
+				}
+			}
+			.tit {
+				padding: 9px 9px;
+				width: 100%;
+				box-sizing: border-box;
+				font-size: 14px;
+				color: #333333;
+				line-height: 23px;
+			}
+			.btn {
+				width: 100%;
+				height: 50px;
+				background: linear-gradient(to right, #d2313f, #77222a);
+				line-height: 50px;
+				text-align: center;
+				font-size: 17px;
+				color: #fefefe;
+			}
+		}
+		/*详情*/
+		.detail {
+			.detail-shop {
+				width: 100%;
+				text-align: center;
+				height: 30px;
+				line-height: 30px;
+				border-top: 8px solid #f1f1f1;
+				color: #952731;
+				font-size: 15px;
+			}
+			.more {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0 20px;
+				width: 100%;
+				height: 39px;
+				box-sizing: border-box;
+				border-top: 1px solid #f1f1f1;
+				border-bottom: 1px solid #f1f1f1;
+				transition: all .6s;
+				span {
+					display: block;
+					color: #992832;
+					font-size: 15px;
+					transition: all .3s;
+				}
+				.on {
+					transform: rotate(90deg);
+				}
+			}
+			.more-check {
+				width: 100%;
+				background: orangered;
+				transition: all .6s;
+			}
 		}
 	}
 </style>

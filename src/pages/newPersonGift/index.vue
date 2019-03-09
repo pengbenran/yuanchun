@@ -36,7 +36,7 @@
 			<!--买家留言-->
 			<div class="leave">
 				<span>买家留言:</span>
-				<span><input type="text" placeholder="点击留言" /></span>
+				<span><input type="text" placeholder="点击留言" v-model="InputMask" /></span>
 			</div>
 			<div class="leave">
 				<span>运费:</span>
@@ -46,20 +46,22 @@
 		</div>
 		<div class="footerBnt">	
 			<div class="cartBtn">
-				合计：{{moneySum}}元
+				合计：{{totalMoney}}元
 			</div>
-			<div class="btn" @click="toast">立即购买</div>
+			<div class="btn" @click="toast">立即领取</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import store from '@/store/store'
-	import Api from '@/api/order'
+	import utils from '@/utils/index'
+	import Api from "@/api/order"
 	export default {
 		data() {
 			return {
 				personGift:[],
+				InputMask:'',
 				addr:{name:'彭',mobile:'15779556662',addr:'江西宜春'},
 				AddressBtn:false,
 				canbuy:true,
@@ -68,9 +70,18 @@
                 moneySum:0
 			}
 		},
-
 		components: {},
-
+		computed:{
+			totalMoney(){
+				let that=this
+				let totalMoney=0
+				for(var i in that.personGift){
+					totalMoney=utils.accAdd(totalMoney,that.personGift[i].conditionAmount)
+				}
+				totalMoney=utils.accAdd(totalMoney,13)
+				return totalMoney
+			}
+		},
 		methods: {
 			toast(){
 				let that = this;
@@ -80,15 +91,94 @@
 					that.OrderUp();  				
 				} 
 			},
-			toast(){
-				let that=this
-				let params={}
-				params.memberId=that.userInfo.memberId
-				params.redpacketId=that.personGiftIdArry.join(',')
-				Api.memberRedGet().then(function(res){
-					console.log(res);
-				})
-			},
+			// 新人两重礼使用
+			OrderUp(){
+				let that = this;
+				let bean = {}
+				let goodObj = {}
+				let orderParms = {}
+				if(that.canbuy){
+					that.canbuy=false
+					wx.showLoading({
+						title: '请稍等',
+					})
+					bean.orderAmount = that.totalMoney
+					bean.needPayMoney=that.totalMoney
+					bean.memberId = that.userInfo.memberId
+		      		// (是否使用平台券)
+		      		bean.clickd = that.InputMask 
+		      		bean.orderType = 1
+		      		bean.shipAddr = that.addr.addr
+		      		bean.shipMobile = that.addr.mobile 
+		      		bean.shipName= that.addr.name	
+		      		bean.itemsJson = JSON.stringify(that.personGift)	
+		      		that.saveOrder(bean)
+		      	}
+		      },
+		    //提交订单并支付
+		    async saveOrder(bean){
+		    	let that = this;
+		    	let res = await Api.giftUser(bean)
+		    	console.log(res)
+		    	wx.hideLoading()
+		    	if(res.code == 0){
+		    		that.order = res.order
+		    		that.wxPay()
+		    	}	
+		    },
+		    wxPay(){
+		    	let that = this;
+		    	let params ={}
+		    	params.orderid = that.order.orderId
+		    	params.sn = that.order.sn
+   				// params.total_fee = that.order.needPayMoney * 100
+   				params.total_fee=1
+			    //请求支付
+			    params.openId=that.userInfo.openId
+			    Api.ConfirmPay(params).then(function(PayRes){
+			    	wx.requestPayment({
+			                timeStamp: PayRes.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
+			                nonceStr: PayRes.nonceStr, //随机字符串，长度为32个字符以下,
+			                package: PayRes.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
+			                signType: PayRes.signType, //签名算法，暂支持 MD5,
+			                paySign: PayRes.paySign, //签名,具体签名方案参见小程序支付接口文档,
+			                success: res => {
+			                	that.payReturen()   
+			                	that.canbuy=true
+			                },
+			                fail: function (res) {
+	                        // fail   
+	                        wx.showToast({ 
+	                        	title: '支付失败',
+	                        	icon:'none',
+	                        	duration: 2000
+	                        })
+	                        that.canbuy=true
+	                    },
+	                });
+			    })
+			    },
+			      payReturen(){
+			      	let that=this
+			      	let orderParams = {}
+			      	orderParams.orderId = that.order.orderId
+			      	orderParams.memberId = that.userInfo.memberId
+			      	orderParams.paymoney = that.order.needPayMoney
+			      	orderParams.redpacketId = that.personGiftIdArry.join(",")
+			      	Api.giftUserPass(orderParams).then(function(res){
+			      		if(res.code == 0){
+			      			wx.showToast({ 
+			      				title: '领取成功',
+			      				icon:'success',
+			      				duration: 2000
+			      			})
+			      		wx.setStorageSync('needLoad',true)	
+   						setTimeout(function(){
+   							wx.switchTab({ url: '/pages/index/main'});
+   						},1000)
+    				 }
+    				}) 
+			      },
 		    // 选择收货地址
 		    toAddress(){
 		    	let that=this
@@ -98,20 +188,10 @@
 		mounted() {
 			let that=this
 			that.personGift =store.state.personGift
-			console.log("查看数据",that.personGift)
-			let personGiftId = [];
-			let moneySum = 0
 			for(var i in that.personGift){
-				personGiftId=personGiftId.push(that.personGift[i].repacketId)
-			
-				moneySum += that.personGift[i].conditionAmount
+				that.personGiftIdArry.push(that.personGift[i].repacketId)
 			}
-			that.moneySum = moneySum
-			that.personGiftIdArry=personGiftId
 			that.userInfo=store.state.userInfo
-			console.log('ssss',that.personGift)
-			// that.userInfo = store.state.userInfo
-
 		}
 	}
 </script>

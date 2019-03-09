@@ -136,13 +136,9 @@ import Utils from '@/utils/index'
 					ToastShow('失败','none')
 				})
 			},
-
-			/**
-			 * 立即购买平台卷
-			 */
-			
 		},
-		mounted(){
+		mounted() {
+
 			 /**
 			  * 加载平台卷
 			  */

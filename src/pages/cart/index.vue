@@ -168,7 +168,7 @@
         	}
     }
 	},
-	mounted(){
+	onShow(){
 		let that=this
 		that.userInfo=store.state.userInfo
 		that.getCartList()
