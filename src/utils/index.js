@@ -1,3 +1,5 @@
+import Api from "@/api/home";
+import store from '@/store/store'
 function formatNumber (n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
@@ -17,6 +19,22 @@ export function formatTime (date) {
 
   return `${t1} ${t2}`
 }
+export function accSub(arg1, arg2) { 
+    var r1, r2, m, n; 
+    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 } 
+    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 } 
+    m = Math.pow(10, Math.max(r1, r2)); 
+    n = (r1 >= r2) ? r1 : r2; 
+    return ((arg1 * m - arg2 * m) / m).toFixed(n); 
+  }
+  export function accAdd(arg1, arg2) { 
+    var r1, r2, m, n; 
+    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 } 
+    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 } 
+    m = Math.pow(10, Math.max(r1, r2)); 
+    n = (r1 >= r2) ? r1 : r2; 
+    return ((arg1 * m + arg2 * m) / m).toFixed(n); 
+  }
 
 export function ToastShow(title,ico) {
     wx.showToast({
@@ -25,10 +43,26 @@ export function ToastShow(title,ico) {
       duration: 2000
     })
 }
-
+export function updateUserInfo(){
+      let that=this
+      wx.login({
+        success: function (res) {
+          if (res.code) {
+            Api.getCode(res.code).then(function(memberRes){
+              if(memberRes.code!=500){
+                store.commit("storeUserInfo",memberRes.memberDo)         
+              }
+            })
+          }
+        }
+    }) 
+  }
 
 export default {
   formatNumber,
   formatTime,
-  ToastShow
+  ToastShow,
+  accSub,
+  accAdd,
+  updateUserInfo
 }

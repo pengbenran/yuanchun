@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/obligation-detail/main",
     "pages/index-gift/main",
+    "pages/obligation-detail/main",
     "pages/newPersonGift/main",
     "pages/cart/main",
     "pages/product-detail/main",

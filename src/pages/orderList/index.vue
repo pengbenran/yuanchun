@@ -8,41 +8,44 @@
 	import orderHeader from '@/components/orderHeader'
 	import orderList from '@/components/orderList'
 	import Api from '@/api/order'
+	import store from '@/store/store'
 	export default {
 		data(){
 			return{
 				icon:'/static/images/4da8d2dad7bf76e6d257b7fc6596207.png',
 				status:'待付款',
 				orderStatus:'',
-				orderList:{}
+				orderList:{},
+				userInfo:{}
 			}
 		},
 		mounted(){
 			let that=this
+			that.userInfo = store.state.userInfo
 			that.orderStatus=that.$root.$mp.query.orderStatus*1
 			switch(that.orderStatus){
 				case 0:
 					that.status="全部订单"
-					that.getOrderList(179)
+					that.getOrderList(that.userInfo.memberId)
 					break;
 				case 1:
 					that.status="待付款"
-					that.getOrderList(0,0,0,179)
+					that.getOrderList(0,0,0,that.userInfo.memberId)
 					that.icon='/static/images/4da8d2dad7bf76e6d257b7fc6596207.png'
 				break;
 				case 2:
 					that.status="待发货"
-					that.getOrderList('2,1',2,0,179)
+					that.getOrderList('2,1',2,0,that.userInfo.memberId)
 					that.icon='/static/images/175306c861be6c53fd04f847c2ddc8f.png'
 					break;
 				case 3:
 					that.status="已发货"
-					that.getOrderList(3,2,1,179)
+					that.getOrderList(3,2,1,that.userInfo.memberId)
 					that.icon='/static/images/d7ee5a9c92d9f7b09472934fca9af6e.png'
 					break;
 				default :
 					that.status="已完成"
-					that.getOrderList('3,4',2,2,179)
+					that.getOrderList('3,4',2,2,that.userInfo.memberId)
 					that.icon='/static/images/ff2debcc98fe4da5f34aa2727c020c6.png'
 			}		
 		},
@@ -66,7 +69,6 @@
 							res.orderList[i].count=res.orderList[i].itemsJson.length
 						}
 						that.orderList=res.orderList
-						console.log(that.orderList);
 					}
 				})
 			}

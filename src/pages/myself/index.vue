@@ -102,15 +102,6 @@ components: {},
   		}
 
   	},
-  		//客服电话
-			phoneNumber: function() {
-				let that = this;
-				Api.phoneNumber().then(function(res) {
-					if(res.code == 0) {
-						that.phone = res.mobile.mobile
-					}
-				})
-			},
    // 获取订单数据
    getallCount(){
    	   let that=this
@@ -127,7 +118,7 @@ components: {},
    	   })
    }
   },
-  mounted() {
+  onShow() {
     let that=this
     that.userInfo = store.state.userInfo
     that.getallCount()

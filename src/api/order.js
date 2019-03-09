@@ -6,7 +6,7 @@ export default {
 	},
 	// 微信支付
 	ConfirmPay(params){
-		return API.POST('/api/pay/prepay',{params:JSON.stringify(params)})
+		return API.POST('/api/pay/prepay',params)
 	},
 	// 支付成功后修改订单状态
 	PaypassOrder(params){
@@ -19,5 +19,17 @@ export default {
 	// 查询订单数量
 	getorderCount(params){
 		return API.GET('/api/member/allCount',params)
-	}
+	},
+	giftUser(params){
+		return API.POST('/api/order/giftUser',params)
+	},
+	// 领取新人礼修改状态
+	giftUserPass(params){
+		return API.POST('/api/order/giftUserPass',params)	
+	},
+	// 取消订单
+	cancelOrder(params){
+		return API.PUT('/api/order/cancel',params)
+	},
+
 }

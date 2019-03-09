@@ -20,9 +20,9 @@
 		</div>
 
 		<!--新人礼包-->
-		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
+		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index" v-if="item.state!=2">
 			<div class="img">
-				<img :src="item.voucherType" />
+				<img :src="item.voucherType"/>
 			</div>
 			<div class="cant">
 				<div class="cant-right">
@@ -78,7 +78,7 @@
 	export default {
 		data() {
 			return {
-				isTogo: true,
+				isTogo: false,
 				msg: [],
 				giftbag:[],
 				coupon: [],
@@ -128,11 +128,22 @@
 				let that=this
 				params.memberId=store.state.userInfo.memberId
 				Api.getNewPersonGift(params).then(function(res){
-					that.giftbag=res.giftPackage
+					if(res.code==0){
+						if(res.giftPackage.length==0){
+							that.isTogo = false
+						}
+						else{
+							that.isTogo = true
+						}
+						that.giftbag=res.giftPackage
+						
+					}
+					
+				that.isTogo = false
+					wx.setStorageSync('needLoad',false)
 					wx.stopPullDownRefresh()
 				})
 			},
-
 			// 获取用户信息
 			async getUserInfo(){
 				let that=this
@@ -192,10 +203,14 @@
 		},
 		onPullDownRefresh: function(){
 			let that=this
-			console.log(11111);
-			// wx.startPullDownRefresh()
 			that.getUserInfo()
 		},
+		onShow(){
+			let that=this
+			if(wx.getStorageSync('needLoad')){
+				that.getNewPersonGift()
+			}
+		}
 	}
 </script>
 
@@ -347,6 +362,7 @@
 					font-size: 11px;
 					color: #333333;
 					line-height:20px;
+					height: 40px;
 					.cant-tip{
 						width: 40px;
 						height: 15px;

@@ -77,6 +77,7 @@
 <script>
 	import store from '@/store/store'
 	import Api from '@/api/order'
+	import utils from '@/utils/index'
 	export default {
 		data() {
 			return {
@@ -182,44 +183,54 @@
    				wxPay(){
    					let that = this;
    					let params ={}
-   					params.orderid = that.order.orderId
    					params.sn = that.order.sn
    					// params.total_fee = that.order.needPayMoney * 100
-   					params.total_fee=1
+   					params.payAmount=1
 			        //请求支付
 			        params.openId=that.userInfo.openId
+			        params.shippingAmount=that.order.shippingAmount
 			        Api.ConfirmPay(params).then(function(PayRes){
-			        	wx.requestPayment({
-			                timeStamp: PayRes.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
-			                nonceStr: PayRes.nonceStr, //随机字符串，长度为32个字符以下,
-			                package: PayRes.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
-			                signType: PayRes.signType, //签名算法，暂支持 MD5,
-			                paySign: PayRes.paySign, //签名,具体签名方案参见小程序支付接口文档,
-			                success: res => {
-			                	that.payReturen()   
-			                	that.canbuy=true
-			                },
-			                fail: function (res) {
-	                        // fail   
-	                        wx.showToast({ 
-	                        	title: '支付失败',
-	                        	icon:'none',
-	                        	duration: 2000
-	                        })
-	                        that.canbuy=true
-	                    },
-	                });
+			        	if(PayRes.code==0){
+			        		wx.requestPayment({
+				                timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
+				                nonceStr: PayRes.Map.nonceStr, //随机字符串，长度为32个字符以下,
+				                package: PayRes.Map.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
+				                signType: PayRes.Map.signType, //签名算法，暂支持 MD5,
+				                paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
+				                success: res => {
+				                	that.payReturen()   
+				                	that.canbuy=true
+				                },
+				                fail: function (res) {
+			                        // fail   
+			                        wx.showToast({ 
+			                        	title: '支付失败',
+			                        	icon:'none',
+			                        	duration: 2000
+			                        })
+			                        that.canbuy=true
+	                   			 },
+	                		});
+			        	}
+			        	else{
+			        		wx.showToast({ 
+			        			title:'网络错误',
+			        			icon:'none',
+			        			duration: 2000
+			        		})
+			        	}
+			        
 			        })
 			    },
 			      payReturen(){
 			      	let that=this
 			      	let orderParams = {}
 			      	orderParams.orderId = that.order.orderId
-			      	orderParams.memberId = that.userInfo.memberId
 			      	orderParams.paymoney = that.order.needPayMoney
+			      	orderParams.shippingAmount=that.order.shippingAmount
 			      	Api.PaypassOrder(orderParams).then(function(res){
-			      		console.log("res",res);
 			      		if(res.code == 0){
+			      			utils.updateUserInfo()
 			      			wx.showToast({ 
 			      				title: '支付成功',
 			      				icon:'success',

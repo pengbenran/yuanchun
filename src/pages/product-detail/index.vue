@@ -79,8 +79,8 @@
 		},
 		mounted() {
 			let that=this
-			// that.goodsId =that.$root.$mp.query.goodsId
-			 that.goodsId=66
+			that.goodsId =that.$root.$mp.query.goodsId
+			 // that.goodsId=66
 			that.userInfo = store.state.userInfo
 			that.getGoodsInfo(that.goodsId)
 		}

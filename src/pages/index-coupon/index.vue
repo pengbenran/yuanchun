@@ -82,7 +82,7 @@ import {ToastShow} from '@/utils/index'
 			},
 		},
 
-		created() {
+		mounted() {
 			 /**
 			  * 加载平台卷
 			  */
