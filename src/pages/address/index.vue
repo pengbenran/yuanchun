@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
      <div class="addressList" v-else><img :src="noAddrImg" mode='aspectFit'/></div>
      <!--addressList end-->
      <div class="addresBtn" @click="toAddress"><text>添加新增收货地址</text></div>
