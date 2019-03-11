@@ -25,10 +25,13 @@ export default {
 	memberRedGet(params){
 		return API.POST('/api/redPacket/MemberRedGet',params)
 	},
-
 	//购买平台卷
 	ticketTopUp(params){
 		return API.POST('/api/member/topUp',params)
 	},
+	// 获取成为会员商品
+	getmemberUpGoods(){
+		return API.GET('/api/index/memberUpGoods')
+	}
 
 }

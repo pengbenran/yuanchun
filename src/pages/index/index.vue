@@ -66,13 +66,13 @@
 		<!--商品-->
 		<div class="recommend">
 			<div class="recommend-li">
-				<div class="img"><img :src="recommend.img" /></div>
+				<div class="img"><img :src="goodsDO.thumbnail" /></div>
 				<div class="pic">
 					<span>¥</span>
-					<span>{{recommend.pic}}</span>
+					<span>{{goodsDO.price}}</span>
 				</div>
-				<div class="tit">{{recommend.tit}}</div>
-				<div class="btn">立即购买</div>
+				<div class="tit">{{goodsDO.name}}</div>
+				<div class="btn" @click="jumpmemberUp">立即购买</div>
 				<!--详情-->
 				<div class="detail">
 					<div class="detail-shop">商品详情</div>
@@ -97,9 +97,7 @@
 				</div>
 			</div>
 		</div>
-
 		<loginModel ref="loginModel"></loginModel>
-
 	</div>
 </template>
 <script>
@@ -119,11 +117,7 @@
 				coupon: [],
 				banner: [],
 				userInfo: {},
-				recommend: {
-					img: "/static/images/product-list.png",
-					pic: 300,
-					tit: '元淳会员大礼包，价值300元的面膜，300元的平台卷，成为终身会员'
-				}
+				goodsDO: {}
 			}
 		},
 		components: {
@@ -137,7 +131,8 @@
 			that.hideTabBar()
 			that.getBanner()
 			that.getTicket()
-			that.getUserInfo()
+			that.getUserInfo(),
+			that.getmemberUpGoods()
 			wx.hideLoading();
 		},
 		methods: {
@@ -145,6 +140,32 @@
 			hideTabBar: function() {
 				wx.hideTabBar({
 					animation: false //是否需要过渡动画
+				})
+			},
+			// 获取会员升级商品
+			getmemberUpGoods(){
+				let that=this
+				Api.getmemberUpGoods().then(function(res){
+					that.goodsDO=res.goodsDO
+				})
+			},
+			jumpmemberUp(){
+				let that=this
+				let goodarr=[]
+				let goodlist={}
+				let Goods={}
+				goodlist.pic = 1
+				goodlist.num = 1;
+				goodlist.image = that.goodsDO.thumbnail
+				goodlist.name = that.goodsDO.name
+				goodlist.goodsId = that.goodsDO.goodsId
+				goodlist.price = that.goodsDO.price
+				goodlist.cart=0
+				goodarr[0] = goodlist;
+				Goods.googitem = goodarr
+				store.commit("stateGoodItem",JSON.stringify(Goods))
+				wx.navigateTo({
+					url: "../cart-order/main?cart=0&orderType=2"
 				})
 			},
 			// 获取banner图
@@ -197,7 +218,7 @@
 				chooseGift.push(that.giftbag[index])
 				store.commit("stateNewPersonGift", chooseGift)
 				wx.navigateTo({
-					url: '../newPersonGift/main'
+					url: '../newPersonGift/main?orderType=2'
 				})
 			},
 
