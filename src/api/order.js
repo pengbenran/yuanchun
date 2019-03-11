@@ -16,10 +16,7 @@ export default {
 	getOrderList(params){
 		return API.GET('/api/order/orderList',params)
 	},
-	// 查询订单数量
-	getorderCount(params){
-		return API.GET('/api/member/allCount',params)
-	},
+
 	giftUser(params){
 		return API.POST('/api/order/giftUser',params)
 	},

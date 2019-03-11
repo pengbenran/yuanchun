@@ -9,7 +9,7 @@
 					<p class="memberName">{{userInfo.name}}</p>
 					<p class="memberLv">
 						<span>{{userInfo.lvidname}}</span>
-						<span @click="jumpvipUp">点击升级vip</span>
+						<span @click="jumpvipUp">点击升级</span>
 					</p>
 				</div>
 			</div>
@@ -19,12 +19,12 @@
 			<div class="progress-left">
 				<div class="progress-cant">
 					<span class="iconfont">&#xe636;</span>
-					<span>VIP</span>
+					<span>{{userInfo.lvidname}}</span>
 				</div>
 				<div class="xian"></div>
 			</div> 
 			<div class="progress-right">
-				<div class="hint">VIP 晋升</div>
+				<div class="hint">当前进度{{count}}/{{condition}}</div>
 				<progress border-radius="3" :percent="progressNum" activeColor="#ffda83" />
 			</div>
 		</div>
@@ -85,12 +85,12 @@
 
 <script>
 	import store from '@/store/store'
-	import Api from '@/api/order'
+	import Api from '@/api/member'
 	export default {
 		data() {
 			return {
-				num:3,  //拉了多少人
-				nums:23, //总人数
+				count:'',  //拉了多少人
+				condition:'', //总人数
 				menuItem: [{ 
 						icon: '/static/images/icon3.png',
 						menuName: '我的合伙人',
@@ -122,7 +122,7 @@
 		computed:{
 		  progressNum(){
 		 	let that = this;
-		 	var progressNum = (that.num/that.nums)*100; 
+		 	var progressNum = (that.count/that.condition)*100; 
 		 	return progressNum  //把进度条return出去
 		  }
 		},
@@ -140,7 +140,16 @@
 					})
 				}
 			},
-			
+			selectSubordinate(){
+				let that=this
+				let params={}
+   				params.memberId=that.userInfo.memberId
+				Api.selectSubordinate(params).then(function(res){
+					that.count=res.count
+					that.condition=res.condition
+				})
+			},
+
    			// 获取订单数据
    			getallCount(){
    				let that=this
@@ -161,6 +170,7 @@
    			let that=this
    			that.userInfo = store.state.userInfo
    			that.getallCount()
+   			that.selectSubordinate()
    		},
    		onPullDownRefresh: function(){
    			let that=this

@@ -25,11 +25,14 @@
 					</div>
 					<div class="content">
 						<div class="fontHidden1">{{item.name}}</div>
-						<div class="describe fontHidden1">{{item.specvalue}}</div>
-						<div class="price">
+						<div class="describe fontHidden1" v-if="orderType==1">{{item.specvalue}}</div>
+						<div class="price" v-if="orderType==1">
 							<span>¥{{item.specs}}</span>
 						</div>
-						<div class="price1" :style="{display:isflex}">
+						<div class="price" v-else style="margin-top: 20px">
+							<span>¥{{item.price}}</span>
+						</div>
+						<div class="price1" :style="{display:isflex}" v-if="orderType==1">
 							<span>¥{{item.price}}+</span>
 							<div class="ptq">{{item.deduction}}平台券</div>
 						</div>
@@ -48,7 +51,7 @@
 				<span class="leave_input"><input type="text" placeholder="点击留言"/></span>
 			</div>
 			<!--支付方式-->
-			<div class="PayType">
+			<div class="PayType" v-if="orderType==1">
 				<div class="PayItemTitle">支付方式</div>
 				<div class="Item"  @click="selectPay(0)">
 					<div class="Items">￥{{goodsItem.specsTotal}}</div>
@@ -62,12 +65,18 @@
 				</div>
 			</div>
 		</div>
-		<div class="footerBnt">	
+		<div class="footerBnt" v-if="orderType==1">	
 			<div class="cartBtn" v-if="PayIndex==0">
 				合计：{{goodsItem.specsTotal}}元
 			</div>
 			<div class="cartBtn" v-else>
 				合计：{{goodsItem.priceTotal}}元+{{goodsItem.deductionTotal}}平台劵
+			</div>
+			<div class="btn" @click="toast">立即购买</div>
+		</div>
+		<div class="footerBnt" v-else>	
+			<div class="cartBtn">
+				合计：{{needPay}}元
 			</div>
 			<div class="btn" @click="toast">立即购买</div>
 		</div>
@@ -89,7 +98,9 @@
 				canbuy:true,
 				InputMask:'',
 				order:{},
-				userInfo:{}
+				userInfo:{},
+				orderType:'',
+				needPay:0
 			}
 		},
 
@@ -138,24 +149,33 @@
 		      		wx.showLoading({
 		      			title: '请稍等',
 		      		})
-		      		bean.gainedpoint = that.goodsItem.fenrunAmount
-		      		bean.consumepoint=that.goodsItem.twoAmount
-		      		bean.memberId = that.userInfo.memberId
-		      		// (是否使用平台券)
-		      		if(that.PayIndex==0){
-		      			bean.shippingAmount=0
-		      			bean.orderAmount = that.goodsItem.specsTotal
-		      			bean.needPayMoney=that.goodsItem.specsTotal
-		      			bean.paymentType=1
+		      		// 商城商品复购
+		      		if(that.orderType==1){
+		      			bean.gainedpoint = that.goodsItem.fenrunAmount
+		      			bean.consumepoint=that.goodsItem.twoAmount
+		      			// (是否使用平台券)
+		      			if(that.PayIndex==0){
+		      				bean.shippingAmount=0
+		      				bean.orderAmount = that.goodsItem.specsTotal
+		      				bean.needPayMoney=that.goodsItem.specsTotal
+		      				bean.paymentType=1
+		      			}
+		      			else{
+		      				bean.shippingAmount = that.goodsItem.deductionTotal
+		      				bean.needPayMoney=that.goodsItem.priceTotal
+		      				bean.orderAmount = that.goodsItem.priceTotal
+		      				bean.paymentType=2
+		      			}	
 		      		}
+		      		// 成为平台会员购买399商品
 		      		else{
-		      			bean.shippingAmount = that.goodsItem.deductionTotal
-		      			bean.needPayMoney=that.goodsItem.priceTotal
-		      			bean.orderAmount = that.goodsItem.priceTotal
-		      			bean.paymentType=2
-		      		}	
+		      			bean.needPayMoney=that.needPay
+		      			bean.orderAmount = that.needPay
+		      			bean.shippingAmount=0
+		      		}    		
+		      		bean.memberId = that.userInfo.memberId		
 		      		bean.clickd = that.InputMask 
-		      		bean.orderType = 1
+		      		bean.orderType = that.orderType
 		      		bean.shipAddr = that.addr.addr
 		      		bean.shipMobile = that.addr.mobile 
 		      		bean.shipName= that.addr.name	
@@ -190,6 +210,7 @@
 			        params.openId=that.userInfo.openId
 			        params.shippingAmount=that.order.shippingAmount
 			        Api.ConfirmPay(params).then(function(PayRes){
+			        	that.canbuy=true
 			        	if(PayRes.code==0){
 			        		wx.requestPayment({
 				                timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
@@ -199,7 +220,7 @@
 				                paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 				                success: res => {
 				                	that.payReturen()   
-				                	that.canbuy=true
+				                	
 				                },
 				                fail: function (res) {
 			                        // fail   
@@ -208,7 +229,7 @@
 			                        	icon:'none',
 			                        	duration: 2000
 			                        })
-			                        that.canbuy=true
+			                    
 	                   			 },
 	                		});
 			        	}
@@ -253,7 +274,10 @@
 			let that=this
 			that.goodsItem =JSON.parse(store.state.goodItem)
 			that.userInfo=store.state.userInfo
-			console.log('ssss',that.goodsItem)
+			that.orderType=that.$root.$mp.query.orderType
+			if(that.orderType==2){
+				that.needPay=that.goodsItem.googitem[0].price
+			}
 			// that.userInfo = store.state.userInfo
 
 		}

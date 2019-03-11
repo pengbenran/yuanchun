@@ -160,7 +160,7 @@
         	}else {
         		store.commit("stateGoodItem",gooditemString)
         		wx.navigateTo({
-        			url: "../cart-order/main?cart=1",
+        			url: "../cart-order/main?cart=1&orderType=1",
         			success: function (res) {
         				that.SelectBool=false;   
         			},

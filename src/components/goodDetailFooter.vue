@@ -135,7 +135,7 @@
 					Goods.deductionTotal=productsSelect.deduction*that.pic
 					store.commit("stateGoodItem",JSON.stringify(Goods))
 					wx.navigateTo({
-						url: "../cart-order/main?cart=0"
+						url: "../cart-order/main?cart=0&orderType=1"
 					})
 				}
 			},
