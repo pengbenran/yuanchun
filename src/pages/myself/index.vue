@@ -107,11 +107,6 @@
 						jumpUrl: '../kefu/main'
 					},
 					{
-						icon: '/static/images/mingpian.png',
-						menuName: '个人名片',
-						jumpUrl: '../businessCard/main'
-					},
-					{
 						icon: '/static/images/tequan.png',
 						menuName: '我的特权',
 						jumpUrl: '../privilege/main'
@@ -122,15 +117,16 @@
 				phoneNumber: ''
 			}
 		},
+
 		components: {},
-		
 		computed:{
 		  progressNum(){
 		 	let that = this;
 		 	var progressNum = (that.num/that.nums)*100; 
 		 	return progressNum  //把进度条return出去
 		  }
-		 },
+		},
+
 		methods: {
 			jump(url) {
 				let that = this
@@ -144,6 +140,7 @@
 					})
 				}
 			},
+			
    			// 获取订单数据
    			getallCount(){
    				let that=this
