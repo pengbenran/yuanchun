@@ -1,91 +1,71 @@
 <template>
-	<div class="partner">
-		<div class="header">
-			<div class="avator">
-				<img src="/static/images/product-list.png">
-			</div>
-			<div class="headerTitle">我的佣金</div>
-		</div>
-		<div class="partnerTitle">
-			<p>￥300.89</p>
-			<p>累计收益</p>
-		</div>
-		<div class="myTeam">
-			<div class="myTeamTitle">
-				收益明细
-			</div>
-			<div class="teamList" v-for="(item,index) in inComingList" :key="item" :index='index' @click="showMore(index)">
-				<div class="teamListIntro">
-					<div class="left">
-						<span class="teamAvator">
-							<img :src="item.face">
-						</span>
-						<span class="name">{{item.name}}</span>
-					</div>
-					<div class="right">
-						返佣:￥{{item.incoming}}
-					</div>
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<div class="header">
+				<div class="avator">
+					<img :src="userInfo.face">
 				</div>
-				<div class="teamListDetail" v-show="item.isSelct">
-					<p>购买商品:{{item.goodName}}</p>
-					<p>下单时间:{{item.orderTime}}</p>
-					<p class="money">
-						<span class="consum">消费金额:￥{{item.consum}}</span>
-						<span class="returnCommission">返佣金额:￥{{item.incoming}}</span>
-					</p>
-				</div>	
+				<div class="headerTitle">{{userInfo.uname}}</div>
 			</div>
-		</div>
+			<div class="partnerTitle">
+				我的佣金
+			</div>
+			<div class="myTeam">
+				<div class="myTeamTitle">
+					收益明细
+				</div>
+				<div class="teamList" v-for="(item,index) in inComingList" :key="item.payId" :index='index' @click="showMore(index)">
+					<div class="teamListIntro">
+						<div class="left">
+							<span class="teamAvator">
+								<img :src="item.wechat">
+							</span>
+							<span class="name">{{item.uname}}</span>
+						</div>
+						<div class="right">
+							返佣:￥{{item.total}}
+						</div>
+					</div>
+					<div class="teamListDetail" v-show="item.isSelct">
+						<p>订单编号:{{item.sn}}</p>
+						<p class="timer">
+							<span>下单时间:{{item.payTime}}</span>
+							<span>等级奖励:￥{{item.bonus}}</span>
+						</p>
+						<p class="money">
+							<span class="consum">消费金额:￥{{item.orderAmount}}</span>
+							<span class="returnCommission">商品返佣:￥{{item.payMoney}}</span>
+						</p>
+					</div>	
+				</div>
+			</div>
+		</blockquote>
 	</div>
 </template>
 
 <script>
+	import Api from "@/api/member"
+	import loading from '@/components/loading'
+	import store from '@/store/store'
+	import utils from '@/utils/index'
 	export default {
 		data() {
 			return {
-				inComingList:[
-					{
-						face:'/static/images/product-list.png',
-						name:'元淳',
-						incoming:'9.99',
-						goodName:'元淳面膜',
-						orderTime:'2018-09-12 12:30',
-						consum:'399',
-						isSelct:true
-					},
-					{
-						face:'/static/images/product-list.png',
-						name:'元淳',
-						incoming:'9.99',
-						goodName:'元淳面膜',
-						orderTime:'2018-09-12 12:30',
-						consum:'399',
-						isSelct:false
-					},
-					{
-						face:'/static/images/product-list.png',
-						name:'元淳',
-						incoming:'9.99',
-						goodName:'元淳面膜',
-						orderTime:'2018-09-12 12:30',
-						consum:'399',
-						isSelct:false
-					},
-					{
-						face:'/static/images/product-list.png',
-						name:'元淳',
-						incoming:'9.99',
-						goodName:'元淳面膜',
-						orderTime:'2018-09-12 12:30',
-						consum:'399',
-						isSelct:false
-					}
-				]
+				isLoading:false,
+				inComingList:[],
+				hasMore:true,
+				limit:7,
+				pages:0,
+				hasMore:true,
+				userInfo:{}
 			}
 		},
 
 		components: {
-
+			loading
 		},
 
 		methods: {
@@ -95,12 +75,57 @@
 					item.isSelct=false
 				})
 				that.inComingList[index].isSelct=true
-			}
+			},
+			// 获取分润列表
+			shareDetails(){
+			    let that=this
+				if(that.hasMore){
+					that.isLoading=false
+					let params={}
+					params.limit=that.limit
+					params.offset=that.pages*that.limit
+					// params.memberId=that.userInfo.memberId
+					params.memberId=191
+					Api.shareDetails(params).then(function(res){
+						that.isLoading=true
+						if(res.rows.length<that.limit){
+							that.hasMore=false
+						}
+						res.rows.map(item=>{
+							item.isSelct=false
+							item.total=utils.accAdd(item.payMoney,item.bonus)
+							item.joinTime=utils.formatTime(item.regtime)
+						})
+						that.inComingList=that.inComingList.concat(res.rows)
+					})
+				}else{
+					wx.showToast({
+						title:'没有更多数据了',
+						icon:"none",
+						duration:1500
+					})
+				}
+			},
 		},
-
-		created() {
-
-		}
+		onReachBottom:function(){
+			let that = this;
+			that.pages+=1
+			that.shareDetails()
+		},
+		mounted() {
+			let that=this
+			that.userInfo=store.state.userInfo
+			that.shareDetails()
+		},
+		onUnload(){
+			let that=this
+			that.isLoading=false
+			that.inComingList=[]
+			that.hasMore=true
+			that.limit=7
+			that.pages=0
+			that.hasMore=true
+		},
 	}
 </script>
 
@@ -133,17 +158,16 @@ img{
 }
 .partnerTitle{
 	text-align: center;
-	height: 60px;
-	color: #6E6E6E;
-	box-shadow: 0 0 1px #000;
-	width: 300px;
+	height: 45px;
+	line-height: 45px;
+	color: #7A252C;
+	box-shadow: 0 0 6px rgba(0,0,0,.4);
+	width: 242px;
 	margin: 0 auto;
 	position: relative;
 	top:-10px;
 	background: #fff;
-	font-size: 16px;
-	padding: 10px 0;
-	box-sizing:border-box;
+	border-radius: 5px;  
 }
 .myTeam{
 	.myTeamTitle{
@@ -190,6 +214,10 @@ img{
 			p{
 				height: 30px;
 				line-height:30px;
+			}
+			.timer{
+				display: flex;
+				justify-content: space-between;
 			}
 			.money{
 				display: flex;

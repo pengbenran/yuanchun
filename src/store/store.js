@@ -10,7 +10,8 @@ export default new Vuex.Store({
     codeUnionid:'',
     personGift:[],
     orderStatus:{},
-    goodsId:''
+    goodsId:'',
+    orderDetail:{}
   },
   mutations:{
    storeUserInfo(state,userInfo){
@@ -30,6 +31,9 @@ export default new Vuex.Store({
    },
    stateOrderStatus(state,orderStatus){
     state.orderStatus = orderStatus
+   },
+   stateOrderDetail(state,orderDetail){
+     state.orderDetail = orderDetail
    }
 }
 })

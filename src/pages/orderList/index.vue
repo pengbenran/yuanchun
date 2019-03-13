@@ -1,22 +1,29 @@
 <template>
-	<div class="order">
-		<orderHeader :icon="icon" :status="status"/>
-		<orderList :orderList="orderList"/>
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<orderHeader :icon="icon" :status="status"/>
+			<orderList :orderList="orderList"/>
+		</blockquote>
 	</div>
 </template>
 <script>
 	import orderHeader from '@/components/orderHeader'
 	import orderList from '@/components/orderList'
+	import loading from '@/components/loading'
 	import Api from '@/api/order'
 	import store from '@/store/store'
 	export default {
 		data(){
 			return{
-				icon:'/static/images/4da8d2dad7bf76e6d257b7fc6596207.png',
-				status:'待付款',
+				icon:'',
+				status:'',
 				orderStatus:'',
 				orderList:{},
-				userInfo:{}
+				userInfo:{},
+				isLoading:false,
 			}
 		},
 		mounted(){
@@ -26,7 +33,7 @@
 			switch(that.orderStatus){
 				case 0:
 					that.status="全部订单"
-					that.getOrderList(that.userInfo.memberId)
+					that.getAllOrder(that.userInfo.memberId)
 					break;
 				case 1:
 					that.status="待付款"
@@ -51,7 +58,8 @@
 		},
 		components:{
 			orderHeader,
-			orderList
+			orderList,
+			loading
 		},
 		methods:{
 			getOrderList(status,payStatus,shipStatus,memberId){
@@ -63,7 +71,22 @@
 				params.memberId=memberId
 				Api.getOrderList(params).then(function(res){
 					if(res.code==0){
-						// console.log(JSON.parse(res.orderList.itemsJson))
+						that.isLoading=true
+						for(var i in res.orderList){
+							res.orderList[i].itemsJson=JSON.parse(res.orderList[i].itemsJson)
+							res.orderList[i].count=res.orderList[i].itemsJson.length
+						}
+						that.orderList=res.orderList
+					}
+				})
+			},
+			getAllOrder(memberId){
+				let params={}
+				let that=this
+				params.memberId=memberId
+				Api.getOrderList(params).then(function(res){
+					if(res.code==0){
+						that.isLoading=true
 						for(var i in res.orderList){
 							res.orderList[i].itemsJson=JSON.parse(res.orderList[i].itemsJson)
 							res.orderList[i].count=res.orderList[i].itemsJson.length
@@ -72,7 +95,16 @@
 					}
 				})
 			}
-		}
+		},
+		onUnload(){
+			let that=this
+			that.icon=''
+			that.status=''
+			that.orderStatus=''
+			that.orderList={}
+			that.userInfo={}
+			that.isLoading=false
+		},
 	}
 </script>
 <style scoped lang="less">

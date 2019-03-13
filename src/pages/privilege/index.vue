@@ -24,7 +24,7 @@
 				<img src="/static/images/menu1.png">
 				佣金
 			</div>
-			<div class="menuList">
+			<div class="menuList" @click="jump('../orderList/main?orderStatus=0')">
 				<img src="/static/images/menu2.png">
 				订单
 			</div>

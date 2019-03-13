@@ -2,11 +2,7 @@
 	<div class="obligation">
 		<!---->
 		<div class="await">
-			<div class="await-left">
-				<span>等待买家付款</span>
-				<span>剩23小时59分钟自动关闭</span>
-			</div>
-			<div class="await-right"><img src="/static/images/4da8d2dad7bf76e6d257b7fc6596207.png" /></div>
+			
 		</div>
 		<!--收货人-->
 		<div class="address">
@@ -14,72 +10,60 @@
 				<p class="img"><img src="/static/images/ress.png" /></p>
 			</div>
 			<div class="address-cant">
-				<p class="detail">
-					<span>收货人：{{openid.name}}</span>
-					
-					<span>{{openid.ress}}</span>
+				<p>
+					收货人：{{orderDetail.shipName}}
+				</p>
+				<p class="fontHidden1">
+					收货地址:{{orderDetail.shipAddr}}
 				</p>
 			</div>
 			<div class="address-right">
-				{{openid.phone}}
+				{{orderDetail.shipMobile}}
 			</div>
 		</div>
 		<!--list-->
-		<div class="list">
+		<div class="list" v-for="(item,index) in orderDetail.itemsJson" :index="index">
 			<div class="list-left">
-				<p class="img"><img :src="list.img" /></p>
+				<p class="img"><img :src="item.image" /></p>
 			</div>
-			<div class="list-cant">		
-	           {{list.ress}}
+			<div class="list-cant fontHidden1">		
+	           {{item.name}}
 			</div>
 			<div class="list-right">
-				<span>¥{{list.pic}}</span>
-				<span>x{{list.num}}</span>				
+				<span>¥{{item.price}}</span>
+				<span>x{{item.pic}}</span>				
 			</div>
 		</div>
 		<!--价格-->
 		<div class="pic">
 			<div class="pic-wp1">
 				<span>商品总价</span>
-				<span>¥89</span>
+				<span>¥{{orderDetail.orderAmount}}</span>
 			</div>
 			<div class="pic-wp2">
 				<span>运费（快递）</span>
-				<span>¥13</span>
-			</div>
-			<div class="pic-wp3">
-				<span>订单总价</span>
-				<span>¥102</span>
+				<span v-if="orderDetail.orderType==3">¥13</span>
+				<span v-else>¥0</span>
 			</div>
 			<div class="pic-wp4">
-				<span>需付款</span>
-				<span>¥102</span>
+				<span>订单总价</span>
+				<span>¥{{orderDetail.orderAmount}}</span>
 			</div>
 		</div>
 		<!--提交付款-->
-		<div class="submit">
+		<!-- <div class="submit">
 			<span>取消订单</span>
 			<span>提交付款</span>
-		</div>
+		</div> -->
 	</div>
 </template>
 
 <script>
+	import store from "@/store/store"
 	export default {
 		data() {
 			return {
-				openid: {
-					name: "陈狗",
-					ress: '江西省南昌市西湖区洪城数码广场A座1101江西省南昌市西湖区洪城数码广',
-					phone: '86-19979206116'					
-				},
-				list: {
-					name: "陈狗",
-					ress: '江西省南昌市西湖区洪城数码广场A座1101江西省南昌市西湖区洪城数码广江',
-					img:'/static/images/indexlist.png',
-					num:1,
-					pic:89,
-				}
+				orderDetail:{}
 			}
 		},
 
@@ -90,9 +74,10 @@
 		methods: {
 
 		},
-
-		created() {
-
+		mounted() {
+			let that=this
+			that.orderDetail=store.state.orderDetail
+			
 		}
 	}
 </script>
@@ -152,20 +137,14 @@
 				}
 			}
 			.address-cant {
-				.detail {
-					span {
-						display: block;
-						&:nth-child(1) {
-							font-size: 12px;
-							color: #000000;
-						}
-						&:nth-child(2) {
-							font-size: 11px;
-							color: #333333;
-							margin-top:4px;
-							max-width: 210px;
-						}
-					}
+				flex-grow: 1;
+				padding: 5px;
+				box-sizing: border-box;
+				font-size: 12px;
+				p{
+					height: 30px;
+					width:250px;
+					line-height:30px;
 				}
 			}
 			.address-right {
@@ -236,6 +215,7 @@
 				}
 			}
 			.list-cant {
+				flex-grow: 1;
 				max-width: 208px;
 				font-size: 11px;
 				color: #333333;

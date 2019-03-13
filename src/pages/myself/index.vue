@@ -1,91 +1,98 @@
 <template>
-	<div class="myself">
-		<div class="header">
-			<div class="userInfo">
-				<div class="avator">
-					<img :src="userInfo.face">
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<div class="header">
+				<div class="userInfo">
+					<div class="avator">
+						<img :src="userInfo.face">
+					</div>
+					<div class="userName">
+						<p class="memberName">{{userInfo.name}}</p>
+						<p class="memberLv">
+							<span>{{userInfo.lvidname}}</span>
+							<span @click="jumpvipUp">点击升级</span>
+						</p>
+					</div>
 				</div>
-				<div class="userName">
-					<p class="memberName">{{userInfo.name}}</p>
-					<p class="memberLv">
+			</div>
+			<!--进度条-->
+			<div class="progress" v-if="userInfo.defaultLv!=1">
+				<div class="progress-left">
+					<div class="progress-cant">
+						<span class="iconfont">&#xe636;</span>
 						<span>{{userInfo.lvidname}}</span>
-						<span @click="jumpvipUp">点击升级</span>
-					</p>
+					</div>
+					<div class="xian"></div>
+				</div> 
+				<div class="progress-right">
+					<div class="hint">当前进度{{count}}/{{condition}}</div>
+					<progress border-radius="3" :percent="progressNum" activeColor="#ffda83" />
 				</div>
 			</div>
-		</div>
-		<!--进度条-->
-		<div class="progress">
-			<div class="progress-left">
-				<div class="progress-cant">
-					<span class="iconfont">&#xe636;</span>
-					<span>{{userInfo.lvidname}}</span>
+			<div class="menu">
+				<div class="list">
+					<p class="num">{{userInfo.point}}</p>
+					<p class="name">平台券</p>
 				</div>
-				<div class="xian"></div>
-			</div> 
-			<div class="progress-right">
-				<div class="hint">当前进度{{count}}/{{condition}}</div>
-				<progress border-radius="3" :percent="progressNum" activeColor="#ffda83" />
-			</div>
-		</div>
-		<div class="menu">
-			<div class="list">
-				<p class="num">{{userInfo.point}}</p>
-				<p class="name">平台券</p>
-			</div>
-			<div class="list">
-				<p class="num">{{userInfo.advance}}</p>
-				<p class="name">余额</p>
-			</div>
-			<div class="list">
-				<p class="num">{{orderStatus.favorite}}</p>
-				<p class="name">收藏</p>
-			</div>
-		</div>
-		<div class="order">
-			<div class="orderTitle">
-				<div class="allOrer-left">我的订单</div>
-				<div class="allOrer-right">
-					<span>全部订单</span>
-					<span class="iconfont">&#xe72b;</span>
+				<div class="list" @click="jump('../privilege/main')">
+					<p class="num">{{userInfo.advance}}</p>
+					<p class="name">余额</p>
+				</div>
+				<div class="list">
+					<p class="num">{{orderStatus.favorite}}</p>
+					<p class="name">收藏</p>
 				</div>
 			</div>
-			<div class="orderItem">
-				<div class="orderList" @click="jump('../orderList/main?orderStatus=1')">
-					<p>{{orderStatus.payOrder}}</p>
-					<p>待付款</p>
+			<div class="order">
+				<div class="orderTitle">
+					<div class="allOrer-left">我的订单</div>
+					<div class="allOrer-right">
+						<span>全部订单</span>
+						<span class="iconfont">&#xe72b;</span>
+					</div>
 				</div>
-				<div class="orderList" @click="jump('../orderList/main?orderStatus=2')">
-					<p>{{orderStatus.shipOrder}}</p>
-					<p>待发货</p>
-				</div>
-				<div class="orderList" @click="jump('../orderList/main?orderStatus=3')">
-					<p>{{orderStatus.takeOrder}}</p>
-					<p>待收货</p>
-				</div>
-				<div class="orderList" @click="jump('../orderList/main?orderStatus=4')">
-					<p>{{orderStatus.completeOrder}}</p>
-					<p>已完成</p>
+				<div class="orderItem">
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=1')">
+						<p>{{orderStatus.payOrder}}</p>
+						<p>待付款</p>
+					</div>
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=2')">
+						<p>{{orderStatus.shipOrder}}</p>
+						<p>待发货</p>
+					</div>
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=3')">
+						<p>{{orderStatus.takeOrder}}</p>
+						<p>待收货</p>
+					</div>
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=4')">
+						<p>{{orderStatus.completeOrder}}</p>
+						<p>已完成</p>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="menuContain">
-			<div class="menuTitle">
-				我的服务
-			</div>
-			<div class="menuItem" v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
-				<div class="icon">
-					<img :src="item.icon">
+			<div class="menuContain">
+				<div class="menuTitle">
+					我的服务
 				</div>
-				<div class="menuname">{{item.menuName}}</div>
+				<div class="menuItem" v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
+					<div class="icon">
+						<img :src="item.icon">
+					</div>
+					<div class="menuname">{{item.menuName}}</div>
+				</div>
 			</div>
-		</div>
+		</blockquote>
 	</div>
 </template>
 
 <script>
 	import store from '@/store/store'
 	import Api from '@/api/member'
+	import loading from '@/components/loading'
+	import utils from '@/utils/index'
 	export default {
 		data() {
 			return {
@@ -93,7 +100,7 @@
 				condition:'', //总人数
 				menuItem: [{ 
 						icon: '/static/images/icon3.png',
-						menuName: '我的合伙人',
+						menuName: '我的团队',
 						jumpUrl: '../Partner/main'
 					},
 					{
@@ -112,13 +119,16 @@
 						jumpUrl: '../privilege/main'
 					}
 				],
+				isClickUp:true,
 				userInfo: {},
 				orderStatus: {},
-				phoneNumber: ''
+				phoneNumber: '',
+				isLoading:false
 			}
 		},
-
-		components: {},
+		components: {
+			loading
+		},
 		computed:{
 		  progressNum(){
 		 	let that = this;
@@ -131,14 +141,95 @@
 			jump(url) {
 				let that = this
 				if(url == "../kefu/main") {
-					wx.makePhoneCall({
-						phoneNumber: that.phoneNumber,
-					})
+					that.makePhone()
 				} else {
 					wx.navigateTo({
 						url: url,
 					})
 				}
+			},
+			// 拨打电话
+			makePhone(){
+				let that=this
+				wx.makePhoneCall({
+					phoneNumber: that.phoneNumber,
+				})
+			},
+			jumpvipUp(){
+				let that=this
+				if(that.count>=that.condition){
+					let params={}
+					params.memberId=that.userInfo.memberId
+					if(that.isClickUp){
+						switch(that.userInfo.defaultLv){
+							case 1:
+							wx.showModal({
+								title: '提示',
+								content: '是否立即成为合伙人',
+								confirmText:'是的',
+								success(res) {
+									if (res.confirm) {
+										wx.switchTab({url: '../index/main'});
+									} else if (res.cancel) {
+
+									}
+								}
+							})
+							break
+							case 2:
+							that.upshift(params)
+							break;
+							case 3:
+							that.upHighest(params)
+							break;
+							default:
+							that.makePhone()
+						}
+					}		
+				}
+				else{
+					wx.showToast({
+						title:'条件不满足',
+						image:"/static/images/error.png",
+						duration:1500
+					})
+				}	
+			},
+			// 升级高级合伙人
+			upshift(params){
+				let that=this
+				that.isClickUp=false
+				Api.upshift(params).then(function(res){	
+					if(res.code==0){
+						store.commit("storeUserInfo",res.memberDO)
+						that.userInfo = store.state.userInfo
+						wx.showToast({
+							title:'升级成功',
+							icon:'success',
+							duration:1500
+						})
+						that.isClickUp=true
+						that.selectSubordinate()				
+					}
+				})
+			},
+			// 升级服务商
+			upHighest(params){
+				let that=this
+				that.isClickUp=false
+				Api.upHighest(params).then(function(res){			
+					if(res.code==0){
+						store.commit("storeUserInfo",res.memberDO)
+						that.userInfo = store.state.userInfo
+						wx.showToast({
+							title:'升级成功',
+							icon:'success',
+							duration:1500
+						})
+						that.isClickUp=true
+						that.selectSubordinate()
+					}
+				})
 			},
 			selectSubordinate(){
 				let that=this
@@ -162,6 +253,7 @@
    					that.orderStatus.takeOrder=res.takeOrder
    					that.orderStatus.completeOrder=res.completeOrder
    					that.phoneNumber=res.mobile.mobile
+   					that.isLoading=true
    					wx.stopPullDownRefresh()
    				})
    			}
@@ -170,11 +262,13 @@
    			let that=this
    			that.userInfo = store.state.userInfo
    			that.getallCount()
-   			that.selectSubordinate()
+   			that.selectSubordinate()			
    		},
    		onPullDownRefresh: function(){
    			let that=this
    			that.getallCount()
+   			that.selectSubordinate()
+   			utils.updateUserInfo()
    		},
    	}
 </script>
@@ -200,7 +294,8 @@
 				justify-content: space-around;
 				box-sizing: border-box;
 				align-items: center;
-				width: 65px;
+				padding:0  5px;
+				box-sizing: border-box;
 				height: 18px;
 				border-radius: 9px;
 				span {

@@ -1,22 +1,24 @@
 <template>
 	<div class="total">
-	<div class="sign1"><img src="/static/images/sign1.png"/>
-	  <div class="Num_div">
-	     <span>{{userInfo.mp}}</span>
-		 <div>获得面膜</div>
-	  </div>
-	</div>
-	<div class="businessCard">
-		<Calendar
-		:months="months"
-		:value="time"
-		@next="next"
-		@prev="prev"
-		:events="events"
-		lunar
-		@select="select" ref="calendar" @selectMonth="selectMonth" @selectYear="selectYear"/>
-		<button @click="get_Time">立即签到</button>   
-	</div>
+		<div class="sign1"><img src="/static/images/sign1.png"/>
+			<div class="Num_div">
+				<span>{{userInfo.mp}}</span>
+				<div>签到次数</div>
+			</div>
+		</div>
+		<div class="businessCard">
+			<Calendar
+			:months="months"
+			:value="time"
+			@next="next"
+			@prev="prev"
+			:events="events"
+			lunar
+			@select="select" ref="calendar" @selectMonth="selectMonth" @selectYear="selectYear"/>	
+		</div>
+		<div class="btn" @click="get_Time">立即签到</div> 
+		<div class="btn" @click="get_Time">立即兑换</div> 
+		<div class="tip">兑换规格:每签到5次即可免费兑换一盒面膜</div>  
 	</div>
 </template>
 <script>
@@ -105,9 +107,6 @@
  		border-radius:20px!important;
  	}
  .total{
- 	position: absolute;
- 	width: 100%;
- 	height: 100%;
  	background-color: #6d1b22;
  	.sign1{
 		 position: relative;
@@ -129,14 +128,11 @@
  
  	.businessCard{
 		width: 90%;
-		position: absolute;
-		top: 158px;
-		left: 50%;
-		margin-left:-45%;
-		
+		overflow: hidden;
+		margin: 0 auto;		
 	}
  }
-	button{
+	.btn{
 		width: 243px;
 		height: 40px;
 		background-color: #83212c;
@@ -145,6 +141,13 @@
 		border-radius: 20px;
 		color: #FFFFFF;
 		font-size: 17px;
+		margin:10px auto;
 	}
-	
+	.tip{
+		color: #fff;
+		text-align:center;
+		font-size: 14px;
+		height: 30px;
+		line-height: 30px;
+	}
 </style>
