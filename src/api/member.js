@@ -6,5 +6,15 @@
 		},
 		selectSubordinate(params){
 			return API.GET('/api/place/selectSubordinate',params)
-		}
+		},
+
+		//用户提现
+		userBalancePay(params){
+			return API.POST('/api/distribe/submitDistribeApply',params)
+		},
+
+		//用户提现记录
+		userPayList(params){
+			return API.GET('/api/distribe/accountManagement',params)
+		},	
 	}

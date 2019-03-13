@@ -73,12 +73,15 @@
 			<div class="menuTitle">
 				我的服务
 			</div>
-			<div class="menuItem" v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
-				<div class="icon">
+			<blockquote  v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
+			<div class="menuItem">
+				<div class="icon" >
 					<img :src="item.icon">
 				</div>
 				<div class="menuname">{{item.menuName}}</div>
 			</div>
+			</blockquote>
+
 		</div>
 	</div>
 </template>
@@ -86,6 +89,8 @@
 <script>
 	import store from '@/store/store'
 	import Api from '@/api/member'
+	import Lib from '@/utils/index'
+
 	export default {
 		data() {
 			return {
@@ -94,22 +99,26 @@
 				menuItem: [{ 
 						icon: '/static/images/icon3.png',
 						menuName: '我的合伙人',
-						jumpUrl: '../Partner/main'
+						jumpUrl: '../Partner/main',
+					    flag:true
 					},
 					{
 						icon: '/static/images/icon4.png',
 						menuName: '地址管理',
-						jumpUrl: '../address/main'
+						jumpUrl: '../address/main',
+						flag:true
 					},
 					{
 						icon: '/static/images/kefu.png',
 						menuName: '联系客服',
-						jumpUrl: '../kefu/main'
+						jumpUrl: '../kefu/main',
+						flag:true
 					},
 					{
 						icon: '/static/images/tequan.png',
 						menuName: '我的特权',
-						jumpUrl: '../privilege/main'
+						jumpUrl: '../privilege/main',
+						flag:true
 					}
 				],
 				userInfo: {},
@@ -130,10 +139,13 @@
 		methods: {
 			jump(url) {
 				let that = this
+				console.log(url,that.userInfo.defaultLv,"信息")
 				if(url == "../kefu/main") {
 					wx.makePhoneCall({
 						phoneNumber: that.phoneNumber,
 					})
+				}else if(url == "../privilege/main" && that.userInfo.defaultLv == 1){
+					Lib.ToastShow('抱歉你还没有成为合伙人','none')
 				} else {
 					wx.navigateTo({
 						url: url,
@@ -364,18 +376,18 @@
 			width: 100%;
 			height: 40px;
 			line-height: 40px;
-			font-size: 16px;
+			font-size: 20px;
 			border-top: 1px solid #EDEDED;
 			.icon {
-				width: 18px;
-				height: 18px;
+				width: 20px;
+				height: 20px;
 				overflow: hidden;
 				margin-top: 9px;
 			}
 			.menuname {
 				padding-left: 15px;
 				flex-grow: 1;
-				font-size: 11px;
+				font-size: 14px;
 				color: #000000;
 			}
 		}

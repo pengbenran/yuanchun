@@ -11,12 +11,12 @@
 			<p>余额(元)</p>
 		</div>
 		<div class="withdrawal">
-			<div>
+			<div class="withdrawal_case">
 				<span class="inpt">
-					<input type="number" placeholder="输入提现金额">
+					<input type="number" v-model="inputVal" placeholder="输入提现金额">
 				</span>
 				<span class="all">全部提现</span>
-				<span class="btn">提现</span>
+				<span class="btn" @click="balancePay">提现</span>
 			</div>
 		</div>
 		<div class="menu">
@@ -45,10 +45,14 @@
 </template>
 <script>
 	import store from '@/store/store'
+	import Api from '@/api/member'
+	import Lib from '@/utils/index'
+
 	export default {
 		data(){
 			return{
-				userInfo:{}
+				userInfo:{},
+				inputVal:''
 			}
 		},
 		mounted(){
@@ -60,6 +64,28 @@
 				wx.navigateTo({
 					url:url,
 				})
+			},
+
+			balancePay(){
+				let that = this;
+				if(that.inputVal && that.inputVal != 0){
+					let data = {}
+					data.memberId = that.userInfo.memberId
+					data.amount = that.inputVal
+					Api.userBalancePay(data).then(res => {
+						if(res.code == 0){
+							Lib.updateUserInfo()
+							that.userInfo.advance -= that.inputVal
+							Lib.ToastShow('提现成功','success')
+						}else{
+                            Lib.ToastShow('提现失败','none')
+						}
+					}).catch(err => {
+						Lib.ToastShow('提现失败','none')
+					})
+				}else{
+						Lib.ToastShow('输入不能为空或为0','none')			
+				}
 			}
 		}
 	}
@@ -109,6 +135,10 @@ img{
 	padding:15px;
 	box-sizing: border-box;
 	background: #fff;
+	.withdrawal_case{
+		border-radius: 5px;
+		box-shadow: 0 3px 10px rgba(0, 0, 0, 0.322);
+	}
 	div{
 		background:linear-gradient(to right,#CC3844,#AC2A34);
 		padding: 15px 0 15px 10px;

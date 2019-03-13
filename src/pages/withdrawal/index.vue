@@ -1,17 +1,21 @@
 <template>
 	<div class="withdraw">
-		<div v-for="(item,index) in withdeawList" class="flowbill-list-li" >
+		<div v-for="(item,index) in financeCashDOList" class="flowbill-list-li" >
 			<div class="top">
 				<div class="name">
-					<span>提现- {{item.stauname}}</span>
-					<span>{{item.time}}</span>
+					<span>{{item.uname}}提现- {{item.amount}}</span>
+					<span>{{item.auditTime}}</span>
 				</div>
-				<div class="num">-{{item.withdraw}}</div>
+				<div class="num">￥{{item.amount}}</div>
 			</div>
 		</div>
+		<div v-if="hasMore" class="tip">~~我也是有底线的~~</div>
 	</div>
 </template>
 <script type="text/javascript">
+import Api from '@/api/member'
+import store from '@/store/store'
+import {ToastShow} from '@/utils/index'
 	export default {
 		data(){
 			return{
@@ -19,18 +23,62 @@
 					{withdraw:22,time:'2018-09-2 18:30',stauname:"成功"},
 					{withdraw:22,time:'2018-09-2 18:30',stauname:"成功"},
 					{withdraw:22,time:'2018-09-2 18:30',stauname:"成功"}
-				]
+				],
+				Pagination:{
+					offset:0,
+					limit:20
+				},
+				userInfo:{},
+				financeCashDOList:[],
+				hasMore:false
 			}
 		},
 		mounted(){
-
+			let that = this;
+			that.userInfo = store.state.userInfo
+			that.GetPayList();
 		},
 		methods:{
-
-		}
+            GetPayList(){
+				let that = this;
+				let data = Object.assign({},that.Pagination,{memberId:that.userInfo.memberId})
+				Api.userPayList(data).then(res => {
+					if(res.code == 0){
+						if(res.financeCashDOList.length<that.Pagination.limit){
+					    	that.hasMore=true
+					     }
+						 that.financeCashDOList =that.financeCashDOList.concat(res.financeCashDOList);
+						 
+					}else{
+                       ToastShow('失败','none')
+					}
+				}).catch(err => {
+					ToastShow('失败','none')
+				})
+			}
+		},
+		onUnload(){
+			this.Pagination={
+				offset:0,
+				limit:20
+			};
+			this.userInfo={};
+			this.financeCashDOList=[];
+			this.hasMore=false;
+		},
+		onReachBottom:function(){
+			let that = this;
+			that.Pagination.offset+=1
+			that.getKindGood()
+		},
 	}
 </script>
 <style scoped lang="less">
+.tip{
+	text-align: center;
+	font-size: 16px;
+	color: #666;
+}
 .flowbill-list-li{
 	.top{
 		display: flex;
