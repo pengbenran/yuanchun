@@ -1,34 +1,39 @@
 <template>
-	<div>
-		<!--轮播-->
-		<swiper indicator-dots>
-			<div v-for="(item,index) in banner">
-				<swiper-item>
-					<div class='box'>
-						<img :src='item.original' mode="widthFix"></img>
-					</div>
-				</swiper-item>
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<!--轮播-->
+			<swiper indicator-dots>
+				<div v-for="(item,index) in banner">
+					<swiper-item>
+						<div class='box'>
+							<img :src='item.original' mode="widthFix"></img>
+						</div>
+					</swiper-item>
+				</div>
+			</swiper>
+			<!--产品详情-->
+			<div class="detail">
+				<div class="pic">
+				   ¥ {{detail.cost}}
+				</div>
+				<div class="price1">
+					<span>¥{{detail.price}}+</span>
+					<div class="ptq">{{detail.unit}}平台卷</div>
+				</div>
+				<div class="tit fontHidden">
+					{{detail.name}}
+				</div>
+				<div class="kdf">
+					<span>包邮</span>
+					<span>月销{{detail.haveSpec}}笔</span>
+					<span>{{detail.brief}}</span>
+				</div>
 			</div>
-		</swiper>
-		<!--产品详情-->
-		<div class="detail">
-			<div class="pic">
-			   ¥ {{detail.cost}}
-			</div>
-			<div class="price1">
-				<span>¥{{detail.price}}+</span>
-				<div class="ptq">{{detail.unit}}平台卷</div>
-			</div>
-			<div class="tit fontHidden">
-				{{detail.name}}
-			</div>
-			<div class="kdf">
-				<span>包邮</span>
-				<span>月销{{detail.haveSpec}}笔</span>
-				<span>{{detail.brief}}</span>
-			</div>
-		</div>
-		<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection'/>
+			<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection'/>
+		</blockquote>
 	</div>
 </template>
 
@@ -36,6 +41,7 @@
 	import Api from '@/api/goods'
 	import store from '@/store/store'
 	import goodsDetailFooter from '@/components/goodDetailFooter'
+	import loading from '@/components/loading'
 	export default {
 		data() {
 			return {
@@ -43,10 +49,14 @@
 				isCollection:false,
 				detail: {},
 				banner: [],
-				userInfo:{}
+				userInfo:{},
+				isLoading:false,
 			}
 		},
-		components: {goodsDetailFooter},
+		components: {
+			goodsDetailFooter,
+			loading
+		},
 		methods: {
           btnTab:function(index){
           	let that = this
@@ -58,6 +68,7 @@
           	params.goodsId=goodsId
           	params.memberId=that.userInfo.memberId
           	Api.getGoodsInfo(params).then(function(res){
+          		that.isLoading=true
           		if(res.code==0){
           			res.products=res.products.map(item=>{
           				item.selected=false
@@ -73,17 +84,24 @@
           			res.Goods.products=res.products
           			that.detail=res.Goods
           		}
-          		console.log(res);
           	})
           }
 		},
 		mounted() {
 			let that=this
 			that.goodsId =that.$root.$mp.query.goodsId
-			 // that.goodsId=66
 			that.userInfo = store.state.userInfo
 			that.getGoodsInfo(that.goodsId)
-		}
+		},
+		onUnload(){
+			let that=this
+			that.curr=0
+			that.isCollection=false
+			that.detail={}
+			that.banner=[]
+			that.userInfo={}
+			that.isLoading=false
+		},
 	}
 </script>
 

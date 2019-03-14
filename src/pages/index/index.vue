@@ -1,117 +1,122 @@
 <template>
-	<div style="padding-bottom: 40px;">
-		<!--轮播图-->
-		<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22">
-			<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index">
-				<img :src="item.imageUrl" mode='widthFix' />
-			</swiper-item>
-		</swiper>
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<div style="padding-bottom: 40px;">
+				<!--轮播图-->
+				<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22">
+					<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index">
+						<img :src="item.imageUrl" mode='widthFix' />
+					</swiper-item>
+				</swiper>
 
-		<!--购物券-->
-		<div class="coupon">
-			<div class="coupon-list">
-				<div class="coupon-list-li" v-for="(item,index) in coupon" :key='item.id' :index="index" @click="jumpCoupon">
-					<!-- <img src="/static/images/indexcoupon.png" /> -->
-					<div class="rmb"> <span>¥ </span>{{item.money}}</div>
-					<div class="ticket">购{{item.giveMoney}}平台券</div>
-					<div class="go">立即抢购</div>
-				</div>
-			</div>
-		</div>
-
-		<!--新人礼包-->
-		<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index" v-if="item.state!=2">
-			<div class="img">
-				<img :src="item.voucherType"/>
-			</div>
-			<div class="cant">
-				<div class="cant-right">
-					<p class="fontHidden"><span class="cant-tip">新人礼</span>{{item.repacketName}}</p>
-					<div class="btn" @click="jumpNewPersonGift(index)">免费领取</div>
-				</div>
-			</div>
-		</div>
-		<div class="xian"></div>
-
-		<!--签到-->
-		<div class="sign" @click="jump">
-			<div class="sign-wp">
-				<div class="sign-left">
-					<span><img src="/static/images/vipicon.png"/></span>
-					<span>签到</span>
-				</div>
-				<div class="sign-right">
-					<span>签到领取面膜</span>
-					<span>&gt;</span>
-				</div>
-			</div>
-		</div>
-		<!--弹窗-->
-		<div class="popup" catchtouchmove="true" v-if="isTogo">
-			<div class="popup-wp">
-				<div class="hidd" @click="hidd"></div>
-				<div class="img">
-					<img src="/static/images/indexpacket.png" />
-				</div>
-
-				<div class="tit">
-					<span>恭喜您获得新人礼包</span>
-				</div>
-
-				<div class="more">
-					<img @click="more" src="/static/images/indexmore.png" />
-				</div>
-			</div>
-		</div>
-		<!--商品-->
-		<div class="recommend">
-			<div class="recommend-li">
-				<div class="img"><img :src="goodsDO.thumbnail" /></div>
-				<div class="pic">
-					<span>¥</span>
-					<span>{{goodsDO.price}}</span>
-				</div>
-				<div class="tit">{{goodsDO.name}}</div>
-				<div class="btn" @click="jumpmemberUp">立即购买</div>
-				<!--详情-->
-				<div class="detail">
-					<div class="detail-shop">商品详情</div>
-					<div class="more" @click="more">
-						<span>查看详情</span>
-						<span class="iconfont" :class="isMore?'on':''"> &#xe72b;</span>
+				<!--购物券-->
+				<div class="coupon">
+					<div class="coupon-list">
+						<div class="coupon-list-li" v-for="(item,index) in coupon" :key='item.id' :index="index" @click="jumpCoupon">
+							<!-- <img src="/static/images/indexcoupon.png" /> -->
+							<div class="rmb"> <span>¥ </span>{{item.money}}</div>
+							<div class="ticket">购{{item.giveMoney}}平台券</div>
+							<div class="go">立即抢购</div>
+						</div>
 					</div>
-					<!--展开详情-->
-					<div class="more-check" v-show="isMore" :style="{height:height+'px',opacity:opacity}">
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-						<p>法发顺丰</p>
-					</div>
-					</transition>
+				</div>
 
+				<!--新人礼包-->
+				<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index" v-if="item.state!=2">
+					<div class="img">
+						<img :src="item.voucherType"/>
+					</div>
+					<div class="cant">
+						<div class="cant-right">
+							<p class="fontHidden"><span class="cant-tip">新人礼</span>{{item.repacketName}}</p>
+							<div class="btn" @click="jumpNewPersonGift(index)">免费领取</div>
+						</div>
+					</div>
+				</div>
+				<div class="xian"></div>
+
+				<!--签到-->
+				<div class="sign" @click="jump">
+					<div class="sign-wp">
+						<div class="sign-left">
+							<span><img src="/static/images/vipicon.png"/></span>
+							<span>签到</span>
+						</div>
+						<div class="sign-right">
+							<span>签到领取面膜</span>
+							<span>&gt;</span>
+						</div>
+					</div>
+				</div>
+				<!--弹窗-->
+				<div class="popup" catchtouchmove="true" v-if="isTogo">
+					<div class="popup-wp">
+						<div class="hidd" @click="hidd"></div>
+						<div class="img">
+							<img src="/static/images/indexpacket.png" />
+						</div>
+
+						<div class="tit">
+							<span>恭喜您获得新人礼包</span>
+						</div>
+
+						<div class="more">
+							<img @click="more" src="/static/images/indexmore.png" />
+						</div>
+					</div>
+				</div>
+				<!--商品-->
+				<div class="recommend">
+					<div class="recommend-li">
+						<div class="img"><img :src="goodsDO.thumbnail" /></div>
+						<div class="pic">
+							<span>¥</span>
+							<span>{{goodsDO.price}}</span>
+						</div>
+						<div class="tit">{{goodsDO.name}}</div>
+						<div class="btn" @click="jumpmemberUp">立即购买</div>
+						<!--详情-->
+						<div class="detail">
+							<div class="detail-shop">商品详情</div>
+							<div class="more" @click="more">
+								<span>查看详情</span>
+								<span class="iconfont" :class="isMore?'on':''"> &#xe72b;</span>
+							</div>
+							<!--展开详情-->
+							<div class="more-check" v-show="isMore" :style="{height:height+'px',opacity:opacity}">
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+								<p>法发顺丰</p>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		<loginModel ref="loginModel"></loginModel>
-	</div>
+	</blockquote>
+	<loginModel ref="loginModel"></loginModel>
+</div>
 </template>
 <script>
 	import Api from "@/api/home";
 	import store from '@/store/store'
 	import loginModel from "@/components/loginModel";
+	import loading from '@/components/loading'
 	export default {
 		data() {
-
 			return {
-				isTogo: false,
+				isLoading:false,
 				opacity: 0,
 				isMore: false,
-				isTogo: true,
+				isTogo: false,
 				msg: [],
 				giftbag: [],
 				coupon: [],
@@ -121,19 +126,16 @@
 			}
 		},
 		components: {
-			loginModel
+			loginModel,
+			loading
 		},
 		async mounted() {
 			var that = this;
-			wx.showLoading({
-				title: '加载中',
-			})
 			that.hideTabBar()
 			that.getBanner()
 			that.getTicket()
 			that.getUserInfo(),
 			that.getmemberUpGoods()
-			wx.hideLoading();
 		},
 		methods: {
 			//隐藏导航栏
@@ -173,6 +175,8 @@
 				let that = this
 				Api.getBanner().then(function(res) {
 					that.banner = res.banner
+					 wx.setStorageSync('oneBox', res.oneBox)
+					 wx.setStorageSync('postage', res.postage)
 				})
 			},
 			// 获取平台券接口
@@ -189,6 +193,7 @@
 				params.memberId=store.state.userInfo.memberId
 				Api.getNewPersonGift(params).then(function(res){
 					if(res.code==0){
+						that.isLoading=true
 						if(res.giftPackage.length==0){
 							that.isTogo = false
 						}
@@ -196,7 +201,6 @@
 							that.isTogo = true
 						}
 						that.giftbag=res.giftPackage
-						
 					}
 				})
 			},

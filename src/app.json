@@ -1,7 +1,7 @@
 {
-  "pages": [
-     
-    "pages/index/main",
+  "pages": [ 
+    "pages/index/main", 
+    "pages/inComing/main", 
     "pages/index-gift/main",
     "pages/obligation-detail/main",
     "pages/newPersonGift/main",
@@ -11,8 +11,6 @@
     "pages/withdrawal/main",
     "pages/vipUp/main",
     "pages/privilege/main",
-    "pages/inComing/main",
-    "pages/Partner/main",
     "pages/sign/main",
     "pages/index-coupon/main",
     "pages/recommendationCode/main",
@@ -20,6 +18,7 @@
     "pages/addressDetail/main",
     "pages/address/main",
     "pages/shop/main",
+    "pages/Partner/main",
     "pages/cart-order/main",
     "pages/myself/main"
   ],

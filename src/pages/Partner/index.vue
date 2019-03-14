@@ -1,77 +1,119 @@
 <template>
-	<div class="partner">
-		<div class="header">
-			<div class="avator">
-				<img src="/static/images/product-list.png">
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<div class="header">
+				<div class="avator">
+					<img :src="userInfo.face">
+				</div>
 			</div>
-		</div>
-		<div class="partnerTitle">
-			我的合伙人
-		</div>
-		<div class="myTeam">
-			<div class="myTeamTitle">
-				一级成员
+			<div class="partnerTitle">
+				我的团队
 			</div>
-			<div class="teamList">
-				<div class="left">
-					<span class="teamAvator">
-						<img src="/static/images/product-list.png">
+			<div class="myTeam">
+				<div class="myTeamTitle">
+					<span>
+						我的团队	
 					</span>
-					<span class="name">元淳</span>
-				</div>
-				<div class="right">
-					2018-11-20 13:50
-				</div>
-			</div>
-			<div class="teamList">
-				<div class="left">
-					<span class="teamAvator">
-						<img src="/static/images/product-list.png">
+					<span>
+						团队总人数:{{total}}	
 					</span>
-					<span class="name">元淳</span>
 				</div>
-				<div class="right">
-					2018-11-20 13:50
-				</div>
-			</div>
-			<div class="teamList">
-				<div class="left">
-					<span class="teamAvator">
-						<img src="/static/images/product-list.png">
-					</span>
-					<span class="name">元淳</span>
-				</div>
-				<div class="right">
-					2018-11-20 13:50
+				<div class="teamList" v-for="(item,index) in myTeam" :index="index" :key="item.unionid">
+					<div class="teamAvator">		
+						<img :src="item.face">				
+					</div>
+					<div class="name fontHidden1">{{item.name}}</div>
+					<div class="right">
+						<p>角色:<span style="color:#B1333F;font-size: 16px;">{{item.lvidname}}</span></p>
+						<p>{{item.joinTime}}</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</blockquote>
 	</div>
 </template>
 
 <script>
+	import Api from "@/api/member.js"
+	import store from "@/store/store"
+	import utils from "@/utils/index"
+	import loading from '@/components/loading'
 	export default {
 		data() {
 			return {
-	
+				userInfo:{},
+				limit:7,
+				pages:0,
+				myTeam:[],
+				hasMore:true,
+				total:0,
+				isLoading:false
+
 			}
 		},
 
 		components: {
-
+			loading
 		},
 
 		methods: {
-
+			// 获取我的团队信息
+			getAllSubordinate(){
+				let that=this
+				if(that.hasMore){
+					that.isLoading=false
+					let params={}
+					params.limit=that.limit
+					params.offset=that.pages*that.limit
+					params.memberId=that.userInfo.memberId
+					Api.allSubordinate(params).then(function(res){
+						that.isLoading=true
+						that.total=res.total
+						if(res.rows.length<that.limit){
+							that.hasMore=false
+						}
+						res.rows.map(item=>{
+							item.joinTime=utils.formatTime(item.regtime)
+						})
+						that.myTeam=that.myTeam.concat(res.rows)
+					})
+				}else{
+					wx.showToast({
+						title:'没有更多数据了',
+						icon:"none",
+						duration:1500
+					})
+				}
+				
+			}
+		},
+		mounted() {
+			let that=this
+			that.userInfo=store.state.userInfo
+			that.getAllSubordinate()
+		},
+		onReachBottom:function(){
+			let that = this;
+			that.pages+=1
+			that.getAllSubordinate()
+		},
+		onUnload(){
+			let that=this
+			that.limit=7
+			that.pages=0
+			that.myTeam=[]
+			that.hasMore=true
+			that.total=0
+			that.isLoading=false
 		},
 
-		created() {
-
-		}
 	}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 img{
 	width: 100%;
 	height: 100%;
@@ -109,9 +151,12 @@ img{
 	.myTeamTitle{
 		height: 40px;
 		line-height:40px;
-		padding-left: 10px;
+		padding: 0 10px;
 		font-size: 14px;
-		color: #333333;		
+		color: #333333;	
+		box-sizing: border-box;
+		display: flex;
+		justify-content: space-between;	
 	}
 	.teamList{
 		display: flex;
@@ -124,23 +169,24 @@ img{
 		&:nth-last-child(1){
 			border-bottom:1px solid #f4f4f4;
 		}
-		.left{
-			flex-grow: 1;
-			.teamAvator{
-				display: inline-block;
+		.teamAvator{
 				width: 40px;
 				height: 40px;
 				overflow: hidden;
 				border-radius: 50%;
 				vertical-align: middle;
-			}
-			.name{
-				display: inline-block;
-				padding-left: 10px;
-			}
 		}
+		.name{
+			padding-left: 10px;
+			width:150px;
+			height: 40px;
+			line-height:40px;
+		}	
 		.right{
-			
+			font-size: 14px;
+			p{
+				line-height:20px;
+			}
 		}
 	}
 }

@@ -1,41 +1,47 @@
 <template>
-	<div>
-		<!--轮播-->
-		<div class='test'>
-			<swiper display-multiple-items='1' circular previous-margin='28px' next-margin='28px' indicator-dots>
-				<div v-for="(item,index) in banner" :key="item.imageId" :index="index">
-					<swiper-item>
-						<div class='box'>
-							<img :src='item.imageUrl'></img>
-						</div>
-					</swiper-item>
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
+			<!--轮播-->
+			<div class='test'>
+				<swiper display-multiple-items='1' circular previous-margin='28px' next-margin='28px' indicator-dots>
+					<div v-for="(item,index) in banner" :key="item.imageId" :index="index">
+						<swiper-item>
+							<div class='box'>
+								<img :src='item.imageUrl'></img>
+							</div>
+						</swiper-item>
+					</div>
+				</swiper>
+			</div>
+			<!--商品类目-->
+			<div class="cate">
+				<div class="cate-li" v-for="(item,index) in cate" :key="item.catId" :index="index" @click="getKindGoods(item.catId,index)">
+					<span><img :src="item.goodsCount"/></span>
+					<span>{{item.name}}</span>
 				</div>
-			</swiper>
-		</div>
-		<!--商品类目-->
-		<div class="cate">
-			<div class="cate-li" v-for="(item,index) in cate" :key="item.catId" :index="index" @click="getKindGoods(item.catId,index)">
-				<span><img :src="item.goodsCount"/></span>
-				<span>{{item.name}}</span>
 			</div>
-		</div>
-		<!--海报-->
-		<div class="poster">
-			<img :src="catImg" />
-		</div>
-		<!--产品列表-->
-		<div class="product">
-			<div class="headline">商品列表 </div>
-			<div class="product-list">
-	           <product :products="product"></product>
+			<!--海报-->
+			<div class="poster">
+				<img :src="catImg" />
 			</div>
-		</div>
+			<!--产品列表-->
+			<div class="product">
+				<div class="headline">商品列表 </div>
+				<div class="product-list">
+		           <product :products="product"></product>
+				</div>
+			</div>
+		</blockquote>
 	</div>
 </template>
 
 <script>
 	import product from '@/components/product'
 	import Api from "@/api/goods";
+	import loading from '@/components/loading'
 	export default {
 		data() {
 			return {
@@ -51,26 +57,27 @@
 				goodsList:[],
 				nowPage:[],
 				kindIndex:0,
-				catId:''
+				catId:'',
+				isLoading:false,
 			}
 		},
 
 		components: {
 			product,
+			loading
 		},
 
 		methods: {
 			async getGoodsAll(catId,pages,limit){
 				let that=this
 				if(that.hasMore[that.kindIndex]){
-					wx.showLoading({
-						title: '加载中',
-					})
+					that.isLoading=false
 					let params={}
 					params.catId=catId
 					params.offset=pages*limit
 					params.limit=limit
 					let res=await Api.getGoodsAll(params)
+					that.isLoading=true
 					if(res.code==0){
 						wx.hideLoading();
 						if(res.Goods.length<that.limit){
@@ -97,9 +104,6 @@
 		},
 		mounted() {
 			let that=this
-			wx.showLoading({
-				title: '加载中',
-			})
 			Api.getGoodCat().then(function(res){
 				if(res.code==0){
 					that.cate=res.firstGoodCat

@@ -9,6 +9,7 @@
 				<div class="num">￥{{item.amount}}</div>
 			</div>
 		</div>
+		
 		<div v-if="hasMore" class="tip">~~我也是有底线的~~</div>
 	</div>
 </template>
