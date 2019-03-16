@@ -34,6 +34,11 @@
 		// 获取分润详情
 		shareDetails(params){
 			return API.GET('/api/place/shareDetails',params)
-		}
+		},
+
+		//获取收藏的商品
+		getfavoritelist(params){
+			return API.GET('/api/favorite/get',params)
+		},
 		
 	}

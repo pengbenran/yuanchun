@@ -41,7 +41,7 @@
 					<p class="num">{{userInfo.advance}}</p>
 					<p class="name">余额</p>
 				</div>
-				<div class="list">
+				<div class="list"  @click="jump('../favoriteList/main')">
 					<p class="num">{{orderStatus.favorite}}</p>
 					<p class="name">收藏</p>
 				</div>

@@ -20,7 +20,8 @@
     "pages/shop/main",
     "pages/Partner/main",
     "pages/cart-order/main",
-    "pages/myself/main"
+    "pages/myself/main",
+    "pages/favoriteList/main"
   ],
   "window": {
     "backgroundTextStyle": "light", 
