@@ -61,19 +61,19 @@ import Utils from '@/utils/index'
 			wxPay(item){ 
 				let that = this;
 				let params ={}
-				params.orderid = Utils.random_No(6)
-				params.sn = Utils.random_No(6)
+				params.sn = Utils.random_No(10)
 				// params.total_fee = item.money * 100
-				params.total_fee=1
+				params.payAmount=1
+				params.shippingAmount=0
 				//请求支付
 				params.openId=that.userInfo.openId
 				PayApi.ConfirmPay(params).then(function(PayRes){
 					wx.requestPayment({
-						timeStamp: PayRes.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
-						nonceStr: PayRes.nonceStr, //随机字符串，长度为32个字符以下,
-						package: PayRes.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
-						signType: PayRes.signType, //签名算法，暂支持 MD5,
-						paySign: PayRes.paySign, //签名,具体签名方案参见小程序支付接口文档,
+						timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
+						nonceStr: PayRes.Map.nonceStr, //随机字符串，长度为32个字符以下,
+						package: PayRes.Map.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
+						signType: PayRes.Map.signType, //签名算法，暂支持 MD5,
+						paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 						success: res => {
 							that.ticketTopUp(item)
 							console.log(res,"支付成功")

@@ -3,8 +3,8 @@
 		<div v-for="(item,index) in financeCashDOList" class="flowbill-list-li" >
 			<div class="top">
 				<div class="name">
-					<span>{{item.uname}}提现- {{item.amount}}</span>
-					<span>{{item.auditTime}}</span>
+					<span>{{item.uname}}提现- {{item.status}}</span>
+					<span>{{item.withdrawTime}}</span>
 				</div>
 				<div class="num">￥{{item.amount}}</div>
 			</div>
@@ -20,18 +20,14 @@ import {ToastShow} from '@/utils/index'
 	export default {
 		data(){
 			return{
-				withdeawList:[
-					{withdraw:22,time:'2018-09-2 18:30',stauname:"成功"},
-					{withdraw:22,time:'2018-09-2 18:30',stauname:"成功"},
-					{withdraw:22,time:'2018-09-2 18:30',stauname:"成功"}
-				],
+				withdeawList:[],
 				Pagination:{
 					offset:0,
 					limit:20
 				},
 				userInfo:{},
 				financeCashDOList:[],
-				hasMore:false
+				hasMore:true
 			}
 		},
 		mounted(){
@@ -42,20 +38,33 @@ import {ToastShow} from '@/utils/index'
 		methods:{
             GetPayList(){
 				let that = this;
-				let data = Object.assign({},that.Pagination,{memberId:that.userInfo.memberId})
-				Api.userPayList(data).then(res => {
-					if(res.code == 0){
-						if(res.financeCashDOList.length<that.Pagination.limit){
-					    	that.hasMore=true
-					     }
-						 that.financeCashDOList =that.financeCashDOList.concat(res.financeCashDOList);
-						 
-					}else{
-                       ToastShow('失败','none')
-					}
-				}).catch(err => {
-					ToastShow('失败','none')
-				})
+				if(that.hasMore){
+					let data = Object.assign({},that.Pagination,{memberId:that.userInfo.memberId})
+					Api.userPayList(data).then(res => {
+						if(res.code == 0){
+							if(res.financeCashDOList.length<that.Pagination.limit){
+								that.hasMore=false
+							}
+							res.financeCashDOList.map(item=>{
+								if(item.withdrawStatus==0){
+									item.status="待打款"
+								}
+								else{
+									item.status="已打款"
+								}
+							})
+							that.financeCashDOList =that.financeCashDOList.concat(res.financeCashDOList);
+
+						}else{
+							ToastShow('失败','none')
+						}
+					}).catch(err => {
+						ToastShow('失败','none')
+					})
+				}
+				else{
+					ToastShow('没有更多数据','none')
+				}		
 			}
 		},
 		onUnload(){
@@ -65,7 +74,7 @@ import {ToastShow} from '@/utils/index'
 			};
 			this.userInfo={};
 			this.financeCashDOList=[];
-			this.hasMore=false;
+			this.hasMore=true;
 		},
 		onReachBottom:function(){
 			let that = this;

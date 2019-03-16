@@ -1,5 +1,9 @@
 <template>
-	<div>
+	<div class="container">
+		<blockquote v-if="!isLoading">
+			<loading></loading>
+		</blockquote>
+		<blockquote v-else>
 		<div class="cart">
 			<!--点击新增地址-->
 			<div class="AddressWarp">
@@ -80,6 +84,7 @@
 			</div>
 			<div class="btn" @click="toast">立即购买</div>
 		</div>
+	</blockquote>
 	</div>
 </template>
 
@@ -87,25 +92,27 @@
 	import store from '@/store/store'
 	import Api from '@/api/order'
 	import utils from '@/utils/index'
+	import loading from '@/components/loading'
 	export default {
 		data() {
 			return {
 				PayBool:false,
 				PayIndex:0,
 				goodsItem:{},
-				addr:{name:'彭',mobile:'15779556662',addr:'江西宜春'},
+				addr:{},
 				AddressBtn:false,
 				canbuy:true,
 				InputMask:'',
 				order:{},
 				userInfo:{},
 				orderType:'',
-				needPay:0
+				needPay:0,
+				isLoading:false
 			}
 		},
-
-		components: {},
-
+		components: {
+			loading
+		},
 		methods: {
 			//支付方式选择
 			selectPay(index){
@@ -257,9 +264,9 @@
 			      				icon:'success',
 			      				duration: 2000
 			      			})
-   						// setTimeout(function(){
-   						// 	wx.navigateTo({ url: '/pages/paysuccess/main?paymoney='+that.AllPrice });
-   						// },1000)
+   						setTimeout(function(){
+   							wx.navigateTo({ url: '/pages/orderList/main?orderStatus=2'});
+   						},1000)
     				 }
     				}) 
 			      },
@@ -278,15 +285,23 @@
 			if(that.orderType==2){
 				that.needPay=that.goodsItem.googitem[0].price
 			}
-			// that.userInfo = store.state.userInfo
-
+			that.isLoading=true
+		},
+		onShow(){
+			if(wx.getStorageSync('addr')!=''){
+				this.addr=wx.getStorageSync('addr')
+				this.AddressBtn=false
+			}
+			else{
+				this.AddressBtn=true
+			}
 		}
 	}
 </script>
 
 <style lang="less">
 	.AddressWarp{
-		.site {
+		.AddressBtn {
 			width: 100%;
 			height: 42px;
 			color: #858585;
@@ -428,7 +443,7 @@
 	/*结算*/
 	.footerBnt{position: fixed;bottom: 0;width: 100%;height: 95rpx;display: flex;justify-content: center;font-size: 36rpx;font-weight: 100;color: #8e8e8e;
 		.cartBtn{height: 95rpx;font-size: 16px;flex-grow: 1;line-height: 95rpx;text-align: right;padding-right: 5px;}
-		.btn{background-image: -webkit-linear-gradient(0deg, rgb(255,191,3), rgb(252,148,53));height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
+		.btn{background: #901414;height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
 	}
 
 </style>

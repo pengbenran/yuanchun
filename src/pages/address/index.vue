@@ -15,10 +15,11 @@
                 <div class="pople"><text>{{item.name}}</text> | <text>{{item.mobile}}</text></div>
             </div>
             <div class="right">
-                 <div class="deit" v-show='selectIndex==2' @click="edits(index)">
-                    <span class="iconfont">&#xe6ec;</span>         
+                 <div class="deit" v-if='selectIndex==2' @click="edits(index)">
+                    <p class="iconfont">&#xe6ec;</p> 
+                    <p v-if="item.defAddr==1" class="defaultAddr">默认</p>        
                   </div>
-                 <div class="deit" v-show='selectIndex==1'  @click="delAddr(index)"><text>删除</text></div>
+                 <div class="deit" v-if='selectIndex==1'  @click="delAddr(index)"><text>删除</text></div>
             </div>
         </div>
     </div>
@@ -55,16 +56,16 @@ export default {
     jumpOrder(e){
       let that = this
       wx.setStorageSync('addr',that.addressList[e])
-      if(that.jumpfrom=='order'){
-        wx.navigateTo({ url: '../order/main' });
+      if(that.jumpfrom=='cartOrder'){
+        wx.navigateTo({ url: '../cart-order/main' });
       }
-      else if(that.jumpfrom=='orderOne'){
-        wx.navigateTo({ url: '../orderOne/main' });
+      else if(that.jumpfrom=='newPersonGift'){
+        wx.navigateTo({ url: '../newPersonGift/main' });
       }
-      else{
-
+      else if(that.jumpfrom=='sign'){
+        wx.navigateTo({ url: '../sign/main' });
       }
-      
+        
     },
     edits(e){
       let that=this
@@ -102,23 +103,43 @@ export default {
 	     	   let parms = {}     	  
            parms.addrId = that.addressList[e].addrId
 	     	   Api.getSiteDef(parms).then(function(res){ 
-	     	    	console.log(res)
+	     	    
 	     	})
 	    }
   },
   onShow(){
-  	 let that=this
-        let params = {}
-        that.memberId = store.state.userInfo.memberId
-        params.memberId = that.memberId 
-        //所有会员地址
-	     	Api.getSiteList(params).then(function(res) {
-	     		if(res.code == 0) {
-	     			that.addressList = res.memberAddressList
-	     		}
-	     	})
-	     	that.selectIndex = 2
-	     },
+    let that=this
+    let params = {}
+    that.memberId = store.state.userInfo.memberId
+    params.memberId = that.memberId 
+    //所有会员地址
+    Api.getSiteList(params).then(function(res) {
+      if(res.code == 0) {
+        res.memberAddressList.map(item=>
+          item.address=item.addr.split('-').join('')+item.region
+        )
+       that.addressList = res.memberAddressList
+     }
+   })
+    that.selectIndex = 2
+  },
+  onLoad(){
+   let that=this
+   let pages = getCurrentPages();
+   let prevpage = pages[pages.length-2];
+   if(prevpage.route=="pages/myself/main"){
+     that.jumpfrom='myself'
+   }
+   else if(prevpage.route=="pages/cart-order/main"){
+     that.jumpfrom='cartOrder'
+   }
+   else if(prevpage.route=="pages/newPersonGift/main"){
+      that.jumpfrom='newPersonGift'
+   }
+  else if(prevpage.route=="pages/sign/main"){
+      that.jumpfrom='sign'
+   }
+  },
   onPullDownRefresh: function(){  
       wx.stopPullDownRefresh()
    },
@@ -149,14 +170,13 @@ img{display: block;height: 100%;width: 100%;}
    .item{display: flex;justify-content: space-between;padding: 15rpx 0;border-bottom:1px solid rgb(245,245,245);}
    .left .title{font-size: 32rpx;}
    .info,.pople{font-weight: 100;font-size: 26rpx;color: #666;}
-   .deit{width: 100rpx;height: 50rpx;overflow: hidden;}
+   .deit{width: 100rpx;overflow: hidden;
+      .defaultAddr{
+        font-weight: 100;font-size: 30rpx;color:#A92429;
+      }
+   }
    .deit text{font-weight: 100;font-size: 30rpx;color:#A92429;}
 }
-
-.addressList{height: 900rpx;
-  
-}
-
 .addresBtn{position: absolute;bottom: 40rpx;left: 5%;width: 90%;background:#A92429;margin: auto;text-align: center;
    text{color: #fff;font-weight: 100;font-size: 32rpx;line-height: 80rpx;line-height: 80rpx;border-radius: 10rpx;}
 }

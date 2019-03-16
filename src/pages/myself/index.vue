@@ -34,11 +34,11 @@
 			</div>
 			<div class="menu">
 				<div class="list">
-					<p class="num">{{userInfo.point}}</p>
+					<p class="num">{{point}}</p>
 					<p class="name">平台券</p>
 				</div>
 				<div class="list" @click="jump('../privilege/main')">
-					<p class="num">{{userInfo.advance}}</p>
+					<p class="num">{{advance}}</p>
 					<p class="name">余额</p>
 				</div>
 				<div class="list">
@@ -142,6 +142,12 @@
 		 	let that = this;
 		 	var progressNum = (that.count/that.condition)*100; 
 		 	return progressNum  //把进度条return出去
+		  },
+		  advance(){
+		  	return store.state.userInfo.advance
+		  },
+		  point(){
+		  	return store.state.userInfo.point
 		  }
 		},
 
@@ -150,13 +156,9 @@
 				let that = this
 				console.log(url,that.userInfo.defaultLv,"信息")
 				if(url == "../kefu/main") {
-					wx.makePhoneCall({
-						phoneNumber: that.phoneNumber,
-					})
+					that.makePhone()
 				}else if(url == "../privilege/main" && that.userInfo.defaultLv == 1){
 					Lib.ToastShow('抱歉你还没有成为合伙人','none')
-					that.makePhone()
-
 				} else {
 					wx.navigateTo({
 						url: url,

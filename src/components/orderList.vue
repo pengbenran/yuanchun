@@ -25,7 +25,7 @@
 				</div>
 				<div class="orderFooter">
 					<p v-if="item.paymentType==1">共计{{item.count}}件商品 合计:￥{{item.orderAmount}}</p>
-					<p v-else>共计{{item.count}}件商品 合计:￥{{item.orderAmount}}+{{item.shippingAmount}}</p>
+					<p v-else>共计{{item.count}}件商品 合计:￥{{item.orderAmount}}+{{item.shippingAmount}}平台券</p>
 					<div class="btn" v-if="item.status==0">
 						<div class="btnleft" @click="cancelOrder(item.orderId,index)">取消订单</div>
 						<div class="btnright" @click="payOrder(item.orderId,item.shippingAmount,item.sn,item.needPayMoney,index)">提交付款</div>

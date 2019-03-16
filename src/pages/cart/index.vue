@@ -51,8 +51,7 @@
 			getCartList(){
 				let that = this;
 				let params={}
-				// params.memberId=that.userInfo.memberId;
-				params.memberId=179;
+				params.memberId=that.userInfo.memberId;
 				Api.getCartList(params).then(function(res){
 					if(res.code != 1){
 						that.cartLists = res.cartList.map(v=>{
@@ -183,7 +182,7 @@
 <style lang="less">
 	/*checkbox 选项框大小  */
 	.ShopHeader{display: flex;align-items: center;justify-content: space-between;padding: 10rpx 30rpx;border-bottom: 1px solid #f4f4f4;
-		text{color: rgb(252,155,45);font-weight: 100;font-size: 34rpx;}
+		text{color: #801d20;font-weight: 100;font-size: 34rpx;}
 	}
 	checkbox .wx-checkbox-input {
 		width: 16px;
@@ -221,7 +220,7 @@
 			}
 		}
 		.price{height: 95rpx;margin-right: 15rpx;display: flex;justify-content: space-around;font-size: 16px;}
-		.btn{background-image: -webkit-linear-gradient(0deg, rgb(255,191,3), rgb(252,148,53));height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
+		.btn{background: linear-gradient(to right, #d2313f, #77222a);height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
 	}
 
 </style>

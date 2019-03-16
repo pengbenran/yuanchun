@@ -15,12 +15,12 @@
 				<span class="inpt">
 					<input type="number" v-model="inputVal" placeholder="输入提现金额">
 				</span>
-				<span class="all">全部提现</span>
+				<span class="all" @click="allBalance">全部提现</span>
 				<span class="btn" @click="balancePay">提现</span>
 			</div>
 		</div>
 		<div class="menu">
-			<div class="menuList" @click="jump('../inComing/main')">
+			<div class="menuList" @click="jump('../inComing/main')" v-if="userInfo.default!=1">
 				<img src="/static/images/menu1.png">
 				佣金
 			</div>
@@ -32,12 +32,12 @@
 				<img src="/static/images/menu3.png">
 				提现记录
 			</div>
-			<div class="menuList" @click="jump('../Partner/main')">
+			<div class="menuList" @click="jump('../Partner/main')" v-if="userInfo.default!=1">
 				<img src="/static/images/menu4.png">
 				我的合伙人
 			</div>
 		</div>
-		<div class="mark" @click="jump('../recommendationCode/main')">
+		<div class="mark" @click="jump('../recommendationCode/main')" v-if="userInfo.default!=1">
 			<img src="/static/images/mingpian.png">我的推荐码
 			<span class="iconfont">&#xe72b;</span>
 		</div>
@@ -52,39 +52,60 @@
 		data(){
 			return{
 				userInfo:{},
-				inputVal:''
+				inputVal:'',
+				canSubmit:true
 			}
 		},
 		mounted(){
 			let that=this
 			that.userInfo = store.state.userInfo
 		},
+		onUnload(){
+			let that=this
+			that.inputVal=''
+		},
 		methods:{
+			allBalance(){
+				let that=this
+				that.inputVal=that.userInfo.advance
+			},
 			jump(url){
 				wx.navigateTo({
 					url:url,
 				})
 			},
-
 			balancePay(){
 				let that = this;
-				if(that.inputVal && that.inputVal != 0){
-					let data = {}
-					data.memberId = that.userInfo.memberId
-					data.amount = that.inputVal
-					Api.userBalancePay(data).then(res => {
-						if(res.code == 0){
-							Lib.updateUserInfo()
-							that.userInfo.advance -= that.inputVal
-							Lib.ToastShow('提现成功','success')
-						}else{
-                            Lib.ToastShow('提现失败','none')
-						}
-					}).catch(err => {
-						Lib.ToastShow('提现失败','none')
-					})
-				}else{
-						Lib.ToastShow('输入不能为空或为0','none')			
+				if(that.inputVal>that.userInfo.advance){
+					Lib.ToastShow('余额不足','none')	
+				}
+				else if(that.inputVal==''){
+					Lib.ToastShow('请输入提现金额','none')	
+				}
+				else if(that.inputVal == 0){
+					Lib.ToastShow('输入不能为0','none')	
+				}
+				else{	
+					if(that.canSubmit){
+						that.canSubmit=false
+						let data = {}
+						data.memberId = that.userInfo.memberId
+						data.amount = that.inputVal
+						Api.userBalancePay(data).then(res => {
+							that.canSubmit=true
+							that.inputVal=''
+							if(res.code == 0){
+								Lib.updateUserInfo()
+								that.userInfo.advance -= that.inputVal
+								Lib.ToastShow('提现成功','success')
+							}else{
+								Lib.ToastShow('提现失败','none')
+							}
+						}).catch(err => {
+							Lib.ToastShow('网络错误','none')
+						})		
+					}	
+					
 				}
 			}
 		}

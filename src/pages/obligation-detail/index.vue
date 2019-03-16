@@ -23,15 +23,31 @@
 		</div>
 		<!--list-->
 		<div class="list" v-for="(item,index) in orderDetail.itemsJson" :index="index">
-			<div class="list-left">
+			<div class="list-left" v-if="orderDetail.orderType==1">
 				<p class="img"><img :src="item.image" /></p>
 			</div>
-			<div class="list-cant fontHidden1">		
+			<div class="list-left" v-if="orderDetail.orderType==2">
+				<p class="img"><img :src="item.image" /></p>
+			</div>
+			<div class="list-left" v-if="orderDetail.orderType==3">
+				<p class="img"><img :src="item.voucherType" /></p>
+			</div>
+			<div class="list-cant fontHidden1" v-if="orderDetail.orderType==1">		
 	           {{item.name}}
 			</div>
-			<div class="list-right">
+			<div class="list-cant fontHidden1" v-if="orderDetail.orderType==2">		
+	           {{item.name}}
+			</div>
+			<div class="list-cant fontHidden1" v-if="orderDetail.orderType==3">		
+	           {{item.repacketName}}
+			</div>
+			<div class="list-right" v-if="orderDetail.orderType==1">
 				<span>¥{{item.price}}</span>
-				<span>x{{item.pic}}</span>				
+				<span>x{{item.num}}</span>				
+			</div>
+			<div class="list-right" v-if="orderDetail.orderType==3">
+				<span>¥{{item.conditionAmount}}</span>
+				<span>x1</span>				
 			</div>
 		</div>
 		<!--价格-->
@@ -45,7 +61,11 @@
 				<span v-if="orderDetail.orderType==3">¥13</span>
 				<span v-else>¥0</span>
 			</div>
-			<div class="pic-wp4">
+			<div class="pic-wp4" v-if="orderDetail.orderType==1">
+				<span>订单总价</span>
+				<span>¥{{orderDetail.orderAmount}}+{{orderDetail.shippingAmount}}平台券</span>
+			</div>
+			<div class="pic-wp4" v-else>
 				<span>订单总价</span>
 				<span>¥{{orderDetail.orderAmount}}</span>
 			</div>

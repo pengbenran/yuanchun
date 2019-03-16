@@ -40,7 +40,7 @@
 			</div>
 			<div class="leave">
 				<span>运费:</span>
-				<span></span>
+				<span>￥{{freight}}</span>
 			</div>
 			<!--支付方式-->
 		</div>
@@ -62,12 +62,13 @@
 			return {
 				personGift:[],
 				InputMask:'',
-				addr:{name:'彭',mobile:'15779556662',addr:'江西宜春'},
+				addr:{},
 				AddressBtn:false,
 				canbuy:true,
 				userInfo:{},
 				personGiftIdArry:[],
-                moneySum:0
+                moneySum:0,
+                freight:0
 			}
 		},
 		components: {},
@@ -78,7 +79,7 @@
 				for(var i in that.personGift){
 					totalMoney=utils.accAdd(totalMoney,that.personGift[i].conditionAmount)
 				}
-				totalMoney=utils.accAdd(totalMoney,13)
+				totalMoney=utils.accAdd(totalMoney,that.freight)
 				return totalMoney
 			}
 		},
@@ -107,7 +108,7 @@
 					bean.memberId = that.userInfo.memberId
 		      		// (是否使用平台券)
 		      		bean.clickd = that.InputMask 
-		      		bean.orderType = 1
+		      		bean.orderType = 3
 		      		bean.shipAddr = that.addr.addr
 		      		bean.shipMobile = that.addr.mobile 
 		      		bean.shipName= that.addr.name	
@@ -119,7 +120,6 @@
 		    async saveOrder(bean){
 		    	let that = this;
 		    	let res = await Api.giftUser(bean)
-		    	console.log(res)
 		    	wx.hideLoading()
 		    	if(res.code == 0){
 		    		that.order = res.order
@@ -129,19 +129,19 @@
 		    wxPay(){
 		    	let that = this;
 		    	let params ={}
-		    	params.orderid = that.order.orderId
+		    	params.orderId = that.order.orderId
 		    	params.sn = that.order.sn
-   				// params.total_fee = that.order.needPayMoney * 100
-   				params.total_fee=1
+   				params.shippingAmount=0
+   				params.payAmount=1
 			    //请求支付
 			    params.openId=that.userInfo.openId
 			    Api.ConfirmPay(params).then(function(PayRes){
 			    	wx.requestPayment({
-			                timeStamp: PayRes.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
-			                nonceStr: PayRes.nonceStr, //随机字符串，长度为32个字符以下,
-			                package: PayRes.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
-			                signType: PayRes.signType, //签名算法，暂支持 MD5,
-			                paySign: PayRes.paySign, //签名,具体签名方案参见小程序支付接口文档,
+			                timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
+			                nonceStr: PayRes.Map.nonceStr, //随机字符串，长度为32个字符以下,
+			                package: PayRes.Map.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
+			                signType: PayRes.Map.signType, //签名算法，暂支持 MD5,
+			                paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 			                success: res => {
 			                	that.payReturen()   
 			                	that.canbuy=true
@@ -172,10 +172,18 @@
 			      				icon:'success',
 			      				duration: 2000
 			      			})
-			      		wx.setStorageSync('needLoad',true)	
-   						setTimeout(function(){
-   							wx.switchTab({ url: '/pages/index/main'});
-   						},1000)
+			      			let giftbag=store.state.giftbag
+			      			for(let i in that.personGiftIdArry){
+			      				giftbag=giftbag.filter(item=>
+			      					 item.repacketId!=that.personGiftIdArry[i]
+			      				)
+			      			}
+			    			console.log(giftbag);
+							utils.updateUserInfo()
+			      			store.commit("stateGiftbag",giftbag)
+			      			setTimeout(function(){
+			      				wx.switchTab({ url: '/pages/index/main'});
+			      			},1000)
     				 }
     				}) 
 			      },
@@ -190,21 +198,45 @@
 			that.personGift =store.state.personGift
 			for(var i in that.personGift){
 				that.personGiftIdArry.push(that.personGift[i].repacketId)
+				if(that.personGift[i].repacketId==1){
+					that.freight=wx.getStorageSync('postage')
+				}
 			}
 			that.userInfo=store.state.userInfo
-		}
+		},
+		onShow(){
+			if(wx.getStorageSync('addr')!=''){
+				this.addr=wx.getStorageSync('addr')
+				this.AddressBtn=false
+			}
+			else{
+				this.AddressBtn=true
+			}
+		},
+		onUnload(){
+			let that=this
+			that.personGift=[]
+			that.InputMask=''
+			that.addr={}
+			that.AddressBtn=false
+			that.canbuy=true
+			that.userInfo={}
+			that.personGiftIdArry=[]
+			that.moneySum=0
+			that.freight=0
+		},
 	}
 </script>
 
 <style lang="less">
 	.AddressWarp{
-		.site {
+		.AddressBtn {
 			width: 100%;
-			height: 42px;
+			height:60px;
 			color: #858585;
 			font-size: 12px;
 			background-color: #e0e0e0;
-			line-height: 42px;
+			line-height: 60px;
 			text-align: center;
 		}
 		.Address{padding: 10rpx 25rpx;border-bottom: 1px solid rgb(244,244,244);
@@ -279,7 +311,7 @@
 	/*结算*/
 	.footerBnt{position: fixed;bottom: 0;width: 100%;height: 95rpx;display: flex;justify-content: center;font-size: 36rpx;font-weight: 100;color: #8e8e8e;
 		.cartBtn{height: 95rpx;font-size: 16px;flex-grow: 1;line-height: 95rpx;text-align: right;padding-right: 5px;}
-		.btn{background-image: -webkit-linear-gradient(0deg, rgb(255,191,3), rgb(252,148,53));height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
+		.btn{background: #901414;height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
 	}
 
 </style>

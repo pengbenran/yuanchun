@@ -7,7 +7,7 @@
 		<div class="cant">		
 			<div class="inp" v-for="(item,index) in giftList">
 				<span><img src="/static/images/gift.png"/></span>
-				<span v-if="item.state!=2"><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
+				<span><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
 				<div class="tit fontHidden">{{item.repacketName}}</div>
 			</div>
 		</div>
@@ -48,7 +48,7 @@
 				}
 				else{
 					wx.showToast({
-						title: '您已经领取过了哦',
+						title: '请选择新人礼',
 						icon: 'none',
 						duration: 2000
 					})

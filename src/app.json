@@ -1,6 +1,8 @@
 {
-  "pages": [ 
+  "pages": [  
+    "pages/logistics/main",    
     "pages/index/main", 
+    "pages/addressDetail/main",
     "pages/inComing/main", 
     "pages/index-gift/main",
     "pages/obligation-detail/main",
@@ -13,9 +15,7 @@
     "pages/privilege/main",
     "pages/sign/main",
     "pages/index-coupon/main",
-    "pages/recommendationCode/main",
-    "pages/businessCard/main",
-    "pages/addressDetail/main",
+    "pages/recommendationCode/main",     
     "pages/address/main",
     "pages/shop/main",
     "pages/Partner/main",
@@ -28,6 +28,11 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black",
     "backgroundTextStyle":"dark"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息用户获得收货地址"
+    }
   },
   "tabBar": {
     "selectedColor":"#901414", 

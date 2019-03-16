@@ -21,16 +21,23 @@
 						团队总人数:{{total}}	
 					</span>
 				</div>
-				<div class="teamList" v-for="(item,index) in myTeam" :index="index" :key="item.unionid">
-					<div class="teamAvator">		
-						<img :src="item.face">				
-					</div>
-					<div class="name fontHidden1">{{item.name}}</div>
-					<div class="right">
-						<p>角色:<span style="color:#B1333F;font-size: 16px;">{{item.lvidname}}</span></p>
-						<p>{{item.joinTime}}</p>
-					</div>
+				<div class="noThing" v-if="total==0">
+					<img src="https://shop.guqinet.com/html/images/shuiguo/address/kong.png">
 				</div>
+				<blockquote v-else>
+					<div class="teamList" v-for="(item,index) in myTeam" :index="index" :key="item.unionid">
+						<div class="teamAvator">		
+							<img :src="item.face">				
+						</div>
+						<div class="name fontHidden1">{{item.name}}</div>
+						<div class="right">
+							<p>角色:<span style="color:#B1333F;font-size: 16px;">{{item.lvidname}}</span></p>
+							<p>{{item.joinTime}}</p>
+						</div>
+					</div>
+				</blockquote>
+				
+				
 			</div>
 		</blockquote>
 	</div>
@@ -189,5 +196,10 @@ img{
 			}
 		}
 	}
+}
+.noThing{
+	width:150px;
+	height: 150px;
+	margin:40px auto;
 }
 </style>
