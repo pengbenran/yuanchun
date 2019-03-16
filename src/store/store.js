@@ -11,7 +11,8 @@ export default new Vuex.Store({
     personGift:[],
     orderStatus:{},
     goodsId:'',
-    orderDetail:{}
+    orderDetail:{},
+    giftbag:[]
   },
   mutations:{
    storeUserInfo(state,userInfo){
@@ -34,6 +35,9 @@ export default new Vuex.Store({
    },
    stateOrderDetail(state,orderDetail){
      state.orderDetail = orderDetail
+   },
+   stateGiftbag(state,giftbag){
+     state.giftbag = giftbag
    }
 }
 })

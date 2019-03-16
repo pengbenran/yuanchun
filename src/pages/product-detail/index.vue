@@ -31,6 +31,9 @@
 					<span>月销{{detail.haveSpec}}笔</span>
 					<span>{{detail.brief}}</span>
 				</div>
+				<div>
+					<wxParse :content="detail.intro" @preview="preview" @navigate="navigate" />
+				</div>
 			</div>
 			<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection'/>
 		</blockquote>
@@ -42,6 +45,7 @@
 	import store from '@/store/store'
 	import goodsDetailFooter from '@/components/goodDetailFooter'
 	import loading from '@/components/loading'
+	import wxParse from 'mpvue-wxparse'
 	export default {
 		data() {
 			return {
@@ -55,7 +59,8 @@
 		},
 		components: {
 			goodsDetailFooter,
-			loading
+			loading,
+			wxParse
 		},
 		methods: {
           btnTab:function(index){
@@ -106,6 +111,7 @@
 </script>
 
 <style lang="less">
+@import url("~mpvue-wxparse/src/wxParse.css");
 	/*轮播*/
 	swiper {
 		width: 100%;

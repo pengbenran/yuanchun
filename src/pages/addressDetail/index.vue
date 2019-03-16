@@ -1,10 +1,18 @@
 <template>
 	<div class="address">
-		<div class="item"><text>收货人</text><input type="text" placeholder="请输入收货人" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="username" /></div>
-		<div class="item"><text>手机号码</text><input type="text" placeholder="请输入手机号码" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="userphone" /></div>
-		<div class="item itemModel"><text>所在地区</text><span @click="selectAddress">请选择地区</span></div>
-		<div class="AddressModel">
-			<textarea placeholder='请选择地址' :value='addres' placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="addr"></textarea>
+		<div class="item"><text>收货人:</text><input type="text" placeholder="请输入收货人" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="username" /></div>
+		<div class="item"><text>手机号码:</text><input type="text" placeholder="请输入手机号码" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="userphone" /></div>
+		<div class="item">
+			<text>所在地区：</text>
+				<picker
+				mode="region"
+				@change="bindRegionChange"
+				:value="region"
+				>
+				<div class="picker">
+					{{region[0]}}&nbsp;&nbsp;{{region[1]}}&nbsp;&nbsp;{{region[2]}}
+				</div>
+			</picker>
 		</div>
 		<div class="item"><text>详细地址：</text><input type="text" :value="addresInfo" placeholder="门牌号、街区号、单元号楼层" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="detailaddr" /></div>
 		<div class="ico">
@@ -18,7 +26,6 @@
 <script> 
 	import Api from '@/api/site'
 	import store from '@/store/store' 
-    import qqmap from  '@/qqmap/qqmap-wx-jssdk'
 	export default {
 		data() {
 			return {
@@ -27,62 +34,32 @@
 				isDeafult: 0,
 				username: '', 
 				userphone: '',
-				addr: '',
 				detailaddr: '',
 				memberId: '',
 				Type: '',
 				tip: '新增地址',
 				addrId: '',
-				adcode:''
-
+				adcode:'',
+				region: ['北京市', '北京市', '东城区'],
+				addrCode:[]
 			}
+		},
+		components: {
+	
 		},
 		methods: {
 			//switch点击事件
 			switch1Change(e) {
 				this.isDeafult = e.mp.detail.value ? 1 : 0
 			},
-			//selectAddress选择地址
-//			selectAddress() {
-//				let that = this;
-//				wx.chooseLocation({
-//					success: function(res) {
-//						that.addr = res.address;
-//						var QQMapWX = require('../qqmap/qqmap-wx-jssdk.js');
-//						var demo = new qqmap.QQMapWX({
-//							key: 'AOWBZ-0000-0000-0000-YHSLJ-YRFZE' // 必填 换成自己申请到的
-//						});
-//					}
-//				})
-//			},
-    selectAddress(){
-      let that = this;
-      wx.chooseLocation({
-        success: function (res) { 
-          that.addr = res.address;
-          console.log("查看选择的地址",res)          
-          var qqmapsdk = new qqmap.QQMapWX({
-             key: 'ARCBZ-73GW6-EEQS3-EPCSS-6Z6OJ-ONFUQ' // 必填
-          });
-
-          //2、根据坐标获取当前位置名称，显示在顶部:腾讯地图逆地址解析
-          qqmapsdk.reverseGeocoder({
-            location: {
-              latitude: res.latitude,
-              longitude: res.longitude
-            },
-            success: function (addressRes) {   
-              that.adcode = addressRes.result.ad_info.adcode
-              console.log( that.adcode)
-            }
-          })
-        }
-      })
-    },
+			bindRegionChange(e) {
+				let that=this
+				that.addrCode=e.mp.detail.code
+				that.region=e.mp.detail.value
+			},
 			async addAddress() {
 				var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
 				let that = this
-
 				if(that.username == '') {
 					wx.showToast({
 						icon: 'none',
@@ -93,31 +70,24 @@
 						icon: 'none',
 						title: '手机号格式不正确',
 					})
-				} else if(that.addr == '') {
-					wx.showToast({
-						icon: 'none',
-						title: '地址不能为空',
-					})
 				} else if(that.detailaddr == '') {
 					wx.showToast({
 						icon: 'none',
-						title: '详细地址不能为空',
+						title: '请输入详细地址',
 					})
 				} else {
 					if(that.Type == 'edit') {
 						let params = {}
-
 						params.addrId = that.addrId
 						params.memberId = that.memberId
 						params.defAddr = that.isDeafult
 						params.name = that.username
 						params.mobile = that.userphone
-						params.addr = that.addr
+						params.addr = that.region.join('-')
 						params.region = that.detailaddr
 						params.province = ''
 						params.city = ''
-						params.zip = that.adcode
-						
+						params.zip = that.addrCode.pop()						
 						Api.update(params).then(function(res) {
 
 						})
@@ -128,18 +98,17 @@
 						})
 					} else {
 						let params = {}
-						
 						params.memberId = that.memberId
-						params.defAddr = 1
+						params.defAddr = that.isDeafult
 						params.name = that.username
 						params.mobile = that.userphone
-						params.addr = that.addr
+						params.addr = that.region.join('-')
 						params.region = that.detailaddr
 						params.province = ''
 						params.city = ''
-						params.zip = that.adcode						
+						params.zip = that.addrCode.pop()						
 						Api.getSite(params).then(function(res) {
-							console.log(res);
+							
 						})
 						wx.showToast({
 							title: '添加成功',
@@ -164,7 +133,7 @@
 					that.addrId = res.getaddr.addrId
 					that.username = res.getaddr.name
 					that.userphone = res.getaddr.mobile
-					that.addr = res.getaddr.addr
+					that.region = res.getaddr.addr.split('-')
 					that.detailaddr = res.getaddr.region
 					that.switch1Checked = res.getaddr.defAddr == 1 ? true : false
 				})
@@ -172,7 +141,7 @@
 		},
 		onLoad(options) {
 			let that = this
-			that.addrId = options.addrId
+			that.addrId = options.addrId	
 			that.memberId = store.state.userInfo.memberId
 			if(options.addrId != undefined) {
 				that.getAddrById(options.addrId)
@@ -185,7 +154,6 @@
 				that.addrId = ''
 				that.username = ''
 				that.userphone = ''
-				that.addr = ''
 				that.detailaddr = ''
 				that.switch1Checked = false
 				that.Type = ''
@@ -225,6 +193,11 @@
 			font-size: 32rpx;
 			font-weight: 100;
 			padding: 10rpx 20rpx;
+		}
+		.picker{
+			font-size:26rpx;
+			font-weight: 100;
+			color:#8e8e8e;
 		}
 		.item text {
 			width: 25%;

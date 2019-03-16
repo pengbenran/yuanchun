@@ -29,5 +29,9 @@ export default {
 	cancelOrder(params){
 		return API.PUT('/api/order/cancel',params)
 	},
+	// 查询物流
+	getLogistics(params){
+		return API.GET('/api/order/logistics',params)
+	}
 
 }

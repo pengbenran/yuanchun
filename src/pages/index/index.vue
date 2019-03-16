@@ -25,7 +25,7 @@
 				</div>
 
 				<!--新人礼包-->
-				<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index" v-if="item.state!=2">
+				<div class="giftbag" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
 					<div class="img">
 						<img :src="item.voucherType"/>
 					</div>
@@ -63,8 +63,8 @@
 							<span>恭喜您获得新人礼包</span>
 						</div>
 
-						<div class="more">
-							<img @click="more" src="/static/images/indexmore.png" />
+						<div class="more" @click="more">
+							<img  src="/static/images/indexmore.png" />
 						</div>
 					</div>
 				</div>
@@ -80,22 +80,15 @@
 						<div class="btn" @click="jumpmemberUp">立即购买</div>
 						<!--详情-->
 						<div class="detail">
+							
 							<div class="detail-shop">商品详情</div>
-							<div class="more" @click="more">
-								<span>查看详情</span>
-								<span class="iconfont" :class="isMore?'on':''"> &#xe72b;</span>
-							</div>
+							<!-- <div class="more">
+								<span>商品详情</span>
+								<span class="iconfont"> &#xe72b;</span>
+							</div> -->
 							<!--展开详情-->
-							<div class="more-check" v-show="isMore" :style="{height:height+'px',opacity:opacity}">
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
-								<p>法发顺丰</p>
+							<div class="more-check">
+								<wxParse :content="goodsDO.intro" @preview="preview" @navigate="navigate" />
 							</div>
 						</div>
 					</div>
@@ -110,6 +103,7 @@
 	import store from '@/store/store'
 	import loginModel from "@/components/loginModel";
 	import loading from '@/components/loading'
+	import wxParse from 'mpvue-wxparse'
 	export default {
 		data() {
 			return {
@@ -127,7 +121,8 @@
 		},
 		components: {
 			loginModel,
-			loading
+			loading,
+			wxParse
 		},
 		async mounted() {
 			var that = this;
@@ -136,6 +131,10 @@
 			that.getTicket()
 			that.getUserInfo(),
 			that.getmemberUpGoods()
+		},
+		onShow(){
+			let that=this
+			that.giftbag=store.state.giftbag
 		},
 		methods: {
 			//隐藏导航栏
@@ -200,7 +199,9 @@
 						else{
 							that.isTogo = true
 						}
-						that.giftbag=res.giftPackage
+						store.commit("stateGiftbag",res.giftPackage)	
+						that.giftbag=store.state.giftbag
+						
 					}
 				})
 			},
@@ -208,7 +209,7 @@
 			async getUserInfo() {
 				let that = this
 				await that.$refs.loginModel.userLogin()
-
+ 				wx.stopPullDownRefresh()
 			},
 			jumpCoupon: function() {
 				wx.navigateTo({
@@ -254,23 +255,6 @@
 					url: "../sign/main"
 				})
 
-			},
-			more() {
-				let that = this
-				that.isMore = !that.isMore
-				let op = 0.1
-				if(that.isMore) {
-					let interval = setInterval(function() {
-						op += 0.1
-						that.opacity = parseFloat(op)
-						if(op > 1) {
-							clearInterval(interval)
-						}
-					}, 40);
-				} else {
-                     that.opacity=0
-				}
-
 			}
 		},
 		onPullDownRefresh: function() {
@@ -281,6 +265,7 @@
 </script>
 
 <style lang="less">
+@import url("~mpvue-wxparse/src/wxParse.css");
 	/*checkbox 选项框大小  */
 	/*弹窗*/
 	
@@ -564,6 +549,7 @@
 		}
 		/*详情*/
 		.detail {
+			// margin-top: 30px;
 			.detail-shop {
 				width: 100%;
 				text-align: center;
@@ -573,32 +559,32 @@
 				color: #952731;
 				font-size: 15px;
 			}
-			.more {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding: 0 20px;
-				width: 100%;
-				height: 39px;
-				box-sizing: border-box;
-				border-top: 1px solid #f1f1f1;
-				border-bottom: 1px solid #f1f1f1;
-				transition: all .6s;
-				span {
-					display: block;
-					color: #992832;
-					font-size: 15px;
-					transition: all .3s;
-				}
-				.on {
-					transform: rotate(90deg);
-				}
-			}
-			.more-check {
-				width: 100%;
-				background: orangered;
-				transition: all .6s;
-			}
+			// .more {
+			// 	display: flex;
+			// 	justify-content: space-between;
+			// 	align-items: center;
+			// 	padding: 0 20px;
+			// 	width: 100%;
+			// 	height: 39px;
+			// 	box-sizing: border-box;
+			// 	border-top: 1px solid #f1f1f1;
+			// 	border-bottom: 1px solid #f1f1f1;
+			// 	transition: all .6s;
+			// 	span {
+			// 		display: block;
+			// 		color: #992832;
+			// 		font-size: 15px;
+			// 		transition: all .3s;
+			// 	}
+			// 	.on {
+			// 		transform: rotate(90deg);
+			// 	}
+			// }
+			// .more-check {
+			// 	width: 100%;
+			// 	background: orangered;
+			// 	transition: all .6s;
+			// }
 		}
 	}
 </style>
