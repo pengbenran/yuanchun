@@ -5,7 +5,7 @@
 		</blockquote>
 		<blockquote v-else>
 			<orderHeader :icon="icon" :status="status"/>
-			<orderList :orderList="orderList"/>
+			<orderList :orderList="orderList" :icon='icon' :status="status"/>
 		</blockquote>
 	</div>
 </template>

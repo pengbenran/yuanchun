@@ -1,24 +1,21 @@
 <template>
 	<div class="obligation">
 		<!---->
-		<div class="await">
-			
-		</div>
+		<orderHeader :icon="icon" :status="status"/>
+
 		<!--收货人-->
 		<div class="address">
 			<div class="address-left">
 				<p class="img"><img src="/static/images/ress.png" /></p>
 			</div>
-			<div class="address-cant">
-				<p>
-					收货人：{{orderDetail.shipName}}
-				</p>
-				<p class="fontHidden1">
-					收货地址:{{orderDetail.shipAddr}}
-				</p>
-			</div>
 			<div class="address-right">
-				{{orderDetail.shipMobile}}
+			   <div class="right_top">
+				    <div class="user">收货人：{{orderDetail.shipName}}</div>
+				    <div class="mobile">{{orderDetail.shipMobile}}</div>
+			   </div>
+			   <div class="right_bottom">
+                    收货地址:{{orderDetail.shipAddr}}
+			   </div>
 			</div>
 		</div>
 		<!--list-->
@@ -80,15 +77,18 @@
 
 <script>
 	import store from "@/store/store"
+	import orderHeader from '@/components/orderHeader'
 	export default {
 		data() {
 			return {
-				orderDetail:{}
+				orderDetail:{},
+				icon:'',
+				status:''
 			}
 		},
 
 		components: {
-
+             orderHeader
 		},
 
 		methods: {
@@ -97,8 +97,13 @@
 		mounted() {
 			let that=this
 			that.orderDetail=store.state.orderDetail
-			
-		}
+		},
+		onLoad(option){
+             let that = this;
+             that.icon = option.icon;
+			 that.status = option.status;
+		},
+
 	}
 </script>
 
@@ -140,16 +145,15 @@
 		/*收货人*/
 		.address {
 			width: 100%;
-			height: 88px;
 			display: flex;
 			justify-content: space-between;
-			padding: 0 14px;
+			padding: 10px 14px;
 			box-sizing: border-box;
 			align-items: center;
 			.address-left {
 				.img {
-					width: 12px;
-					height: 16px;
+					width: 22px;
+					height: 28px;
 					img {
 						width: 100%;
 						height: 100%;
@@ -157,10 +161,9 @@
 				}
 			}
 			.address-cant {
-				flex-grow: 1;
 				padding: 5px;
 				box-sizing: border-box;
-				font-size: 12px;
+				font-size: 15px;
 				p{
 					height: 30px;
 					width:250px;
@@ -168,11 +171,11 @@
 				}
 			}
 			.address-right {
+				margin-left: 10px;
+				flex-grow: 1;
 				color: #000000;
-				font-size: 12px;
-				align-self: flex-start;
-				margin-top: 28px;
-				
+				font-size: 16px;
+				align-self: flex-start;	
 			}
 		}
 		/*价格*/

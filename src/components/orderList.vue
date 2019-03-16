@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class='orderWarp'>
 		<div class="orderContain" v-for="(item,index) in orderList" :index="index" :key="item.orderId">
 			<blockquote v-if="item.orderType==1">
 				<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.productId">
@@ -107,7 +107,18 @@
 	import store from '@/store/store'
 	import utils from '@/utils/index'
 	export default {
-		props: ['orderList'],
+		props: {
+			orderList: {
+			    type: Object
+			},
+			icon: {
+		       	type: String
+			},
+			status: {
+				type:String,
+				default:'' 
+			}
+		},
 		data() {
 			return {
 
@@ -117,6 +128,7 @@
 			// 取消订单
 			cancelOrder(orderId,index){
 				let that=this
+			
 				wx.showModal({
 					title: '提示',
 					content: '是否取消订单?',
@@ -145,8 +157,10 @@
 			checkOrder(index){
 				let that=this
 				store.commit("stateOrderDetail",that.orderList[index])
+
+				console.log("你好世界123",that.icon,that.status)
 				wx.navigateTo({
-				 	url:'../obligation-detail/main',
+				 	url:`../obligation-detail/main?icon=${that.icon}&status=${that.status}`,
 				})
 			},
 			// 立即支付订单
@@ -237,18 +251,19 @@ img{
 		height: 100%;
 		display: block;
 	}
+
+.orderWarp{padding:8px;background:#f2f2f2;}
+.orderContain{margin-bottom:8px;background:#fff;border-radius:8px;}
 .orderContain{
-	margin-top: 5px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #ddd;
 	.orderList{
 		display: flex;
-		background: #E4E4E4;
 		padding: 10px;
 		box-sizing: border-box;
+
 		.goodImg{
 			width: 100px;
 			height: 100px;
+			border-radius:5px;
 			overflow: hidden;
 		}
 		.goodDetail{
@@ -293,12 +308,15 @@ img{
 		}
 	}
 	.orderFooter{
+		border-top:1px solid #f2f2f2;
+		padding-bottom:8px;
+		margin:0 8px;
 		p{
 			text-align:right;
 			padding-right: 15px;
 			height: 35px;
 			line-height:35px;
-			font-size: 16px;
+			font-size: 15px;
 		}
 		.btn{
 			float: right;

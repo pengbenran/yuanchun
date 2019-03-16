@@ -1,7 +1,7 @@
 {
   "pages": [  
-    "pages/logistics/main",    
     "pages/index/main", 
+    "pages/logistics/main",    
     "pages/addressDetail/main",
     "pages/inComing/main", 
     "pages/index-gift/main",
