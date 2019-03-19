@@ -35,9 +35,7 @@
 							<p>{{item.joinTime}}</p>
 						</div>
 					</div>
-				</blockquote>
-				
-				
+				</blockquote>		
 			</div>
 		</blockquote>
 	</div>

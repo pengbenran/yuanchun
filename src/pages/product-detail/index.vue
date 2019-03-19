@@ -5,7 +5,7 @@
 		</blockquote>
 		<blockquote v-else>
 			<!--轮播-->
-			<swiper indicator-dots>
+			<swiper indicator-dots :style="{height:Width+'px'}">
 				<div v-for="(item,index) in banner">
 					<swiper-item>
 						<div class='box'>
@@ -30,10 +30,10 @@
 					<span>包邮</span>
 					<span>月销{{detail.haveSpec}}笔</span>
 					<span>{{detail.brief}}</span>
-				</div>
-				<div>
-					<wxParse :content="detail.intro" @preview="preview" @navigate="navigate" />
-				</div>
+				</div>		
+			</div>
+			<div>
+				<wxParse :content="detail.intro" @preview="preview" @navigate="navigate" />
 			</div>
 			<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection'/>
 		</blockquote>
@@ -55,6 +55,7 @@
 				banner: [],
 				userInfo:{},
 				isLoading:false,
+				Width:''
 			}
 		},
 		components: {
@@ -96,6 +97,7 @@
 			let that=this
 			that.goodsId =that.$root.$mp.query.goodsId
 			that.userInfo = store.state.userInfo
+			that.Width=wx.getSystemInfoSync().windowWidth
 			that.getGoodsInfo(that.goodsId)
 		},
 		onUnload(){
@@ -115,7 +117,6 @@
 	/*轮播*/
 	swiper {
 		width: 100%;
-		height: 300px;
 		.box {
 			width: 100%;
 			height: 100%;
@@ -125,9 +126,12 @@
 			}
 		}
 	}
+	.wxParse .img{
+		display: flex;
+	}
 	/*产品详情*/
 	.detail{
-		padding: 0 10px;
+		padding: 0 20px;
 		box-sizing: border-box;
 		.pic{
 			padding: 17px 0 9px 0;

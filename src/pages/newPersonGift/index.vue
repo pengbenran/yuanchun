@@ -13,7 +13,7 @@
 					</div>
 					<div class="Address-item">
 						<div class="itemLeft">收货地址</div>
-						<div class="itemRight">{{addr.addr}}</div>
+						<div class="itemRight">{{addr.address}}</div>
 					</div>
 				</div>
 			</div>
@@ -68,7 +68,8 @@
 				userInfo:{},
 				personGiftIdArry:[],
                 moneySum:0,
-                freight:0
+                freight:0,
+                googitem:[]
 			}
 		},
 		components: {},
@@ -109,9 +110,10 @@
 		      		// (是否使用平台券)
 		      		bean.clickd = that.InputMask 
 		      		bean.orderType = 3
-		      		bean.shipAddr = that.addr.addr
+		      		bean.shipAddr = that.addr.address
 		      		bean.shipMobile = that.addr.mobile 
-		      		bean.shipName= that.addr.name	
+		      		bean.shipName= that.addr.name	      		
+					bean.googitem=JSON.stringify(that.googitem)
 		      		bean.itemsJson = JSON.stringify(that.personGift)	
 		      		that.saveOrder(bean)
 		      	}
@@ -132,11 +134,20 @@
 		    	params.orderId = that.order.orderId
 		    	params.sn = that.order.sn
    				params.shippingAmount=0
+   				// params.payAmount=Math.round(that.order.needPayMoney * 100)
    				params.payAmount=1
 			    //请求支付
 			    params.openId=that.userInfo.openId
 			    Api.ConfirmPay(params).then(function(PayRes){
-			    	wx.requestPayment({
+			    	if(PayRes.code==1){
+			    		wx.showToast({ 
+			    			title: '网络错误，请重试',
+			    			icon:'none',
+			    			duration: 2000
+			    		})
+			    		that.canbuy=true
+			    	}else{
+			    		wx.requestPayment({
 			                timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
 			                nonceStr: PayRes.Map.nonceStr, //随机字符串，长度为32个字符以下,
 			                package: PayRes.Map.package, //统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*,
@@ -156,8 +167,10 @@
 	                        that.canbuy=true
 	                    },
 	                });
+			    	}
+
 			    })
-			    },
+			},
 			      payReturen(){
 			      	let that=this
 			      	let orderParams = {}
@@ -178,12 +191,9 @@
 			      					 item.repacketId!=that.personGiftIdArry[i]
 			      				)
 			      			}
-			    			console.log(giftbag);
 							utils.updateUserInfo()
 			      			store.commit("stateGiftbag",giftbag)
-			      			setTimeout(function(){
-			      				wx.switchTab({ url: '/pages/index/main'});
-			      			},1000)
+			      			wx.switchTab({ url: '/pages/index/main'});
     				 }
     				}) 
 			      },
@@ -197,10 +207,17 @@
 			let that=this
 			that.personGift =store.state.personGift
 			for(var i in that.personGift){
-				that.personGiftIdArry.push(that.personGift[i].repacketId)
 				if(that.personGift[i].repacketId==1){
 					that.freight=wx.getStorageSync('postage')
+					let googobj={}
+					googobj.num=1
+					googobj.pic=1
+					googobj.image=that.personGift[i].voucherType
+					googobj.name=that.personGift[i].repacketName
+					googobj.price=that.personGift[i].conditionAmount
+					that.googitem.push(googobj)	
 				}
+				that.personGiftIdArry.push(that.personGift[i].repacketId)
 			}
 			that.userInfo=store.state.userInfo
 		},
@@ -222,6 +239,7 @@
 			that.canbuy=true
 			that.userInfo={}
 			that.personGiftIdArry=[]
+			that.googitem=[]
 			that.moneySum=0
 			that.freight=0
 		},

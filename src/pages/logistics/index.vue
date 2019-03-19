@@ -1,17 +1,20 @@
 <template>
 	<div class="logistics">
-		<div class="header">
-			<div class="img">
-				<img src="/static/images/indexlist.png">
+		<div class="logisticsHeader">
+			<div  class="orderList" v-for="(item,index) in itemsJson" :index="index" :key="item">	
+				<div class="img">
+					<img :src="item.image">
+				</div>
+				<div class="detail">
+					<p class="title fontHidden">{{item.name}}</p>
+					<p class="priceNum"><span>￥{{item.price}}</span><span>X{{item.num}}</span></p>
+				</div>
 			</div>
-			<div class="detail">
-				<p class="title fontHidden">集散地放假啊soID发奇偶按实际坚实的佛家搜房祭扫打飞机扫</p>
-				<p class="priceNum"><span>￥17.9</span><span>X1</span></p>
-			</div>
+			
 		</div>
 		<div class="logisticsCompany">
 			<div class="companyName">{{logisticsCompany}}</div>
-			<div class="logisticsNo">运单编号:{{shipNo}} &nbsp;&nbsp;<span class="copy">复制</span></div>
+			<div class="logisticsNo">运单编号:{{shipNo}} &nbsp;&nbsp;<span class="copy" @click="copy">复制</span></div>
 		</div>
 		<div class="logisticsDetil">
 			<div class="logisticsTitle">
@@ -40,29 +43,40 @@
 			return{
 				logisticsCompany:'',
 				express:[],
-				shipNo:''
+				shipNo:'',
+				itemsJson:[],
+				orderId:''
 			}
 		},
 		components:{
 			
 		},
 		methods:{
-		getLogistics(){
+		getLogistics(orderId){
 			let that=this
 			let params={}
-			params.orderId=299
+			params.orderId=orderId
 			Api.getLogistics(params).then(function(res){
 				that.logisticsCompany=res.com
 				that.express=res.express
 				that.shipNo=res.shipNo
 			})
+		},
+		copy(){
+			let that=this
+			wx.setClipboardData({
+				data:that.shipNo,
+				success: function(res) {
+
+				}
+			})
 		}
-			
-	
 		},
 		mounted(){
 			let that=this
-			that.getLogistics()
+			that.orderId=that.$root.$mp.query.orderId
+			that.itemsJson=JSON.parse(that.$root.$mp.query.itemsJson) 
+			that.getLogistics(that.orderId)
 		}
 	}
 </script>
@@ -72,34 +86,37 @@
 		height: 100%;
 		display: block;
 	}
-	.header{
-		display: flex;
-		justify-content: space-between;
+	.logisticsHeader{
 		border-bottom: 8px solid #F1F1F1;
 		padding: 5px;
 		box-sizing: border-box;
-		.img{
-			width: 100px;
-			height: 100px;
-			border: 1px solid #ddd;
-			overflow: hidden;
-		}
-		.detail{
-			flex-grow: 1;
+		.orderList{
 			display: flex;
-			flex-direction:column;
-			justify-content: space-around;
-			.title{
-				width:250px;
-				font-size: 16px;
-				padding:5px;
-				box-sizing: border-box; 
+			justify-content: space-between;
+			margin-bottom: 5px;
+			.img{
+				width: 100px;
+				height: 100px;
+				border: 1px solid #ddd;
+				overflow: hidden;
 			}
-			.priceNum{
-				font-size: 16px;
+			.detail{
+				flex-grow: 1;
 				display: flex;
-				justify-content: space-between;
-				padding: 0 10px;
+				flex-direction:column;
+				justify-content: space-around;
+				.title{
+					width:250px;
+					font-size: 16px;
+					padding:5px;
+					box-sizing: border-box; 
+				}
+				.priceNum{
+					font-size: 16px;
+					display: flex;
+					justify-content: space-between;
+					padding: 0 10px;
+				}
 			}
 		}
 	}

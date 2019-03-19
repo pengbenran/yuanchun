@@ -5,7 +5,7 @@
 		</blockquote>
 		<blockquote v-else>
 			<!--轮播-->
-			<div class='test'>
+			<div class='test' :style="{height:Height+'px'}">
 				<swiper display-multiple-items='1' circular previous-margin='28px' next-margin='28px' indicator-dots>
 					<div v-for="(item,index) in banner" :key="item.imageId" :index="index">
 						<swiper-item>
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<!--海报-->
-			<div class="poster">
+			<div class="poster" :style="{height:kindHeight+'px'}">
 				<img :src="catImg" />
 			</div>
 			<!--产品列表-->
@@ -37,7 +37,6 @@
 		</blockquote>
 	</div>
 </template>
-
 <script>
 	import product from '@/components/product'
 	import Api from "@/api/goods";
@@ -59,6 +58,8 @@
 				kindIndex:0,
 				catId:'',
 				isLoading:false,
+				Height:'',
+				kindHeight:''
 			}
 		},
 
@@ -71,7 +72,6 @@
 			async getGoodsAll(catId,pages,limit){
 				let that=this
 				if(that.hasMore[that.kindIndex]){
-					that.isLoading=false
 					let params={}
 					params.catId=catId
 					params.offset=pages*limit
@@ -99,6 +99,12 @@
 				let that=this
 				that.catId=catId
 				that.kindIndex=index
+				that.catImg=that.cate[index].image
+				for(var i in that.cate){
+					that.hasMore[i]=true
+					that.goodsList[i]=[]
+					that.nowPage[i]=0
+				}
 				that.getGoodsAll(catId,that.nowPage[that.kindIndex],that.limit)
 			}
 		},
@@ -108,8 +114,8 @@
 				if(res.code==0){
 					that.cate=res.firstGoodCat
 					that.catImg=res.firstGoodCat[0].image
-					that.banner=res.banner
-					that.catId=res.firstGoodCat[0].catId
+					that.banner=res.shopBanner
+					that.catId=res.firstGoodCat[0].catId 
 					for(var i in that.cate){
 						that.hasMore[i]=true
 						that.goodsList[i]=[]
@@ -122,12 +128,15 @@
 
 				}
 			})
+			that.Height=wx.getSystemInfoSync().windowWidth/2
+			that.kindHeight=wx.getSystemInfoSync().windowWidth/2.5
 		},
 		onReachBottom:function(){
 			let that = this;
 			that.nowPage[that.kindIndex]+=1
 			that.getGoodsAll(that.catId,that.nowPage[that.kindIndex],that.limit)
 		},
+		
 		onPullDownRefresh: function(){	
 			wx.stopPullDownRefresh()
 		},
@@ -139,7 +148,6 @@
 	
 	.test {
 		width: 100%;
-		height: 172px;
 		box-sizing: border-box;
 	}
 	
@@ -204,7 +212,6 @@
 	
 	.poster {
 		width: 100%;
-		height: 167px;
 		img {
 			width: 100%;
 			height: 100%;

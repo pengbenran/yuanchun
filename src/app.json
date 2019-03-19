@@ -1,7 +1,8 @@
 {
-  "pages": [  
+  "pages": [
+    "pages/index/main",
+    "pages/bindbankCard/main",  
     "pages/logistics/main",    
-    "pages/index/main", 
     "pages/addressDetail/main",
     "pages/inComing/main", 
     "pages/index-gift/main",
@@ -20,7 +21,8 @@
     "pages/shop/main",
     "pages/Partner/main",
     "pages/cart-order/main",
-    "pages/myself/main"
+    "pages/myself/main",
+    "pages/favoriteList/main"
   ],
   "window": {
     "backgroundTextStyle": "light", 

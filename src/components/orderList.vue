@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class='orderWarp'>
 		<div class="orderContain" v-for="(item,index) in orderList" :index="index" :key="item.orderId">
 			<blockquote v-if="item.orderType==1">
 				<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.productId">
@@ -30,8 +30,12 @@
 						<div class="btnleft" @click="cancelOrder(item.orderId,index)">取消订单</div>
 						<div class="btnright" @click="payOrder(item.orderId,item.shippingAmount,item.sn,item.needPayMoney,index)">提交付款</div>
 					</div>
-					<div class="btn" v-else>
-						<div class="btnleft">查看物流</div>
+					<div class="btn" v-if="item.status==1">
+						<div class="btnleft" @click="remind">提醒发货</div>
+						<div class="btnright"  @click="checkOrder(index)">查看订单</div>
+					</div>
+					<div class="btn" v-if="item.status==3||item.status==4">
+						<div class="btnleft" @click="jumplogistics(index)">查看物流</div>
 						<div class="btnright" @click="checkOrder(index)">查看订单</div>
 					</div>
 					<div class="clear"></div>
@@ -60,8 +64,12 @@
 						<div class="btnleft" @click="cancelOrder(item.orderId,index)">取消订单</div>
 						<div class="btnright" @click="payOrder(item.orderId,item.shippingAmount,item.sn,item.needPayMoney,index)">提交付款</div>
 					</div>
-					<div class="btn" v-else>
-						<div class="btnleft">查看物流</div>
+					<div class="btn" v-if="item.status==1">
+						<div class="btnleft"  @click="remind">提醒发货</div>
+						<div class="btnright"  @click="checkOrder(index)">查看订单</div>
+					</div>
+					<div class="btn" v-if="item.status==3||item.status==4">
+						<div class="btnleft" @click="jumplogistics(index)">查看物流</div>
 						<div class="btnright" @click="checkOrder(index)">查看订单</div>
 					</div>
 					<div class="clear"></div>
@@ -90,15 +98,51 @@
 						<div class="btnleft" @click="cancelOrder(item.orderId,index)">取消订单</div>
 						<div class="btnright" @click="payOrder(item.orderId,item.shippingAmount,item.sn,item.needPayMoney,index)">提交付款</div>
 					</div>
-					<div class="btn" v-else>
-						<div class="btnleft" >查看物流</div>
+					<div class="btn" v-if="item.status==1">
+						<div class="btnleft"  @click="remind">提醒发货</div>
+						<div class="btnright"  @click="checkOrder(index)">查看订单</div>
+					</div>
+					<div class="btn" v-if="item.status==3||item.status==4">
+						<div class="btnleft" @click="jumplogistics(index)">查看物流</div>
 						<div class="btnright" @click="checkOrder(index)">查看订单</div>
 					</div>
 					<div class="clear"></div>
 				</div>
 			</blockquote>
-
-			
+			<blockquote v-if="item.orderType==5">
+				<div class="orderList"  v-for="(innerItem,innerIndex) in item.itemsJson" :index="innerIndex" :key="innerItem.repacketId">
+					<div class="goodImg">
+						<img :src="innerItem.image">
+					</div>
+					<div class="goodDetail">
+						<div class="top">
+							<div class="left">
+								<p class="fontHidden">{{innerItem.name}}</p>
+							</div>
+							<div class="number">X{{innerItem.num}}</div>
+						</div>
+						<div class="price">
+							<span>¥{{innerItem.price}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="orderFooter">
+					<p>共计{{item.count}}件商品 合计:￥{{item.orderAmount}}</p>
+					<div class="btn" v-if="item.status==0">
+						<div class="btnleft" @click="cancelOrder(item.orderId,index)">取消订单</div>
+						<div class="btnright" @click="payOrder(item.orderId,item.shippingAmount,item.sn,item.needPayMoney,index)">提交付款</div>
+					</div>
+					<div class="btn" v-if="item.status==1">
+						<div class="btnleft"  @click="remind">提醒发货</div>
+						<div class="btnright"  @click="checkOrder(index)">查看订单</div>
+					</div>
+					<div class="btn" v-if="item.status==3||item.status==4">
+						<div class="btnleft" @click="jumplogistics(index)">查看物流</div>
+						<div class="btnright" @click="checkOrder(index)">查看订单</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</blockquote>		
 		</div>
 	</div>
 </template>
@@ -107,7 +151,18 @@
 	import store from '@/store/store'
 	import utils from '@/utils/index'
 	export default {
-		props: ['orderList'],
+		props: {
+			orderList: {
+			    type: Object
+			},
+			icon: {
+		       	type: String
+			},
+			status: {
+				type:String,
+				default:'' 
+			}
+		},
 		data() {
 			return {
 
@@ -117,6 +172,7 @@
 			// 取消订单
 			cancelOrder(orderId,index){
 				let that=this
+			
 				wx.showModal({
 					title: '提示',
 					content: '是否取消订单?',
@@ -141,12 +197,30 @@
 					}
 				})
 			},
+			// 查看物流
+			jumplogistics(index){
+				let that=this
+				console.log(that.orderList[index]);
+				let itemsJson=JSON.stringify(that.orderList[index].itemsJson)
+				let url=`../logistics/main?orderId=${that.orderList[index].orderId}&itemsJson=${itemsJson}`
+				wx.navigateTo({
+				 	url:url,
+				})
+			},
+			// 提醒发货
+			remind(){
+				wx.showToast({
+					title: '已提醒',
+					icon: 'success',
+					duration: 2000
+				})
+			},
 			// 查看订单
 			checkOrder(index){
 				let that=this
 				store.commit("stateOrderDetail",that.orderList[index])
 				wx.navigateTo({
-				 	url:'../obligation-detail/main',
+				 	url:`../obligation-detail/main?icon=${that.icon}&status=${that.status}`,
 				})
 			},
 			// 立即支付订单
@@ -174,8 +248,8 @@
 			 		wx.showLoading({ title: '加载中',})
 			 		params.sn = sn
 			 		params.openId=that.userInfo.openId
-			 		// params.payAmount = needPayMoney*100
-			 		params.payAmount = 1
+			 		// params.payAmount = Math.round(needPayMoney * 100)
+			 		params.payAmount=1
 			 		params.shippingAmount=shippingAmount
 			 		Api.ConfirmPay(params).then(function(parRes){
 			 			if(parRes.code==0){
@@ -237,18 +311,19 @@ img{
 		height: 100%;
 		display: block;
 	}
+
+.orderWarp{padding:8px;background:#f2f2f2;}
+.orderContain{margin-bottom:8px;background:#fff;border-radius:8px;}
 .orderContain{
-	margin-top: 5px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #ddd;
 	.orderList{
 		display: flex;
-		background: #E4E4E4;
 		padding: 10px;
 		box-sizing: border-box;
+
 		.goodImg{
 			width: 100px;
 			height: 100px;
+			border-radius:5px;
 			overflow: hidden;
 		}
 		.goodDetail{
@@ -293,12 +368,15 @@ img{
 		}
 	}
 	.orderFooter{
+		border-top:1px solid #f2f2f2;
+		padding-bottom:8px;
+		margin:0 8px;
 		p{
 			text-align:right;
 			padding-right: 15px;
 			height: 35px;
 			line-height:35px;
-			font-size: 16px;
+			font-size: 15px;
 		}
 		.btn{
 			float: right;

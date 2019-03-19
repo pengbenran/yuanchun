@@ -8,10 +8,9 @@
 		selectSubordinate(params){
 			return API.GET('/api/place/selectSubordinate',params)
 		},
-
 		//用户提现
 		userBalancePay(params){
-			return API.POST('/api/distribe/submitDistribeApply',params)
+			return API.POST('/api/distribe/withdraw',params)
 		},
 
 		//用户提现记录
@@ -34,6 +33,18 @@
 		// 获取分润详情
 		shareDetails(params){
 			return API.GET('/api/place/shareDetails',params)
-		}
-		
+		},
+
+		//获取收藏的商品
+		getfavoritelist(params){
+			return API.GET('/api/favorite/get',params)
+		},
+		// 绑定银行卡
+		SubmitBankCard(params){
+			return API.POST('/api/distribe/submitDistribeApply',params)
+		},
+		// 判断是否绑定银行卡
+		isBind(params){
+			return API.GET('/api/distribe/isHaveCard',params)
+		}	
 	}

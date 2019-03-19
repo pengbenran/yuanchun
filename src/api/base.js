@@ -35,6 +35,8 @@ fly.interceptors.response.use(
   // let base='https://zhifenxiang.guqinet.com'
    // let base='https://www.aiychbaby.cn'
    let base='http://192.168.2.132:8080'
+//    let base='http://192.168.2.132:8080/yuanchun'
+
 export const POST = (url, params) => {
   return fly.post(`${base}${url}`, params,{headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
