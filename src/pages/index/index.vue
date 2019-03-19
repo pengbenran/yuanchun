@@ -4,10 +4,10 @@
 			<loading></loading>
 		</blockquote>
 		<blockquote v-else>
-			<div style="padding-bottom: 40px;">
+			<div>
 				<!--轮播图-->
 				<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22">
-					<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index">
+					<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index" @click="Brandjump(item.goodsId)">
 						<img :src="item.imageUrl" mode='widthFix' />
 					</swiper-item>
 				</swiper>
@@ -37,7 +37,7 @@
 					</div>
 				</div>
 				<div class="xian"></div>
-
+				
 				<!--签到-->
 				<div class="sign" @click="jump">
 					<div class="sign-wp">
@@ -51,6 +51,7 @@
 						</div>
 					</div>
 				</div>
+
 				<!--弹窗-->
 				<div class="popup" catchtouchmove="true" v-if="isTogo">
 					<div class="popup-wp">
@@ -68,6 +69,7 @@
 						</div>
 					</div>
 				</div>
+
 				<!--商品-->
 				<div class="recommend">
 					<div class="recommend-li">
@@ -93,6 +95,7 @@
 						</div>
 					</div>
 				</div>
+				
 			</div>
 	</blockquote>
 	<loginModel ref="loginModel"></loginModel>
@@ -225,6 +228,15 @@
 				wx.navigateTo({
 					url: '../newPersonGift/main?orderType=2'
 				})
+			},
+
+			//brand跳转
+			Brandjump(goodsId){
+				if(goodsId){
+					wx.navigateTo({
+						url:'../product-detail/main?goodsId='+goodsId
+					})
+				}
 			},
 
 			//立即抢购按钮

@@ -167,11 +167,11 @@
 			height: 100%;
 		}
 	}
-	/*轮播*/
 	
+	/*轮播*/
 	.cate {
 		width: 100%;
-		padding: 37px 17px 16px 17px;
+		padding:18px;
 		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
