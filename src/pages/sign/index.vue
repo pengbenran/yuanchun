@@ -81,7 +81,8 @@
 				isLoading:false,
 				listArry:[{num:'1',isSelect:true},{num:'5',isSelect:false},{num:'10',isSelect:false}],
 				canSubmit:true,
-				goodsDetail:{}
+				goodsDetail:{},
+				num:''
 			}
 		},
 		computed: {
@@ -95,29 +96,44 @@
 			//获取当前时间的年月日
 			get_Time(){	  
 			   let that = this;
-			   if(that.todyYear==that.value[0]&&that.todyMonth==that.value[1]&&that.todyDay==that.value[2]){
-				   	wx.showLoading({title: '加载中'})   
-				   	let time = that.value.join('-')
-				   	let data = {
-				   		memberId:that.userInfo.memberId,
-				   		time:time
-				   	}
-				   	API.get_Click(data).then(res => {
-				   		if(res.code == 0){
-				   			that.userInfo.mp = res.point;
-				   			that.getSign();
-				   			ToastShow('成功','success')
-				   		}else{
-				   			ToastShow('今日已签到','none')
-				   		}
-				   	}).catch(err => {
-				   		ToastShow('失败','loading')
-				   	}) 		
+			   if(that.userInfo.defaultLv==1){
+			   	wx.showModal({
+			   		title: '提示',
+			   		content: '您还不是合伙人哦~无法签到',
+			   		confirmText:'去成为',
+			   		success(res) {
+			   			if (res.confirm) {
+			   				wx.switchTab({url: '../index/main'});
+			   			} else if (res.cancel) {
+
+			   			}
+			   		}
+			   	})
 			   }
 			   else{
-			   	ToastShow('只能签到当天的哦','none')
-			   }
-			   
+			   	if(that.todyYear==that.value[0]&&that.todyMonth==that.value[1]&&that.todyDay==that.value[2]){
+			   		wx.showLoading({title: '加载中'})   
+			   		let time = that.value.join('-')
+			   		let data = {
+			   			memberId:that.userInfo.memberId,
+			   			time:time
+			   		}
+			   		API.get_Click(data).then(res => {
+			   			if(res.code == 0){
+			   				that.userInfo.mp = res.point;
+			   				that.getSign();
+			   				ToastShow('成功','success')
+			   			}else{
+			   				ToastShow('今日已签到','none')
+			   			}
+			   		}).catch(err => {
+			   			ToastShow('失败','loading')
+			   		}) 		
+			   	}
+			   	else{
+			   		ToastShow('只能签到当天的哦','none')
+			   	}
+			   }		   
 			},
 			select(val) {
 				this.value=val
@@ -156,6 +172,7 @@
 					that.countMp=that.listArry[index].num*that.oneBox
 					that.listArry[index].isSelect=true
 					that.postage=that.listArry[index].num*that.postage
+					that.num=that.listArry[index].num
 				}
 				
 			},
@@ -227,9 +244,8 @@
 					let goodarr=[]
 					let goodlist={}
 					let bean = {}
-					console.log("2");
-					goodlist.pic = that.countMp
-					goodlist.num = that.countMp;
+					goodlist.pic = that.num
+					goodlist.num = that.num;
 					goodlist.image = thumbnail
 					goodlist.name = name
 					goodlist.goodsId = goodsId
@@ -246,7 +262,6 @@
 					bean.shipName= that.memberAddressDO.name	
 					bean.itemsJson=JSON.stringify(goodarr)
 					bean.goodsNum = that.countMp
-					console.log(bean);
 					api_order.giftUser(bean).then(res => {
 						that.canSubmit=true
 						if(res.code == 0){
@@ -265,7 +280,7 @@
 				let that = this;
 				let params ={}
 				params.sn = order.sn
-				// params.payAmount = order.needPayMoney * 100
+				// params.payAmount = Math.round(order.needPayMoney * 100)
 				params.payAmount=1
 				//请求支付
 				params.openId=that.userInfo.openId
@@ -337,6 +352,8 @@
 			that.value=[that.todyYear,that.todyMonth,that.todyDay]
 			that.oneBox = wx.getStorageSync('oneBox')	
 			that.postage = wx.getStorageSync('postage')
+			that.countMp=that.listArry[0].num*that.oneBox
+			that.num=that.listArry[0].num
 			that.getSign();
 		}
 	}

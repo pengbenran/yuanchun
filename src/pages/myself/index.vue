@@ -37,7 +37,7 @@
 					<p class="num">{{point}}</p>
 					<p class="name">平台券</p>
 				</div>
-				<div class="list" @click="jump('../privilege/main')">
+				<div class="list" @click="jump('../inComing/main')">
 					<p class="num">{{advance}}</p>
 					<p class="name">余额</p>
 				</div>
@@ -92,10 +92,11 @@
 <script>
 	import store from '@/store/store'
 	import Api from '@/api/member'
+	import Api_order from '@/api/order'
 	import Lib from '@/utils/index'
 	import loading from '@/components/loading'
 	import utils from '@/utils/index'
-
+	import api_site from '@/api/site'
 	export default {
 		data() {
 			return {
@@ -154,7 +155,6 @@
 		methods: {
 			jump(url) {
 				let that = this
-				console.log(url,that.userInfo.defaultLv,"信息")
 				if(url == "../kefu/main") {
 					that.makePhone()
 				}else if(url == "../privilege/main" && that.userInfo.defaultLv == 1){
@@ -174,6 +174,7 @@
 			},
 			jumpvipUp(){
 				let that=this
+				let goodItem=store.state.goodItem
 				if(that.count>=that.condition){
 					let params={}
 					params.memberId=that.userInfo.memberId
@@ -214,7 +215,7 @@
 			},
 			// 升级高级合伙人
 			upshift(params){
-				let that=this
+				let that=this	
 				that.isClickUp=false
 				Api.upshift(params).then(function(res){	
 					if(res.code==0){
@@ -257,7 +258,6 @@
 					that.condition=res.condition
 				})
 			},
-
    			// 获取订单数据
    			getallCount(){
    				let that=this

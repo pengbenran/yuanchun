@@ -11,11 +11,17 @@
 				<div class="headerTitle">{{userInfo.uname}}</div>
 			</div>
 			<div class="partnerTitle">
-				我的佣金
+				我的余额
 			</div>
 			<div class="myTeam">
 				<div class="myTeamTitle">
-					收益明细
+					<span>
+						余额明细	
+					</span>
+					<span>
+						余额累计:{{total}}	
+					</span>
+					
 				</div>
 				<div class="teamList" v-for="(item,index) in inComingList" :key="item.payId" :index='index' @click="showMore(index)">
 					<div class="teamListIntro">
@@ -26,18 +32,18 @@
 							<span class="name">{{item.uname}}</span>
 						</div>
 						<div class="right">
-							返佣:￥{{item.total}}
+							余额:+￥{{item.total}}
 						</div>
 					</div>
 					<div class="teamListDetail" v-show="item.isSelct">
 						<p>订单编号:{{item.sn}}</p>
 						<p class="timer">
 							<span>下单时间:{{item.payTime}}</span>
-							<span>等级奖励:￥{{item.bonus}}</span>
+							<span>管理奖励:￥{{item.bonus}}</span>
 						</p>
 						<p class="money">
 							<span class="consum">消费金额:￥{{item.orderAmount}}</span>
-							<span class="returnCommission">商品返佣:￥{{item.payMoney}}</span>
+							<span class="returnCommission">商品奖励:￥{{item.payMoney}}</span>
 						</p>
 					</div>	
 				</div>
@@ -57,10 +63,11 @@
 				isLoading:false,
 				inComingList:[],
 				hasMore:true,
-				limit:7,
+				limit:10,
 				pages:0,
 				hasMore:true,
-				userInfo:{}
+				userInfo:{},
+				total:0
 			}
 		},
 
@@ -80,12 +87,10 @@
 			shareDetails(){
 			    let that=this
 				if(that.hasMore){
-					that.isLoading=false
 					let params={}
 					params.limit=that.limit
 					params.offset=that.pages*that.limit
-					// params.memberId=that.userInfo.memberId
-					params.memberId=191
+					params.memberId=that.userInfo.memberId
 					Api.shareDetails(params).then(function(res){
 						that.isLoading=true
 						if(res.rows.length<that.limit){
@@ -96,6 +101,7 @@
 							item.total=utils.accAdd(item.payMoney,item.bonus)
 							item.joinTime=utils.formatTime(item.regtime)
 						})
+						that.total=res.total
 						that.inComingList=that.inComingList.concat(res.rows)
 					})
 				}else{
@@ -173,8 +179,12 @@ img{
 	.myTeamTitle{
 		height: 40px;
 		line-height:40px;
-		padding-left: 10px;
-		font-size: 18px;
+		padding: 0 10px;
+		font-size: 14px;
+		color: #333333;	
+		box-sizing: border-box;
+		display: flex;
+		justify-content: space-between;	
 	}
 	.teamList{
 		.teamListIntro{

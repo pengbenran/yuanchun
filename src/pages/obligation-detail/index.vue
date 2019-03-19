@@ -29,6 +29,9 @@
 			<div class="list-left" v-if="orderDetail.orderType==3">
 				<p class="img"><img :src="item.voucherType" /></p>
 			</div>
+			<div class="list-left" v-if="orderDetail.orderType==5">
+				<p class="img"><img :src="item.image" /></p>
+			</div>
 			<div class="list-cant fontHidden1" v-if="orderDetail.orderType==1">		
 	           {{item.name}}
 			</div>
@@ -38,6 +41,9 @@
 			<div class="list-cant fontHidden1" v-if="orderDetail.orderType==3">		
 	           {{item.repacketName}}
 			</div>
+			<div class="list-cant fontHidden1" v-if="orderDetail.orderType==5">		
+	           {{item.name}}
+			</div>
 			<div class="list-right" v-if="orderDetail.orderType==1">
 				<span>¥{{item.price}}</span>
 				<span>x{{item.num}}</span>				
@@ -46,16 +52,16 @@
 				<span>¥{{item.conditionAmount}}</span>
 				<span>x1</span>				
 			</div>
+			<div class="list-right" v-if="orderDetail.orderType==5">
+				<span>¥{{item.price}}</span>
+				<span>x{{item.num}}</span>				
+			</div>
 		</div>
 		<!--价格-->
 		<div class="pic">
-			<div class="pic-wp1">
-				<span>商品总价</span>
-				<span>¥{{orderDetail.orderAmount}}</span>
-			</div>
 			<div class="pic-wp2">
 				<span>运费（快递）</span>
-				<span v-if="orderDetail.orderType==3">¥13</span>
+				<span v-if="orderDetail.orderType==3||orderDetail.orderType==5">¥{{postage*num}}</span>
 				<span v-else>¥0</span>
 			</div>
 			<div class="pic-wp4" v-if="orderDetail.orderType==1">
@@ -83,7 +89,9 @@
 			return {
 				orderDetail:{},
 				icon:'',
-				status:''
+				status:'',
+				postage:'',
+				num:1
 			}
 		},
 
@@ -97,11 +105,13 @@
 		mounted() {
 			let that=this
 			that.orderDetail=store.state.orderDetail
+			that.num=that.orderDetail.itemsJson[0].num
 		},
 		onLoad(option){
              let that = this;
              that.icon = option.icon;
 			 that.status = option.status;
+			 that.postage = wx.getStorageSync('postage')
 		},
 
 	}
@@ -171,6 +181,12 @@
 				}
 			}
 			.address-right {
+				.right_top{
+					display: flex;
+					height: 40px;
+					line-height: 40px;
+					justify-content: space-between;
+				}
 				margin-left: 10px;
 				flex-grow: 1;
 				color: #000000;
@@ -187,6 +203,8 @@
 		   .pic-wp1, .pic-wp2, .pic-wp3, .pic-wp4,{		 
 		    display: flex;
 		    font-size: 11px;
+		    height: 35px;
+		    line-height:35px;
 		    justify-content: space-between;
 		   		
 		   }
@@ -200,16 +218,9 @@
            }	
            .pic-wp3{
            	color: #000000;
-           		margin-top: 12px;
            }	
            .pic-wp4{
-           	color: #000000;
-           		margin-top: 6px;
-           		border-bottom: 1px solid #e6e6e6;
-           		border-top: 1px solid #e6e6e6;
-           		padding: 5px 0;
-           		box-sizing: border-box;
-           		
+           	color: #000000;  		
            	span{
            		&:nth-child(2){
            			color: #c40000            ;
@@ -220,7 +231,7 @@
 		/*list*/
 		.list {
 			width: 100%;
-			height: 90px;
+			height: 115px;
 			display: flex;
 			justify-content: space-between;
 			padding: 0 14px;

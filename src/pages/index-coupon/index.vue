@@ -62,7 +62,7 @@ import Utils from '@/utils/index'
 				let that = this;
 				let params ={}
 				params.sn = Utils.random_No(10)
-				// params.total_fee = item.money * 100
+				// params.payAmount = Math.round(item.money * 100)
 				params.payAmount=1
 				params.shippingAmount=0
 				//请求支付
@@ -76,7 +76,6 @@ import Utils from '@/utils/index'
 						paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 						success: res => {
 							that.ticketTopUp(item)
-							console.log(res,"支付成功")
 							
 						},
 						fail: function (res) {
@@ -100,13 +99,13 @@ import Utils from '@/utils/index'
 				wx.showLoading({title: '加载中'})
 				let data = Object.assign({},item,{memberId:that.userInfo.memberId})
 				API.ticketTopUp(data).then(res => {
-					console.log("提交订单",res)
 					if(res.code == 0){
 						wx.showToast({ 
 							title: '充值成功',
 							icon:'none',
 							duration: 2000
 						})
+						Utils.updateUserInfo()
 						wx.switchTab({
 						   url: '../myself/main'
 						})
@@ -125,7 +124,6 @@ import Utils from '@/utils/index'
 			getTicket(){
 				let that = this;
 				API.getTicket().then(res => {
-				   console.log(res,"打印成功数据")
 				   if(res.code == 0){
 					 that.memberTiket = res.memberTiket
 					 wx.hideLoading()

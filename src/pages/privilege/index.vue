@@ -1,6 +1,6 @@
 <template>
 	<div class="privilege">
-		<div class="header">
+		<div class="privilegeheader">
 			<div class="avator">
 				<img :src="userInfo.face">
 			</div>
@@ -16,13 +16,13 @@
 					<input type="number" v-model="inputVal" placeholder="输入提现金额">
 				</span>
 				<span class="all" @click="allBalance">全部提现</span>
-				<span class="btn" @click="balancePay">提现</span>
+				<span class="btn" @click="isBindCard">提现</span>
 			</div>
 		</div>
 		<div class="menu">
 			<div class="menuList" @click="jump('../inComing/main')" v-if="userInfo.default!=1">
 				<img src="/static/images/menu1.png">
-				佣金
+				余额
 			</div>
 			<div class="menuList" @click="jump('../orderList/main?orderStatus=0')">
 				<img src="/static/images/menu2.png">
@@ -74,6 +74,31 @@
 					url:url,
 				})
 			},
+			isBindCard(){
+				let that=this
+				let params={}
+				params.memberId=that.userInfo.memberId
+				Api.isBind(params).then(function(res){
+					console.log(res)
+					if(res.code==1){
+						wx.showModal({
+							title: '提示',
+							content: '您还未绑定银行卡,是否立即绑定',
+							confirmText:'去绑定',
+							success(res) {
+								if (res.confirm) {
+									wx.navigateTo({url: '../bindbankCard/main'});
+								} else if (res.cancel) {
+								}
+							}
+						})
+					}
+					else{
+						that.balancePay()
+					}
+					
+				})
+			},
 			balancePay(){
 				let that = this;
 				if(that.inputVal>that.userInfo.advance){
@@ -92,11 +117,11 @@
 						data.memberId = that.userInfo.memberId
 						data.amount = that.inputVal
 						Api.userBalancePay(data).then(res => {
-							that.canSubmit=true
-							that.inputVal=''
+							that.canSubmit=true	
 							if(res.code == 0){
 								Lib.updateUserInfo()
 								that.userInfo.advance -= that.inputVal
+								that.inputVal=''
 								Lib.ToastShow('提现成功','success')
 							}else{
 								Lib.ToastShow('提现失败','none')
@@ -121,7 +146,7 @@ img{
 	height: 100vh;
 	background: #F7F7F7;
 }
-.header{
+.privilegeheader{
 	height: 130px;
 	background: #6C1B21;
 	width: 100%;

@@ -6,8 +6,8 @@
 		<blockquote v-else>
 			<div>
 				<!--轮播图-->
-				<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22">
-					<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index" @click="Brandjump(item.goodsId)">
+				<swiper class="swiper" indicator-dots='true' autoplay='true' indicator-color="#d0d0d0" indicator-active-color="#6e1b22" :style="{height:Height+'px'}">
+					<swiper-item v-for="(item,index) in banner" :key='item.imageId' :index="index"  @click="Brandjump(item.goodsId)">
 						<img :src="item.imageUrl" mode='widthFix' />
 					</swiper-item>
 				</swiper>
@@ -32,7 +32,7 @@
 					<div class="cant">
 						<div class="cant-right">
 							<p class="fontHidden"><span class="cant-tip">新人礼</span>{{item.repacketName}}</p>
-							<div class="btn" @click="jumpNewPersonGift(index)">免费领取</div>
+							<div class="btn" @click="jumpNewPersonGift(index)">立即领取</div>
 						</div>
 					</div>
 				</div>
@@ -53,21 +53,36 @@
 				</div>
 
 				<!--弹窗-->
-				<div class="popup" catchtouchmove="true" v-if="isTogo">
-					<div class="popup-wp">
-						<div class="hidd" @click="hidd"></div>
-						<div class="img">
-							<img src="/static/images/indexpacket.png" />
-						</div>
-
-						<div class="tit">
-							<span>恭喜您获得新人礼包</span>
-						</div>
-
-						<div class="more" @click="more">
-							<img  src="/static/images/indexmore.png" />
-						</div>
+						<!-- 头条广告 -->
+				<div class="adv">
+					<div class="advTop">
+						<span>AI元淳公告</span>
+						<span class="iconfont">&#xe72b;</span>
 					</div>
+					<div class="advBottom">
+						<swiper class="swiper"  autoplay='true' vertical='true'>
+							<swiper-item v-for="(item,index) in message" :key="item.id">
+								<div v-for="(innerItem,innerIndex) in item" class="advList">
+									<div class="advconent fontHidden1">{{innerItem.content}}</div>
+									<div class="advtime">
+										<span class="advlib">加精</span>
+										<span>&nbsp;&nbsp;AI 元淳&nbsp;&nbsp;{{innerItem.publicTime}}</span>
+									</div>			
+								</div>
+							</swiper-item>
+						</swiper>
+					</div>	
+				</div>
+				<div class='popup' v-if="isTogo">
+					<div class='bcgmode' @click="hidd"></div>
+					<div class='popup-wp'>
+						<div class="hidd" @click="hidd">
+							<span class="iconfont">&#xe658;</span>
+						</div>
+						<div class="img" @click="more">
+							<img src="https://shop.guqinet.com/html/images/yuanchun/indexpacket.png" />
+						</div>
+					</div> 
 				</div>
 
 				<!--商品-->
@@ -78,7 +93,8 @@
 							<span>¥</span>
 							<span>{{goodsDO.price}}</span>
 						</div>
-						<div class="tit">{{goodsDO.name}}</div>
+						<div class="tit fontHidden">{{goodsDO.name}}</div>
+						<div class="subTit fontHidden">{{goodsDO.pageTitle}}</div>
 						<div class="btn" @click="jumpmemberUp">立即购买</div>
 						<!--详情-->
 						<div class="detail">
@@ -95,7 +111,10 @@
 						</div>
 					</div>
 				</div>
-				
+				<div class="footer">
+					<img src="https://shop.guqinet.com/html/images/shuiguo/index/footerImg.png"/>
+				</div>
+
 			</div>
 	</blockquote>
 	<loginModel ref="loginModel"></loginModel>
@@ -107,6 +126,7 @@
 	import loginModel from "@/components/loginModel";
 	import loading from '@/components/loading'
 	import wxParse from 'mpvue-wxparse'
+	import utils from "@/utils/index"
 	export default {
 		data() {
 			return {
@@ -119,7 +139,9 @@
 				coupon: [],
 				banner: [],
 				userInfo: {},
-				goodsDO: {}
+				goodsDO: {},
+				Height:'',
+				message:[]
 			}
 		},
 		components: {
@@ -129,6 +151,8 @@
 		},
 		async mounted() {
 			var that = this;
+			let Width=wx.getSystemInfoSync().windowWidth
+			that.Height=Width/2.5
 			that.hideTabBar()
 			that.getBanner()
 			that.getTicket()
@@ -153,7 +177,7 @@
 					that.goodsDO=res.goodsDO
 				})
 			},
-			jumpmemberUp(){
+			jumpmemberUp(){	
 				let that=this
 				let goodarr=[]
 				let goodlist={}
@@ -177,9 +201,22 @@
 				let that = this
 				Api.getBanner().then(function(res) {
 					that.banner = res.banner
+					for(let i=0;i<res.carousel.length;i+=2){
+						let messageArry=[]
+						for(let j=0;j<2;j++){
+							if(res.carousel[i+j]!=undefined){
+								res.carousel[i+j].publicTime=utils.formatTime(res.carousel[i+j].msgDate)
+								messageArry.push(res.carousel[i+j])
+							}	
+						}
+						that.message.push(messageArry)
+					}
 					 wx.setStorageSync('oneBox', res.oneBox)
 					 wx.setStorageSync('postage', res.postage)
 				})
+			},
+			pushMessage(message){
+
 			},
 			// 获取平台券接口
 			getTicket() {
@@ -272,6 +309,9 @@
 		onPullDownRefresh: function() {
 			let that = this
 			that.getUserInfo()
+		},
+		onShareAppMessage: function () {
+			withShareTicket: true
 		}
 	}
 </script>
@@ -283,58 +323,89 @@
 	
 	.popup {
 		position: fixed;
-		z-index: 99;
-		top: 0;
-		bottom: 0;
 		left: 0;
+		top: 0;
 		right: 0;
-		background-color: rgba(0, 0, 0, .7);
-		.popup-wp {
+		bottom: 0;
+		z-index: 100;
+		.bcgmode{
 			width: 100%;
-			padding: 0 10px;
-			box-sizing: border-box;
-			margin-top: -200px;
-			position: relative;
-			top: 50%;
+			height: 100%;
+			background: rgba(0,0,0,.5);
+		}
+		.popup-wp {
+			border-radius:10rpx; 
+			width: 100%;
+			position: absolute;
+			top: 100px;
 			.hidd {
-				width: 34px;
-				height: 34px;
-				border-radius: 50%;
 				position: absolute;
-				top: 0;
-				right: 63px;
+				top: -30px;
+				right: 30px;
+				font-size: 26px;
 			}
 			.img {
-				width: 95%;
-				height: 356px;
+				width: 361px;
+				height: 336px;
 				margin: 0 auto;
 				img {
 					width: 100%;
 					height: 100%;
 				}
 			}
-			.tit {
-				position: absolute;
-				top: 202px;
-				left: 109px;
-				font-size: 15px;
-				span {
-					display: block;
-					color: #FFFFFF;
-					margin-left: 11px;
-				}
-			}
-			.more {
-				width: 166px;
-				height: 36px;
-				margin: 0 auto;
-				position: absolute;
-				bottom: 39px;
-				left: 50%;
-				margin-left: -83px;
-				img {
-					width: 100%;
-					height: 100%;
+		}
+	}
+	.adv {
+		border: 1px solid #ddd;
+		width: 95%;
+		margin: 10px auto;
+		border-radius: 10px;
+		overflow: hidden;
+		.advTop{
+			display: flex;
+			justify-content: space-between;
+			background: linear-gradient(to bottom,#cd3d4b,#922830);
+			height: 40px;
+			line-height:40px;
+			padding: 0 10px;
+			box-sizing: border-box;
+			font-size: 16px;
+			color:#fff;
+
+		}
+		.advBottom{
+			background: #ffeff0;
+			padding-left: 10px;
+			box-sizing: border-box;
+			flex-grow: 1;
+			font-size: 18px;
+			swiper{
+				height: 130px;
+				.advList{
+					height: 60px;
+					padding: 0 10px;
+					box-sizing: border-box;
+					margin-bottom: 5px;
+					.advconent{
+					  height: 30px;
+					  line-height:30px;	
+					  font-size: 16px;
+					  color: #313131;
+					}
+					.advtime{
+						font-size: 14px;
+						color:#7c7c7c;
+						.advlib{
+							color:#fff;
+							display: inline-block;
+							background:#B83F4A;
+							width:40px;
+							text-align: center;
+							height: 25px;
+							line-height:25px;
+							border-radius: 5px;
+						}
+					}
 				}
 			}
 		}
@@ -542,12 +613,21 @@
 				}
 			}
 			.tit {
-				padding: 9px 9px;
-				width: 100%;
+				padding: 0 9px;
+				width: 300px;
+				box-sizing: border-box;
+				font-size: 18px;
+				color: #272727;
+				line-height: 30px;
+			}
+			.subTit{
+				padding: 0 9px;
+				width: 350px;
 				box-sizing: border-box;
 				font-size: 14px;
-				color: #333333;
-				line-height: 23px;
+				color: #7c7c7c;
+				line-height: 30px;
+				margin-bottom: 10px;
 			}
 			.btn {
 				width: 100%;
@@ -597,6 +677,13 @@
 			// 	background: orangered;
 			// 	transition: all .6s;
 			// }
+		}
+	}
+	.footer{height: 80rpx;padding: 20rpx 30rpx 10rpx 0; 
+		img{
+			width: 100%;
+			height: 100%;
+			display: block;
 		}
 	}
 </style>

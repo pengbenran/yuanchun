@@ -17,7 +17,7 @@
 					</div>
 					<div class="Address-item">
 						<div class="itemLeft">收货地址</div>
-						<div class="itemRight">{{addr.addr}}</div>
+						<div class="itemRight">{{addr.address}}</div>
 					</div>
 				</div>
 			</div>
@@ -183,7 +183,7 @@
 		      		bean.memberId = that.userInfo.memberId		
 		      		bean.clickd = that.InputMask 
 		      		bean.orderType = that.orderType
-		      		bean.shipAddr = that.addr.addr
+		      		bean.shipAddr = that.addr.address
 		      		bean.shipMobile = that.addr.mobile 
 		      		bean.shipName= that.addr.name	
 		      		bean.itemsJson = JSON.stringify(that.goodsItem.googitem)	
@@ -211,7 +211,7 @@
    					let that = this;
    					let params ={}
    					params.sn = that.order.sn
-   					// params.total_fee = that.order.needPayMoney * 100
+   					// params.payAmount = Math.round(that.order.needPayMoney * 100)
    					params.payAmount=1
 			        //请求支付
 			        params.openId=that.userInfo.openId
@@ -264,15 +264,14 @@
 			      				icon:'success',
 			      				duration: 2000
 			      			})
-   						setTimeout(function(){
-   							wx.navigateTo({ url: '/pages/orderList/main?orderStatus=2'});
-   						},1000)
+			      			wx.navigateTo({ url: '/pages/orderList/main?orderStatus=2'});
     				 }
     				}) 
 			      },
 		   		// 选择收货地址
 		   		toAddress(){
 		   			let that=this
+		   			wx.setStorageSync('orderType',that.orderType)
 		   			wx.navigateTo({ url: '../address/main' });
 		   		},
 			
@@ -281,7 +280,13 @@
 			let that=this
 			that.goodsItem =JSON.parse(store.state.goodItem)
 			that.userInfo=store.state.userInfo
-			that.orderType=that.$root.$mp.query.orderType
+			if(that.$root.$mp.query.orderType==undefined){
+				that.orderType=wx.getStorageSync('orderType')
+			}
+			else{
+				that.orderType=that.$root.$mp.query.orderType
+			}
+			console.log(that.orderType)
 			if(that.orderType==2){
 				that.needPay=that.goodsItem.googitem[0].price
 			}

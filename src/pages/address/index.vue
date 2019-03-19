@@ -1,6 +1,6 @@
 <template>
   <div class="address">
-    <div class="header">
+    <div class="addressHeader">
         <div class="left"><span class="iconfont">&#xe63c;</span>收货地址</div>
         <div class="right">
             <span class="iconfont">&#xe616;</span>
@@ -55,6 +55,7 @@ export default {
     },
     jumpOrder(e){
       let that = this
+      console.log(that.addressList[e])
       wx.setStorageSync('addr',that.addressList[e])
       if(that.jumpfrom=='cartOrder'){
         wx.navigateTo({ url: '../cart-order/main' });
@@ -148,20 +149,13 @@ export default {
 </script>
 
 <style scoped lang='less'>
-/*局部水平居中*/
-// @mixin flexc{
-// display: flex;align-items: center;
-// }
+
 .addressIcon{
   width: 40rpx;height: 40rpx;overflow: hidden;vertical-align: middle;display:inline-block;
 }
-// /*文本换行省略*/
-// @mixin fontM{
-// white-space:normal;overflow: hidden;display: -webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
-// }
 img{display: block;height: 100%;width: 100%;}
 
-.header{display: flex;justify-content: space-between;font-weight: 100;font-size: 30rpx;padding:20rpx;border-bottom:1px solid rgb(245,245,245);
+.addressHeader{display: flex;justify-content: space-between;font-weight: 100;font-size: 30rpx;padding:20rpx;border-bottom:1px solid rgb(245,245,245);
      .right{color: #A1171C;}
      .right text{margin-left: 10rpx;}
 }

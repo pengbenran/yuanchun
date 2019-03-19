@@ -12,7 +12,7 @@
 						<img :src="item.image" />
 					</div>
 					<div class="content">
-						<div class="tit fontHidden1">{{item.name}}</div>
+						<div class="goodtitle fontHidden1">{{item.name}}</div>
 						<div class="describe fontHidden1">{{item.specvalue}}</div>
 						<div class="price">
 							<span>¥{{item.specs}}</span>
@@ -157,11 +157,11 @@
 				}
 			}
 			.content {
-				flex-grow: 1;
+				width:160px;
 				font-size: 11px;
 				padding-left:10px; 
 				box-sizing: border-box;
-				.tit {
+				.goodtitle {
 					color: #333333;
 					line-height: 18px;
 					margin-top: 10px;
@@ -174,6 +174,7 @@
 					
 				}
 				.price {
+					width:160px;
 					span {
 						color: #a82429;
 						font-size: 16px;
@@ -182,6 +183,7 @@
 				.price1 {
 					color: #a82429;
 					font-size: 16px;
+					width:160px;
 					.ptq {
 						background-color: #801d20;
 						height: 20px;
@@ -198,6 +200,7 @@
 			}
 		}
 		.product-right{
+			flex-grow: 1;
 			span{
 				&:nth-child(1){
 					margin-right: 11px;

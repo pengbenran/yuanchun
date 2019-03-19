@@ -29,29 +29,26 @@
 			async getErCode(){
 				let that=this
 				let params={}
-				// params.params=store.state.userInfo.unionid+','+inviteCode+','+3
 				params.params=that.userInfo.unionid
 				let QrcodeRes=await Api.get_Qrcode(params).catch(err => {
                      ToastShow('失败','none')
 				})
 				if(QrcodeRes.code==0){
-					that.eventDraw(QrcodeRes.url)
+					that.eventDraw(QrcodeRes.url,QrcodeRes.postImage.imageUrl)
 				}else{
                      ToastShow('失败','none')
 				}
 			},
 			//点击生成海报
-			async eventDraw(codeUrl){
+			async eventDraw(codeUrl,bcgImg){
 			   	let that = this;
 			   	wx.showLoading({
 			   		title:'推广码绘制中'
 				   })	
 			   	let ImgArr = []
-			   	ImgArr[0]='https://shop.guqinet.com/html/images/yuanchun/bcg.png'
+			   	ImgArr[0]=bcgImg
 			   	ImgArr[1]= codeUrl
 				ImgArr[2]= that.userInfo.face
-				
-				console.log("查看数组里的数据",ImgArr)
 			   	that.painting={
 			   		width: that.Width,
 			   		height: that.Height,
@@ -68,28 +65,28 @@
 			   		{
 			   			type: 'image',
 			   			url: ImgArr[2],
-			   			top: 20,
-			   			left: (that.Width-120)/2,
-			   			width: 120,
-			   			height: 120,
-			   			borderRadius:60
+			   			top: 120,
+			   			left: (that.Width-90)/2,
+			   			width: 90,
+			   			height: 90,
+			   			borderRadius:45
 			   		},
 			   		{
 			   			type: 'image',
 			   			url: ImgArr[1],
-			   			top: that.Height-230,
-			   			left: (that.Width-120)/2,
-			   			width: 120,
-			   			height: 120
+			   			top: that.Height-160,
+			   			left: (that.Width-75)/2,
+			   			width: 90,
+			   			height: 90
 			   		},
 			   		{
 			   			type: 'text',
 			   			content:this.userInfo.name,
-			   			fontSize: 28,
+			   			fontSize: 26,
 			   			color: '#fff',
 			   			textAlign: 'left',
 			   			breakWord: true,
-			   			top: 140,
+			   			top: 210,
 			   			left:45,
 			   			width:140,
 			   			MaxLineNumber:1,
