@@ -21,14 +21,14 @@
 				</div>
 				<div class="price1">
 					<span>¥{{detail.price}}+</span>
-					<div class="ptq">{{detail.unit}}平台卷</div>
+					<div class="ptq">{{detail.unit}}平台劵</div>
 				</div>
 				<div class="tit fontHidden">
 					{{detail.name}}
 				</div>
 				<div class="kdf">
 					<span>包邮</span>
-					<span>月销{{detail.haveSpec}}笔</span>
+					<span>月销{{detail.buyCount}}笔</span>
 					<span>{{detail.brief}}</span>
 				</div>		
 			</div>
@@ -83,8 +83,8 @@
           			that.isCollection=res.count==1?true:false
           			res.products[0].selected=true
           			res.Goods.deduction=res.products[0].deduction
-          			res.Goods.oldPrice=res.products[0].specs
-          			res.Goods.activePrice=res.products[0].price
+          			res.Goods.oldPrice=res.products[0].price
+          			res.Goods.activePrice=res.products[0].specs
           			res.Goods.specs=res.products[0].name
           			that.banner=res.Gallery
           			res.Goods.products=res.products

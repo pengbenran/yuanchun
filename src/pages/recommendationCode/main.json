@@ -1,3 +1,5 @@
 {
-    "navigationBarTitleText": "我的推荐码"
+    "navigationBarTitleText": "我的推荐码",
+    "navigationBarBackgroundColor": "#A92429",
+    "navigationBarTextStyle": "white"
  }

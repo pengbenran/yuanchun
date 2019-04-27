@@ -11,7 +11,7 @@
 				</div> 
 				<div class="price1" :style="{display:isflex}">
 					<span>¥{{item.price}}+</span>
-					<div class="ptq">{{item.unit}}平台卷</div>
+					<div class="ptq">{{item.unit}}平台劵</div>
 				</div>
 			</div>
 		</div>

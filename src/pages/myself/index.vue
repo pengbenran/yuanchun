@@ -13,7 +13,7 @@
 						<p class="memberName">{{userInfo.name}}</p>
 						<p class="memberLv">
 							<span>{{userInfo.lvidname}}</span>
-							<span @click="jumpvipUp">点击升级</span>
+							<span @click="jumpvipUp" v-if="canUp">点击升级</span>
 						</p>
 					</div>
 				</div>
@@ -132,7 +132,8 @@
 				userInfo: {},
 				orderStatus: {},
 				phoneNumber: '',
-				isLoading:false
+				isLoading:false,
+				canUp:false
 			}
 		},
 		components: {
@@ -256,6 +257,12 @@
 				Api.selectSubordinate(params).then(function(res){
 					that.count=res.count
 					that.condition=res.condition
+					if(that.count>=that.condition){
+						that.canUp=true
+					}
+					else{
+						that.canUp=false
+					}
 				})
 			},
    			// 获取订单数据
@@ -393,7 +400,7 @@
 						}
 						&:nth-child(2) {
 							display: inline-block;
-							font-size: 8px;
+							font-size: 10px;
 							margin-left: 5px;
 							color: #FFFFFF;
 						}

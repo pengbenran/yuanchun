@@ -15,11 +15,11 @@
 							<div class="number">X{{innerItem.num}}</div>
 						</div>
 						<div class="price">
-							<span>¥{{innerItem.specs}}</span>
+							<span>¥{{innerItem.price}}</span>
 						</div>
 						<div class="price1">
-							<span>¥{{innerItem.price}}+</span>
-							<div class="ptq">{{innerItem.deduction}}平台卷</div>
+							<span>¥{{innerItem.specs}}+</span>
+							<div class="ptq">{{innerItem.deduction}}平台劵</div>
 						</div>
 					</div>
 				</div>
@@ -248,8 +248,8 @@
 			 		wx.showLoading({ title: '加载中',})
 			 		params.sn = sn
 			 		params.openId=that.userInfo.openId
-			 		// params.payAmount = Math.round(needPayMoney * 100)
-			 		params.payAmount=1
+			 		params.payAmount = Math.round(needPayMoney * 100)
+			 		// params.payAmount=1
 			 		params.shippingAmount=shippingAmount
 			 		Api.ConfirmPay(params).then(function(parRes){
 			 			if(parRes.code==0){

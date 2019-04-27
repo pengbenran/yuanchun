@@ -38,6 +38,7 @@
       const inter = setInterval(() => {
         if (this.ctx) {
           clearInterval(inter)
+          that.ctx.clearRect(0, 0, that.width,that.height)
           that.ctx.clearActions()
           that.ctx.save()
           that.getImageList(that.painting.views)
@@ -60,11 +61,11 @@
       let that=this
       if (index < that.imageList.length) {
         that.getImageInfo(that.imageList[index]).then(file => {
+          console.log(file)
           that.tempFileList.push(file)
           this.downLoadImages(index + 1)
         })
       } else {
-      
         that.startPainting()
       }
     },
@@ -72,7 +73,7 @@
      let that=this
       // const { tempFileList, painting: { views } } = this.data
       let views=that.painting.views
-      
+     
       for (let i = 0, imageIndex = 0; i < views.length; i++) {
         if (views[i].type === 'image') {
           this.drawImage({

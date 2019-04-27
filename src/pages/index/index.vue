@@ -56,17 +56,16 @@
 						<!-- 头条广告 -->
 				<div class="adv">
 					<div class="advTop">
-						<span>AI元淳公告</span>
-						<span class="iconfont">&#xe72b;</span>
+						<span>AI元淳头条</span>
 					</div>
 					<div class="advBottom">
 						<swiper class="swiper"  autoplay='true' vertical='true'>
 							<swiper-item v-for="(item,index) in message" :key="item.id">
 								<div v-for="(innerItem,innerIndex) in item" class="advList">
-									<div class="advconent fontHidden1">{{innerItem.content}}</div>
+									<div class="advconent fontHidden">{{innerItem.content}}</div>
 									<div class="advtime">
-										<span class="advlib">加精</span>
-										<span>&nbsp;&nbsp;AI 元淳&nbsp;&nbsp;{{innerItem.publicTime}}</span>
+										<!-- <span class="advlib">加精</span> -->
+										<span>AI 元淳&nbsp;&nbsp;{{innerItem.publicTime}}</span>
 									</div>			
 								</div>
 							</swiper-item>
@@ -98,16 +97,15 @@
 						<div class="btn" @click="jumpmemberUp">立即购买</div>
 						<!--详情-->
 						<div class="detail">
-							
-							<div class="detail-shop">商品详情</div>
-							<!-- <div class="more">
-								<span>商品详情</span>
-								<span class="iconfont"> &#xe72b;</span>
-							</div> -->
-							<!--展开详情-->
-							<div class="more-check">
-								<wxParse :content="goodsDO.intro" @preview="preview" @navigate="navigate" />
+							<div class="detail-shop" @click="showGoodDetail">
+								<span>查看商品详情</span>
+								<span class="iconfont" v-if="showDetail" style="float: right;">&#xe65e;</span>
+								<span class="iconfont" v-else style="float: right;">&#xe72b;</span>
 							</div>
+							<!--展开详情-->
+							<blockquote v-if="showDetail">
+								<wxParse :content="goodsDO.intro" @preview="preview" @navigate="navigate" />
+							</blockquote>
 						</div>
 					</div>
 				</div>
@@ -141,7 +139,8 @@
 				userInfo: {},
 				goodsDO: {},
 				Height:'',
-				message:[]
+				message:[],
+				showDetail:false
 			}
 		},
 		components: {
@@ -169,6 +168,10 @@
 				wx.hideTabBar({
 					animation: false //是否需要过渡动画
 				})
+			},
+			showGoodDetail(){
+				let that=this
+				that.showDetail=!that.showDetail
 			},
 			// 获取会员升级商品
 			getmemberUpGoods(){
@@ -320,7 +323,9 @@
 @import url("~mpvue-wxparse/src/wxParse.css");
 	/*checkbox 选项框大小  */
 	/*弹窗*/
-	
+	.wxParse .img{
+		display: flex;
+	}
 	.popup {
 		position: fixed;
 		left: 0;
@@ -380,16 +385,17 @@
 			flex-grow: 1;
 			font-size: 18px;
 			swiper{
-				height: 130px;
+				// maxheight: 180px;
+				padding-bottom: 10px;
 				.advList{
-					height: 60px;
+					// height: 60px;
 					padding: 0 10px;
 					box-sizing: border-box;
 					margin-bottom: 5px;
 					.advconent{
-					  height: 30px;
-					  line-height:30px;	
-					  font-size: 16px;
+					  // height: 30px;
+					  line-height:25px;	
+					  font-size: 13px;
 					  color: #313131;
 					}
 					.advtime{
@@ -616,15 +622,14 @@
 				padding: 0 9px;
 				width: 300px;
 				box-sizing: border-box;
-				font-size: 18px;
+				font-size: 16px;
 				color: #272727;
 				line-height: 30px;
 			}
 			.subTit{
 				padding: 0 9px;
-				width: 350px;
 				box-sizing: border-box;
-				font-size: 14px;
+				font-size: 13px;
 				color: #7c7c7c;
 				line-height: 30px;
 				margin-bottom: 10px;
@@ -645,11 +650,13 @@
 			.detail-shop {
 				width: 100%;
 				text-align: center;
-				height: 30px;
-				line-height: 30px;
-				border-top: 8px solid #f1f1f1;
+				height: 50px;
+				line-height: 50px;
+				border-bottom: 8px solid #f1f1f1;
 				color: #952731;
 				font-size: 15px;
+				padding: 0 10px;
+				box-sizing: border-box;
 			}
 			// .more {
 			// 	display: flex;

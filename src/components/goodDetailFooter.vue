@@ -39,10 +39,10 @@
 								<div>￥{{GoodsInfo.oldPrice}}</div>
 								<div class="price1">
 									<span>¥{{GoodsInfo.activePrice}}+</span>
-									<div class="ptq">{{GoodsInfo.deduction}}平台卷</div>
+									<div class="ptq">{{GoodsInfo.deduction}}平台劵</div>
 								</div>
 							</div>
-							<div>库存：{{GoodsInfo.enableStore}}</div>
+							<div>库存:999+</div>
 						</div>
 					</div>
 				</div>
@@ -102,42 +102,34 @@
 					if(item.selected){
 						return item
 					}
+				})	
+				let goodarr=[]
+				let goodlist={}
+				let Goods={}
+				goodlist.pic = that.pic
+				goodlist.num = that.pic;
+				goodlist.price = productsSelect.price;
+				goodlist.image = that.GoodsInfo.thumbnail
+				goodlist.name = that.GoodsInfo.name
+				goodlist.goodsId = that.GoodsInfo.goodsId
+				goodlist.productId = productsSelect.productId
+				goodlist.gainedpoint = that.pic * that.GoodsInfo.point
+				goodlist.specvalue = that.GoodsInfo.specs
+				goodlist.price = productsSelect.price
+				goodlist.specs = productsSelect.specs
+				goodlist.cart=0
+				goodlist.deduction = productsSelect.deduction
+				goodarr[0] = goodlist;
+				Goods.googitem = goodarr
+				Goods.fenrunAmount = productsSelect.fenrunAmount*that.pic
+				Goods.twoAmount = productsSelect.twoAmount*that.pic
+				Goods.priceTotal=productsSelect.price*that.pic
+				Goods.specsTotal=productsSelect.specs*that.pic
+				Goods.deductionTotal=productsSelect.deduction*that.pic
+				store.commit("stateGoodItem",JSON.stringify(Goods))
+				wx.navigateTo({
+					url: "../cart-order/main?cart=0&orderType=1"
 				})
-				if(that.pic > productsSelect.enableStore){
-					wx.showToast({
-						title: '库存不足',
-						icon: 'none',
-						duration: 2000
-					})
-				}else{
-					let goodarr=[]
-					let goodlist={}
-					let Goods={}
-					goodlist.pic = that.pic
-					goodlist.num = that.pic;
-					goodlist.price = productsSelect.price;
-					goodlist.image = that.GoodsInfo.thumbnail
-					goodlist.name = that.GoodsInfo.name
-					goodlist.goodsId = that.GoodsInfo.goodsId
-					goodlist.productId = productsSelect.productId
-					goodlist.gainedpoint = that.pic * that.GoodsInfo.point
-					goodlist.specvalue = that.GoodsInfo.specs
-					goodlist.price = productsSelect.price
-					goodlist.specs = productsSelect.specs
-					goodlist.cart=0
-					goodlist.deduction = productsSelect.deduction
-					goodarr[0] = goodlist;
-					Goods.googitem = goodarr
-					Goods.fenrunAmount = productsSelect.fenrunAmount*that.pic
-					Goods.twoAmount = productsSelect.twoAmount*that.pic
-					Goods.priceTotal=productsSelect.price*that.pic
-					Goods.specsTotal=productsSelect.specs*that.pic
-					Goods.deductionTotal=productsSelect.deduction*that.pic
-					store.commit("stateGoodItem",JSON.stringify(Goods))
-					wx.navigateTo({
-						url: "../cart-order/main?cart=0&orderType=1"
-					})
-				}
 			},
 			//点击加入购物车
 			async toCart(){
@@ -147,34 +139,26 @@
 						return item
 					}
 				})
-				if(productsSelect.enableStore == 0){
-					wx.showToast({
-						title: '库存不足',
-						icon: 'none',
-						duration: 2000
-					})
-				}else{
-					let cartparms = {};
-					cartparms.productId =productsSelect.productId
-					cartparms.original = that.GoodsInfo.thumbnail
-					cartparms.memberId = that.userInfo.memberId
-					cartparms.goodsId = that.GoodsInfo.goodsId
-					cartparms.image = that.GoodsInfo.thumbnail
-					cartparms.num = that.pic
-					cartparms.point = that.GoodsInfo.point
-					cartparms.weight =0
-					cartparms.name = that.GoodsInfo.name
-					cartparms.price = productsSelect.price
-					//判断购物车订单
-					cartparms.cart = 1
-					cartparms.specvalue = that.GoodsInfo.specs
-					let res = await Api.toCartSave(cartparms)
-					wx.showToast({
-						title: '添加成功',
-						icon: 'success',
-						duration: 2000
-					})
-				}
+				let cartparms = {};
+				cartparms.productId =productsSelect.productId
+				cartparms.original = that.GoodsInfo.thumbnail
+				cartparms.memberId = that.userInfo.memberId
+				cartparms.goodsId = that.GoodsInfo.goodsId
+				cartparms.image = that.GoodsInfo.thumbnail
+				cartparms.num = that.pic
+				cartparms.point = that.GoodsInfo.point
+				cartparms.weight =0
+				cartparms.name = that.GoodsInfo.name
+				cartparms.price = productsSelect.price
+				//判断购物车订单
+				cartparms.cart = 1
+				cartparms.specvalue = that.GoodsInfo.specs
+				let res = await Api.toCartSave(cartparms)
+				wx.showToast({
+					title: '添加成功',
+					icon: 'success',
+					duration: 2000
+				})	
 				},
 				async AreaselectClick(Pindex){
 					let that = this;
@@ -183,8 +167,8 @@
 						return v 
 					})
 					that.GoodsInfo.products[Pindex].selected = true  
-					that.GoodsInfo.oldPrice=that.GoodsInfo.products[Pindex].specs;
-					that.GoodsInfo.activePrice=that.GoodsInfo.products[Pindex].price;
+					that.GoodsInfo.oldPrice=that.GoodsInfo.products[Pindex].price;
+					that.GoodsInfo.activePrice=that.GoodsInfo.products[Pindex].specs;
 					that.GoodsInfo.deduction=that.GoodsInfo.products[Pindex].deduction
 					that.GoodsInfo.enableStore=that.GoodsInfo.products[Pindex].enableStore;
 					that.GoodsInfo.specs=that.GoodsInfo.products[Pindex].name   
@@ -230,8 +214,15 @@
 	     			this.pic +=1
 	     		},
 	     		Minu(){
-	     			if(this.pic>0){
+	     			if(this.pic>1){
 	     				this.pic -=1
+	     			}
+	     			else{
+	     				wx.showToast({
+	     					title: '最少购买一个',
+	     					icon: 'none',
+	     					duration: 2000
+	     				})
 	     			}
 	     		}
 		},

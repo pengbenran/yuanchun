@@ -1,6 +1,6 @@
 <template>
 	<div class="businessCard">
-		<div class="paintImg">
+		<div class="paintImg" :style="{width:Width+'px',height:Height+'px'}">
 			<img :src="shareImage" mode='widthFix'>
 		</div>
 		<canvasdrawer :painting="painting"  @getImage="eventGetImage" ref="canvas"/>
@@ -16,10 +16,11 @@
 		data(){
 			return{
 				painting:{},
+				shareImage:'',
+				userInfo:{},
 				Width:'',
 				Height:'',
-				shareImage:'',
-				userInfo:{}
+				bcgHeight:''
 			}
 		},
 		components:{
@@ -45,52 +46,57 @@
 			   	wx.showLoading({
 			   		title:'推广码绘制中'
 				   })	
-			   	let ImgArr = []
-			   	ImgArr[0]=bcgImg
-			   	ImgArr[1]= codeUrl
-				ImgArr[2]= that.userInfo.face
 			   	that.painting={
 			   		width: that.Width,
 			   		height: that.Height,
 			   		clear: true,
 			   		views: [
+			   			{
+			   			type:'rect',
+			   			background:'#fff',
+			   			top:0,
+			   			left:0,
+			   			width:that.Width,
+			   			height:that.Height
+
+			   		},
 			   		{
 			   			type: 'image',
-			   			url: ImgArr[0],
+			   			url: bcgImg,
 			   			top: 0,
 			   			left: 0,
-			   			width: that.Width,
-			   			height: that.Height
+			   			width:that.Width,
+			   			height: that.bcgHeight
 			   		},
 			   		{
 			   			type: 'image',
-			   			url: ImgArr[2],
-			   			top: 120,
-			   			left: (that.Width-90)/2,
-			   			width: 90,
-			   			height: 90,
-			   			borderRadius:45
+			   			url: that.userInfo.face,
+			   			top: that.bcgHeight+5,
+			   			left: 30,
+			   			width:60,
+			   			height:60,
+			   			borderRadius:30
 			   		},
 			   		{
 			   			type: 'image',
-			   			url: ImgArr[1],
-			   			top: that.Height-160,
-			   			left: (that.Width-75)/2,
-			   			width: 90,
-			   			height: 90
+			   			url: codeUrl,
+			   			top: that.bcgHeight+5,
+			   			left: that.Width-that.Height+that.bcgHeight+10,
+			   			width: that.Height-that.bcgHeight-20,
+			   			height: that.Height-that.bcgHeight-20
 			   		},
 			   		{
 			   			type: 'text',
-			   			content:this.userInfo.name,
-			   			fontSize: 26,
-			   			color: '#fff',
+			   			content:that.userInfo.name,
+			   			fontSize: 13,
+			   			color: '#666',
 			   			textAlign: 'left',
 			   			breakWord: true,
-			   			top: 210,
-			   			left:45,
-			   			width:140,
-			   			MaxLineNumber:1,
-			   			isCenter:true
+			   			top: that.bcgHeight+70,
+			   			left:30,
+			   			width:150,
+			   			MaxLineNumber:2,
+			   			isCenter:false
 			   		}
 			   		]
 			   	}
@@ -103,7 +109,7 @@
 
 			   	if (errMsg === 'canvasdrawer:ok') {
 			   		this.shareImage=tempFilePath
-
+			   		wx.setStorageSync('shareImage',this.shareImage)
 			   		// wx.previewImage({
 			     //        current: this.shareImage, // 当前显示图片的http链接
 			     //        urls: [this.shareImage] // 需要预览的图片http链接列表
@@ -125,17 +131,32 @@
 		},
 		mounted(){
 			let that=this
-			that.Width=wx.getSystemInfoSync().windowWidth
-			that.Height=wx.getSystemInfoSync().windowHeight
+			that.Width=wx.getSystemInfoSync().windowWidth-20
+			that.Height=that.Width*1.42
+			that.bcgHeight=that.Width*1.1
 			that.userInfo = store.state.userInfo
-			console.log(that.Width,that.Height,that.userInfo,"用户的信息");
-			that.getErCode()
+			if(wx.getStorageSync('shareImage')){
+				that.shareImage=wx.getStorageSync('shareImage')
+			}
+			else{
+				that.getErCode()
+			}
+			
 		}
 	}
 </script>
 <style scoped lang="less">
-	.paintImg{
+	.businessCard{
 		width: 100%;
+		height:100vh;
+		padding-top: 20px;
+		box-sizing: border-box;
+		background-color: #A92429;
+	}
+	.paintImg{
+		width: 290px;
+		height: 413px;
+		background-color: #fff;
 		margin: 0 auto;
 	}
 	img{
@@ -152,7 +173,7 @@
 			margin:  30px auto 0 auto;
 			color: #fff;
 			font-size: 16px;
-			background-color: #A92429;
+			background-color: #FF3D3A;
 			border-radius: 3px;
 		}
 </style>

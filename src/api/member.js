@@ -46,5 +46,8 @@
 		// 判断是否绑定银行卡
 		isBind(params){
 			return API.GET('/api/distribe/isHaveCard',params)
-		}	
+		},
+		HighSubordinate(params){
+			return API.GET('/api/place/HighSubordinate',params)
+		}
 	}

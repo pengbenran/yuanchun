@@ -20,7 +20,6 @@ export default {
 	giftUser(params){
 		return API.POST('/api/order/giftUser',params)
 	},
-	
 	// 领取新人礼修改状态
 	giftUserPass(params){
 		return API.POST('/api/order/giftUserPass',params)	
@@ -33,5 +32,4 @@ export default {
 	getLogistics(params){
 		return API.GET('/api/order/logistics',params)
 	}
-
 }

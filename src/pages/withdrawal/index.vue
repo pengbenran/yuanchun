@@ -78,8 +78,8 @@ import {ToastShow} from '@/utils/index'
 		},
 		onReachBottom:function(){
 			let that = this;
-			that.Pagination.offset+=1
-			that.getKindGood()
+			that.Pagination.offset+=that.Pagination.limit
+			that.GetPayList()
 		},
 	}
 </script>

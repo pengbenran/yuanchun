@@ -9,15 +9,15 @@
     </div>
     <div class="addressList" v-if='addressList.length!=0'>
         <div class="item" v-for="(item,index) in addressList" :index='index' :key='item'>
-            <div class="left" @click="jumpOrder(index)">
+            <div class="itemleft" @click="jumpOrder(index)">
                 <div class="title">{{item.addr}}</div>
                 <div class="info">{{item.region}}</div>
                 <div class="pople"><text>{{item.name}}</text> | <text>{{item.mobile}}</text></div>
             </div>
-            <div class="right">
+            <div class="itemright">
                  <div class="deit" v-if='selectIndex==2' @click="edits(index)">
                     <p class="iconfont">&#xe6ec;</p> 
-                    <p v-if="item.defAddr==1" class="defaultAddr">默认</p>        
+                    <p class="defaultAddr">编辑</p>        
                   </div>
                  <div class="deit" v-if='selectIndex==1'  @click="delAddr(index)"><text>删除</text></div>
             </div>
@@ -55,7 +55,6 @@ export default {
     },
     jumpOrder(e){
       let that = this
-      console.log(that.addressList[e])
       wx.setStorageSync('addr',that.addressList[e])
       if(that.jumpfrom=='cartOrder'){
         wx.navigateTo({ url: '../cart-order/main' });
@@ -161,8 +160,15 @@ img{display: block;height: 100%;width: 100%;}
 }
 
 .addressList{padding: 10rpx 30rpx;
-   .item{display: flex;justify-content: space-between;padding: 15rpx 0;border-bottom:1px solid rgb(245,245,245);}
-   .left .title{font-size: 32rpx;}
+   .item{display: flex;justify-content: space-between;padding: 15rpx 0;border-bottom:1px solid rgb(245,245,245);
+    .itemleft{
+      flex-grow: 1;
+    }
+    .itemright{
+      width: 100rpx;
+    }
+   }
+   .itemleft .title{font-size: 32rpx;}
    .info,.pople{font-weight: 100;font-size: 26rpx;color: #666;}
    .deit{width: 100rpx;overflow: hidden;
       .defaultAddr{

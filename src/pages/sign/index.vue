@@ -259,11 +259,11 @@
 					bean.orderType = 5
 					bean.shipAddr = that.memberAddressDO.address
 					bean.shipMobile = that.memberAddressDO.mobile 
-					bean.shipName= that.memberAddressDO.name	
+					bean.shipName= that.memberAddressDO.name
+					bean.addressId=that.memberAddressDO.zip	
 					bean.itemsJson=JSON.stringify(goodarr)
 					bean.goodsNum = that.countMp
 					api_order.giftUser(bean).then(res => {
-						that.canSubmit=true
 						if(res.code == 0){
 							that.wxPay(res.order)
 						}else{
@@ -280,8 +280,8 @@
 				let that = this;
 				let params ={}
 				params.sn = order.sn
-				// params.payAmount = Math.round(order.needPayMoney * 100)
-				params.payAmount=1
+				params.payAmount = Math.round(order.needPayMoney * 100)
+				// params.payAmount=1
 				//请求支付
 				params.openId=that.userInfo.openId
 				params.shippingAmount=0
@@ -294,17 +294,18 @@
 							signType: PayRes.Map.signType, //签名算法，暂支持 MD5,
 							paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 							success: res => {
+								that.canSubmit=true
 								that.giftUserPass(order.orderId);
 							},
 							fail: function (res) {
-								// fail   
+								// fail 
+								that.canSubmit=true  
 								wx.showToast({ 
 									title: '支付失败',
 									icon:'none',
 									duration: 2000
-								})
-								
-								},
+								})	
+							},
 						});
 					}
 					else{
@@ -313,6 +314,7 @@
 							icon:'none',
 							duration: 2000
 						})
+						that.canSubmit=true
 					}
 				})
 			},

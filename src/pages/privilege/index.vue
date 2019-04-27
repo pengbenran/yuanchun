@@ -10,12 +10,13 @@
 			<p class="number">{{userInfo.advance}}</p>
 			<p>余额(元)</p>
 		</div>
+		<div class="tip" v-if="showTip"><span>周四提现日,三个工作日内到账</span><span class="iconfont" @click="close">&#xe644;</span></div>
 		<div class="withdrawal">
 			<div class="withdrawal_case">
 				<span class="inpt">
 					<input type="number" v-model="inputVal" placeholder="输入提现金额">
 				</span>
-				<span class="all" @click="allBalance">全部提现</span>
+				<span class="all" @click="allBalance">提现规则</span>
 				<span class="btn" @click="isBindCard">提现</span>
 			</div>
 		</div>
@@ -32,7 +33,7 @@
 				<img src="/static/images/menu3.png">
 				提现记录
 			</div>
-			<div class="menuList" @click="jump('../Partner/main')" v-if="userInfo.default!=1">
+			<div class="menuList" @click="jump('../team/main')" v-if="userInfo.default!=1">
 				<img src="/static/images/menu4.png">
 				我的合伙人
 			</div>
@@ -53,7 +54,8 @@
 			return{
 				userInfo:{},
 				inputVal:'',
-				canSubmit:true
+				canSubmit:true,
+				showTip:false
 			}
 		},
 		mounted(){
@@ -67,12 +69,16 @@
 		methods:{
 			allBalance(){
 				let that=this
-				that.inputVal=that.userInfo.advance
+				that.showTip=true
 			},
 			jump(url){
 				wx.navigateTo({
 					url:url,
 				})
+			},
+			close(){
+				let that=this
+				that.showTip=false
 			},
 			isBindCard(){
 				let that=this
@@ -215,6 +221,7 @@ img{
 			width: 100px;
 			text-align: center;
 			color:#fff;
+			font-size: 15px;
 		}
 		.btn{
 			flex-grow: 1;
@@ -274,5 +281,19 @@ img{
 	.iconfont{
 		float: right;
 	}
+}
+.tip{
+	font-size: 13px;
+	color: #fff;
+	height: 25px;
+	line-height:25px;
+	padding:0 10px;
+	box-sizing: border-box; 
+	background: #CC3844;
+	width:90%;
+	margin:0 auto;
+	border-radius: 5px;
+	display: flex;
+	justify-content: space-between;
 }
 </style>

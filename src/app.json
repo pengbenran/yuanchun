@@ -22,7 +22,8 @@
     "pages/Partner/main",
     "pages/cart-order/main",
     "pages/myself/main",
-    "pages/favoriteList/main"
+    "pages/favoriteList/main",
+    "pages/team/main"
   ],
   "window": {
     "backgroundTextStyle": "light", 
@@ -30,11 +31,6 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black",
     "backgroundTextStyle":"dark"
-  },
-  "permission": {
-    "scope.userLocation": {
-      "desc": "你的位置信息用户获得收货地址"
-    }
   },
   "tabBar": {
     "selectedColor":"#901414", 

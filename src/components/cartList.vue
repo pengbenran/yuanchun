@@ -15,11 +15,11 @@
 						<div class="goodtitle fontHidden1">{{item.name}}</div>
 						<div class="describe fontHidden1">{{item.specvalue}}</div>
 						<div class="price">
-							<span>¥{{item.specs}}</span>
+							<span>¥{{item.price}}</span>
 						</div>
 						<div class="price1" :style="{display:isflex}">
-							<span>¥{{item.price}}+</span>
-							<div class="ptq">{{item.deduction}}平台卷</div>
+							<span>¥{{item.specs}}+</span>
+							<div class="ptq">{{item.deduction}}平台劵</div>
 						</div>
 					</div>
 				</div>
@@ -50,16 +50,7 @@
             //选中
             selectCheck(index){
             	let that = this;
-            	if(that.cartLists[index].marketEnable==1){
-            		that.cartLists[index].selected = !that.cartLists[index].selected
-            	}
-            	else{
-            		wx.showToast({
-            			title: "商品已下架无法购买",
-            			icon: "none",
-            			durantion: 2000
-            		})   
-            	}
+            	that.cartLists[index].selected = !that.cartLists[index].selected	
             	that.getTotalPrice()
             },
             //计算多少钱

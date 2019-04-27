@@ -63,6 +63,35 @@ export default {
               if(memberRes.code!=1){
                  wx.showTabBar({})
                 wx.setStorageSync('memberId', memberRes.memberDo.memberId)
+                // let memberDo={}
+                // memberDo.address=''
+                // memberRes.advance=0
+                // memberDo.agentHigh=1765
+                // memberDo.bonus=''
+                // memberDo.city=''
+                // memberDo.defaultLv=1
+                // memberDo.desHigh=''
+                // memberDo.desLow=''
+                // memberDo.discount=''
+                // memberDo.email=''
+                // memberDo.face='https://wx.qlogo.cn/mmopen/vi_32/icyianiaCq6lUFJJscnuG190QPJ0ZCQqEaIKmBPRqKDgeKyAe0iahMYgKLeBdYXRgAtS7uA7tc13X7IBFR08zxucqg/132'
+                // memberDo.infoFull=''
+                // memberDo.lvId=11
+                // memberDo.lvidname='VIP'
+                // memberDo.memberId=2673
+                // memberDo.memberUp=''
+                // memberDo.mobile=''
+                // memberDo.name='春华秋实'
+                // memberDo.openId='o_lFH478YkuOzjseXxZBG_uUnACg'
+                // memberDo.point=''
+                // memberDo.province='上海'
+                // memberDo.region='徐汇'
+                // memberDo.regtime=1553916882767
+                // memberDo.remark=''
+                // memberDo.sex='2'
+                // memberDo.signStatus=''
+                // memberDo.uname=''
+                // memberDo.unionid='opJYm1gKr5QfPcy9LJO0gifzCFVw'
                 store.commit("storeUserInfo",memberRes.memberDo)
                 that.$parent.getNewPersonGift();
               }

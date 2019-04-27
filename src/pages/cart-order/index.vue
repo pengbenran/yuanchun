@@ -7,7 +7,7 @@
 		<div class="cart">
 			<!--点击新增地址-->
 			<div class="AddressWarp">
-				<div class="AddressBtn" v-if="AddressBtn" @click="toAddress">
+				<div class="AddressBtn" v-if="AddressBtn" @click="toAddressAdd">
 					+请填写收货地址
 				</div>
 				<div class="Address" v-else @click="toAddress">
@@ -31,13 +31,13 @@
 						<div class="fontHidden1">{{item.name}}</div>
 						<div class="describe fontHidden1" v-if="orderType==1">{{item.specvalue}}</div>
 						<div class="price" v-if="orderType==1">
-							<span>¥{{item.specs}}</span>
+							<span>¥{{item.price}}</span>
 						</div>
 						<div class="price" v-else style="margin-top: 20px">
 							<span>¥{{item.price}}</span>
 						</div>
 						<div class="price1" :style="{display:isflex}" v-if="orderType==1">
-							<span>¥{{item.price}}+</span>
+							<span>¥{{item.specs}}+</span>
 							<div class="ptq">{{item.deduction}}平台券</div>
 						</div>
 					</div>
@@ -58,12 +58,12 @@
 			<div class="PayType" v-if="orderType==1">
 				<div class="PayItemTitle">支付方式</div>
 				<div class="Item"  @click="selectPay(0)">
-					<div class="Items">￥{{goodsItem.specsTotal}}</div>
+					<div class="Items">￥{{goodsItem.priceTotal}}</div>
 					<div class="ItemSelect"><icon type="success" size="21" v-show='!PayBool'/><icon type="circle" size="21" v-show='PayBool'/></div>
 				</div>
 				<div class="Item" @click="selectPay(1)">
 					<div class="Items">
-						￥{{goodsItem.priceTotal}}+{{goodsItem.deductionTotal}}平台劵
+						￥{{goodsItem.specsTotal}}+{{goodsItem.deductionTotal}}平台劵
 					</div>
 					<div class="ItemSelect"><icon type="success" size="21" v-show='PayBool'/><icon type="circle" size="21" v-show='!PayBool'/></div>
 				</div>
@@ -71,10 +71,10 @@
 		</div>
 		<div class="footerBnt" v-if="orderType==1">	
 			<div class="cartBtn" v-if="PayIndex==0">
-				合计：{{goodsItem.specsTotal}}元
+				合计：{{goodsItem.priceTotal}}元
 			</div>
 			<div class="cartBtn" v-else>
-				合计：{{goodsItem.priceTotal}}元+{{goodsItem.deductionTotal}}平台劵
+				合计：{{goodsItem.specsTotal}}元+{{goodsItem.deductionTotal}}平台劵
 			</div>
 			<div class="btn" @click="toast">立即购买</div>
 		</div>
@@ -163,14 +163,14 @@
 		      			// (是否使用平台券)
 		      			if(that.PayIndex==0){
 		      				bean.shippingAmount=0
-		      				bean.orderAmount = that.goodsItem.specsTotal
-		      				bean.needPayMoney=that.goodsItem.specsTotal
+		      				bean.orderAmount = that.goodsItem.priceTotal
+		      				bean.needPayMoney=that.goodsItem.priceTotal
 		      				bean.paymentType=1
 		      			}
 		      			else{
 		      				bean.shippingAmount = that.goodsItem.deductionTotal
-		      				bean.needPayMoney=that.goodsItem.priceTotal
-		      				bean.orderAmount = that.goodsItem.priceTotal
+		      				bean.needPayMoney=that.goodsItem.specsTotal
+		      				bean.orderAmount = that.goodsItem.specsTotal
 		      				bean.paymentType=2
 		      			}	
 		      		}
@@ -186,6 +186,7 @@
 		      		bean.shipAddr = that.addr.address
 		      		bean.shipMobile = that.addr.mobile 
 		      		bean.shipName= that.addr.name	
+		      		bean.addressId=that.addr.zip
 		      		bean.itemsJson = JSON.stringify(that.goodsItem.googitem)	
 			        that.saveOrder(bean)
 			      }
@@ -211,13 +212,12 @@
    					let that = this;
    					let params ={}
    					params.sn = that.order.sn
-   					// params.payAmount = Math.round(that.order.needPayMoney * 100)
-   					params.payAmount=1
+   					params.payAmount = Math.round(that.order.needPayMoney * 100)
+   					// params.payAmount=1
 			        //请求支付
 			        params.openId=that.userInfo.openId
 			        params.shippingAmount=that.order.shippingAmount
 			        Api.ConfirmPay(params).then(function(PayRes){
-			        	that.canbuy=true
 			        	if(PayRes.code==0){
 			        		wx.requestPayment({
 				                timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
@@ -226,11 +226,12 @@
 				                signType: PayRes.Map.signType, //签名算法，暂支持 MD5,
 				                paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 				                success: res => {
-				                	that.payReturen()   
-				                	
+				                	that.canbuy=true
+				                	that.payReturen()      	
 				                },
 				                fail: function (res) {
 			                        // fail   
+			                        that.canbuy=true
 			                        wx.showToast({ 
 			                        	title: '支付失败',
 			                        	icon:'none',
@@ -238,6 +239,9 @@
 			                        })
 			                    
 	                   			 },
+	                   			 complete:function(){
+	                   			 	console.log("我执行了")
+	                   			 }
 	                		});
 			        	}
 			        	else{
@@ -246,6 +250,7 @@
 			        			icon:'none',
 			        			duration: 2000
 			        		})
+			        		that.canbuy=true
 			        	}
 			        
 			        })
@@ -274,6 +279,11 @@
 		   			wx.setStorageSync('orderType',that.orderType)
 		   			wx.navigateTo({ url: '../address/main' });
 		   		},
+		   		// 跳转添加地址	
+		   		toAddressAdd(){
+		   			wx.setStorageSync('orderType',that.orderType)
+		   			wx.navigateTo({ url: '../addressDetail/main' });
+		   		}
 			
 		},
 		mounted() {
@@ -286,7 +296,6 @@
 			else{
 				that.orderType=that.$root.$mp.query.orderType
 			}
-			console.log(that.orderType)
 			if(that.orderType==2){
 				that.needPay=that.goodsItem.googitem[0].price
 			}
@@ -300,6 +309,21 @@
 			else{
 				this.AddressBtn=true
 			}
+		},
+		onUnload(){
+			let that=this
+			that.PayBool=false
+			that.PayIndex=0
+			that.goodsItem={}
+			that.addr={}
+			that.AddressBtn=false
+			that.canbuy=true
+			that.InputMask=''
+			that.order={}
+			that.userInfo={}
+			that.orderType=''
+			that.needPay=0
+			that.isLoading=false
 		}
 	}
 </script>

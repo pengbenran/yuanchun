@@ -33,9 +33,9 @@ fly.interceptors.response.use(
     }
 )
   // let base='https://zhifenxiang.guqinet.com'
-   // let base='https://www.aiychbaby.cn'
-   let base='http://192.168.2.132:8080'
-//    let base='http://192.168.2.132:8080/yuanchun'
+   let base='https://www.aiychbaby.cn'
+   // let base='http://192.168.0.114:8080'
+   // let base='http://192.168.0.110:8080'
 
 export const POST = (url, params) => {
   return fly.post(`${base}${url}`, params,{headers: {

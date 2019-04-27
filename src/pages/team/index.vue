@@ -10,30 +10,32 @@
 				</div>
 			</div>
 			<div class="partnerTitle">
-				我的团队
+				我的合伙人
+			</div>
+			<div class="Tab">
+				<div @click="kindChang(1)" :class="timeindex == 1? 'Select':''">一度合伙人</div>
+				<div @click="kindChang(2)" :class="timeindex == 2? 'Select':''">二度合伙人</div>
 			</div>
 			<div class="myTeam">
 				<div class="myTeamTitle">
 					<span>
-						我的团队	
+						我的合伙人
 					</span>
 					<span>
-						团队总人数:{{total}}	
+						总人数:{{count}}	
 					</span>
 				</div>
-				<div class="noThing" v-if="total==0">
+				<div class="noThing" v-if="count==0">
 					<img src="https://shop.guqinet.com/html/images/shuiguo/address/kong.png">
 				</div>
 				<blockquote v-else>
-					<div class="teamList" v-for="(item,index) in myTeam" :index="index" :key="item.unionid">
+					<div class="teamList" v-for="(item,index) in TeamList" :index="index" :key="item.unionid">
 						<div class="teamAvator">		
 							<img :src="item.face">				
 						</div>
 						<div class="name fontHidden1">{{item.name}}</div>
 						<div class="right">
-							<p>角色:
-								<span :class="item.isCheked ? 'Select':''" >{{item.lvidname}}</span>
-							</p>
+							<p>角色:<span style="color:#B1333F;font-size: 16px;">{{item.lvidname}}</span></p>
 							<p>{{item.joinTime}}</p>
 						</div>
 					</div>
@@ -53,38 +55,62 @@
 			return {
 				userInfo:{},
 				limit:15,
-				pages:0,
-				myTeam:[],
-				hasMore:true,
-				total:0,
-				isLoading:false
-
+				pages:[0,0],
+				myTeam:[[],[]],
+				TeamList:[],
+				hasMore:[true,true],
+				total:[0,0],
+				count:0,
+				isLoading:false,
+				timeindex:1
 			}
 		},
 
 		components: {
 			loading
 		},
-
 		methods: {
-			// 获取我的团队信息
-			getAllSubordinate(){
+			kindChang(index){
 				let that=this
-				if(that.hasMore){
+				that.timeindex=index
+				if(that.myTeam[index-1].length==0){
+					if(that.hasMore[index-1]){
+						that.HighSubordinate()
+					}
+					else{
+						that.TeamList=that.myTeam[index-1]
+						that.count=that.total[index-1]
+					}
+				}else{
+					that.TeamList=that.myTeam[index-1]
+					that.count=that.total[index-1]
+				}
+				
+			
+			},
+			// 获取我的合伙人信息
+			HighSubordinate(){
+				let that=this
+				let index=that.timeindex-1
+				console.log(that.hasMore[index])
+				if(that.hasMore[index]){
 					let params={}
 					params.limit=that.limit
-					params.offset=that.pages*that.limit
+					params.offset=that.pages[index]*that.limit
 					params.memberId=that.userInfo.memberId
-					Api.allSubordinate(params).then(function(res){
+					params.type=that.timeindex
+					Api.HighSubordinate(params).then(function(res){
 						that.isLoading=true
-						that.total=res.total
 						if(res.rows.length<that.limit){
-							that.hasMore=false
+							that.hasMore[index]=false
 						}
 						res.rows.map(item=>{
 							item.joinTime=utils.formatTime(item.regtime)
 						})
-						that.myTeam=that.myTeam.concat(res.rows)
+						that.total[index]=res.total
+						that.myTeam[index]=that.myTeam[index].concat(res.rows)
+						that.TeamList=that.myTeam[index]
+						that.count=that.total[index]
 					})
 				}else{
 					wx.showToast({
@@ -93,27 +119,28 @@
 						duration:1500
 					})
 				}
-				
-			}
+			},
 		},
 		mounted() {
 			let that=this
 			that.userInfo=store.state.userInfo
-			that.getAllSubordinate()
+			that.HighSubordinate()
 		},
 		onReachBottom:function(){
 			let that = this;
-			that.pages+=1
-			that.getAllSubordinate()
+			that.pages[that.timeindex-1]+=1
+			that.HighSubordinate()
+			
 		},
 		onUnload(){
-			let that=this
-			that.limit=15
-			that.pages=0
-			that.myTeam=[]
-			that.hasMore=true
-			that.total=0
-			that.isLoading=false
+			this.pages=[0,0]
+			this.myTeam=[[],[]]
+			this.TeamList=[]
+			this.hasMore=[true,true]
+			this.total=[0,0]
+			this.count=0
+			this.isLoading=false
+			this.timeindex=1
 		},
 
 	}
@@ -124,6 +151,10 @@ img{
 	width: 100%;
 	height: 100%;
 	display: block;
+}
+.Select{
+	color:#B1333F;
+	border-bottom: 2px solid #B1333F;
 }
 .header{
 	height: 150px;
@@ -152,6 +183,13 @@ img{
 	top:-10px;
 	background: #fff;
 	border-radius: 5px;  
+}
+.Tab{
+	display: flex;
+	justify-content: space-around;
+	height: 40px;
+	line-height:40px;
+	font-size: 16px;	
 }
 .myTeam{
 	.myTeamTitle{
@@ -182,7 +220,7 @@ img{
 				border-radius: 50%;
 				vertical-align: middle;
 		}
-		.name{
+		.name{		
 			padding-left: 10px;
 			width:150px;
 			height: 40px;
@@ -200,9 +238,5 @@ img{
 	width:150px;
 	height: 150px;
 	margin:40px auto;
-}
-.Select{
-	color:#B1333F;
-	font-size: 16px;
 }
 </style>

@@ -1,11 +1,10 @@
 <script>
 export default {
   created () {
-    // 调用API从本地缓存中获取数据
+    // 调用API从本地缓存中获取数
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
+    wx.setStorageSync('shareImage','')
     const updateManager = wx.getUpdateManager()
     updateManager.onUpdateReady(function () {
       updateManager.applyUpdate()
@@ -31,12 +30,12 @@ export default {
 }
 @font-face {
   font-family: 'iconfont';  /* project id 1048971 */
-  src: url('//at.alicdn.com/t/font_1048971_4l92rdqonua.eot');
-  src: url('//at.alicdn.com/t/font_1048971_4l92rdqonua.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_1048971_4l92rdqonua.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_1048971_4l92rdqonua.woff') format('woff'),
-  url('//at.alicdn.com/t/font_1048971_4l92rdqonua.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_1048971_4l92rdqonua.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_1048971_7lshdi55eow.eot');
+  src: url('//at.alicdn.com/t/font_1048971_7lshdi55eow.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1048971_7lshdi55eow.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1048971_7lshdi55eow.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1048971_7lshdi55eow.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1048971_7lshdi55eow.svg#iconfont') format('svg');
 }
 .iconfont{
   font-family: 'iconfont';

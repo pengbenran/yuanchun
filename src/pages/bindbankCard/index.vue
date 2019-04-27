@@ -18,11 +18,11 @@ import Api from '@/api/member'
 export default {
   data () {
     return {
-             UserName:'彭本燃',
-             UserPhone:'15779556662',
-             UserMa:'362201199410025211',
-             UserYin:'6217002100003490117',
-             UserYinName:'建设银行',
+             UserName:'',
+             UserPhone:'',
+             UserMa:'',
+             UserYin:'',
+             UserYinName:'',
              userInfo:{},
              canSubmit:true
     }
@@ -52,7 +52,6 @@ export default {
           params.wechat = that.UserName 
           params.mobile = that.UserPhone
           params.memberId = that.userInfo.memberId
-          // params.memberId = 274
           params.midentity = that.UserMa
           params.cardno = that.UserYin
           params.depositBank = that.UserYinName

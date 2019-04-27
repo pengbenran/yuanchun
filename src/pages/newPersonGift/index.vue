@@ -3,7 +3,7 @@
 		<div class="cart">
 			<!--点击新增地址-->
 			<div class="AddressWarp">
-				<div class="AddressBtn" v-if="AddressBtn" @click="toAddress">
+				<div class="AddressBtn" v-if="AddressBtn" @click="toAddressAdd">
 					+请填写收货地址
 				</div>
 				<div class="Address" v-else @click="toAddress">
@@ -112,6 +112,7 @@
 		      		bean.orderType = 3
 		      		bean.shipAddr = that.addr.address
 		      		bean.shipMobile = that.addr.mobile 
+		      		bean.addressId=that.addr.zip
 		      		bean.shipName= that.addr.name	      		
 					bean.googitem=JSON.stringify(that.googitem)
 		      		bean.itemsJson = JSON.stringify(that.personGift)	
@@ -121,7 +122,7 @@
 		    //提交订单并支付
 		    async saveOrder(bean){
 		    	let that = this;
-		    	let res = await Api.giftUser(bean)
+		    	let res = await Api.giftUser(bean)    	
 		    	wx.hideLoading()
 		    	if(res.code == 0){
 		    		that.order = res.order
@@ -134,8 +135,8 @@
 		    	params.orderId = that.order.orderId
 		    	params.sn = that.order.sn
    				params.shippingAmount=0
-   				// params.payAmount=Math.round(that.order.needPayMoney * 100)
-   				params.payAmount=1
+   				params.payAmount=Math.round(that.order.needPayMoney * 100)
+   				// params.payAmount=1
 			    //请求支付
 			    params.openId=that.userInfo.openId
 			    Api.ConfirmPay(params).then(function(PayRes){
@@ -146,6 +147,7 @@
 			    			duration: 2000
 			    		})
 			    		that.canbuy=true
+			    		
 			    	}else{
 			    		wx.requestPayment({
 			                timeStamp: PayRes.Map.timeStamp, //时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间,
@@ -154,17 +156,17 @@
 			                signType: PayRes.Map.signType, //签名算法，暂支持 MD5,
 			                paySign: PayRes.Map.paySign, //签名,具体签名方案参见小程序支付接口文档,
 			                success: res => {
-			                	that.payReturen()   
 			                	that.canbuy=true
+			                	that.payReturen()   
 			                },
 			                fail: function (res) {
-	                        // fail   
+			                	that.canbuy=true
+	              
 	                        wx.showToast({ 
 	                        	title: '支付失败',
 	                        	icon:'none',
 	                        	duration: 2000
 	                        })
-	                        that.canbuy=true
 	                    },
 	                });
 			    	}
@@ -202,10 +204,16 @@
 		    	let that=this
 		    	wx.navigateTo({ url: '../address/main' });
 		    },
+		    // 跳转添加地址	
+		    toAddressAdd(){
+		    	wx.navigateTo({ url: '../addressDetail/main' });
+		    }
 		},
 		mounted() {
 			let that=this
 			that.personGift =store.state.personGift
+			that.googitem=[]
+			that.personGiftIdArry=[]
 			for(var i in that.personGift){
 				if(that.personGift[i].repacketId==1){
 					that.freight=wx.getStorageSync('postage')
@@ -219,6 +227,7 @@
 				}
 				that.personGiftIdArry.push(that.personGift[i].repacketId)
 			}
+			console.log(that.googitem,that.personGiftIdArry)
 			that.userInfo=store.state.userInfo
 		},
 		onShow(){
@@ -242,6 +251,7 @@
 			that.googitem=[]
 			that.moneySum=0
 			that.freight=0
+			console.log(2222222);
 		},
 	}
 </script>

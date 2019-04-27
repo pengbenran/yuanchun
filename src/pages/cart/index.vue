@@ -12,8 +12,8 @@
 	    			<div class="price" v-if='!BtnDelete'>
 	    				<div style="line-height: 95rpx">合计：</div>
 	    				<div>
-	    					<p>{{specsTotal}}元</p>
-	    					<p>{{priceTotal}}元+{{deductionTotal}}平台劵</p>
+	    					<p>{{priceTotal}}元</p>
+	    					<p>{{specsTotal}}元+{{deductionTotal}}平台劵</p>
 	    				</div>
 	    			</div>
 	    			<div class="MaskInfo" v-else>注：请选择删除</div>
@@ -114,6 +114,9 @@
 		   				durantion: 2000
 		   			})
 		   			that.BtnDelete = false
+		   			that.priceTotal=0
+		   			that.specsTotal=0
+		   			that.deductionTotal=0
 		   			that.getCartList();
 		   		}
 		   	}
@@ -170,6 +173,9 @@
 	onShow(){
 		let that=this
 		that.userInfo=store.state.userInfo
+		that.priceTotal=0
+		that.specsTotal=0
+		that.deductionTotal=0
 		that.getCartList()
 	},
 	onPullDownRefresh: function(){

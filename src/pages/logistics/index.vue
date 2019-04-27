@@ -28,8 +28,8 @@
 						<p class="bottom"></p>
 					</div>
 					<div class="right">
-						<p class="intro fontHidden">{{item.context}}</p>
-						<p class="time">{{item.time}}</p>
+						<p class="intro fontHidden">{{item.acceptStation}}</p>
+						<p class="time">{{item.acceptTime}}</p>
 					</div>
 				</li>
 			</ul>

@@ -8,7 +8,7 @@
 				<div class="avator">
 					<img :src="userInfo.face">
 				</div>
-				<div class="headerTitle">{{userInfo.uname}}</div>
+				<div class="headerTitle fontHidden1">{{userInfo.uname}}</div>
 			</div>
 			<div class="partnerTitle">
 				我的余额
@@ -25,11 +25,11 @@
 				</div>
 				<div class="teamList" v-for="(item,index) in inComingList" :key="item.payId" :index='index' @click="showMore(index)">
 					<div class="teamListIntro">
-						<div class="left">
-							<span class="teamAvator">
-								<img :src="item.wechat">
-							</span>
-							<span class="name">{{item.uname}}</span>
+						<div class="teamAvator">
+							<img :src="item.wechat">
+						</div>
+						<div class="name fontHidden1">
+							{{item.uname}}
 						</div>
 						<div class="right">
 							余额:+￥{{item.total}}
@@ -63,7 +63,7 @@
 				isLoading:false,
 				inComingList:[],
 				hasMore:true,
-				limit:10,
+				limit:15,
 				pages:0,
 				hasMore:true,
 				userInfo:{},
@@ -128,7 +128,7 @@
 			that.isLoading=false
 			that.inComingList=[]
 			that.hasMore=true
-			that.limit=7
+			that.limit=15
 			that.pages=0
 			that.hasMore=true
 		},
@@ -160,6 +160,7 @@ img{
 		color:#fff;
 		height: 30px;
 		line-height:30px;
+		width:200px;
 	}
 }
 .partnerTitle{
@@ -189,7 +190,7 @@ img{
 	.teamList{
 		.teamListIntro{
 			display: flex;
-			justify-content: space-between;
+			justify-content: space-around;
 			height: 50px;
 			padding: 0 10px;
 			box-sizing:border-box;
@@ -197,10 +198,8 @@ img{
 			font-size: 16px;
 			color:#323232;
 			border-top: 1px solid #ddd;
-			.left{
-				flex-grow: 1;
-				.teamAvator{
-					display: inline-block;
+			.teamAvator{
+				margin-top: 5px;
 					width: 40px;
 					height: 40px;
 					overflow: hidden;
@@ -208,12 +207,12 @@ img{
 					vertical-align: middle;
 				}
 				.name{
+					width:200px;
 					display: inline-block;
 					padding-left: 10px;
 				}
-			}
 			.right{
-				
+				flex-grow: 1;
 			}
 		}
 		.teamListDetail{

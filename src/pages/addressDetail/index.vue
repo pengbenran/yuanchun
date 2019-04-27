@@ -39,9 +39,8 @@
 				Type: '',
 				tip: '新增地址',
 				addrId: '',
-				adcode:'',
+				addrCode:'110101',
 				region: ['北京市', '北京市', '东城区'],
-				addrCode:[]
 			}
 		},
 		components: {
@@ -54,21 +53,20 @@
 			},
 			bindRegionChange(e) {
 				let that=this
-				that.addrCode=e.mp.detail.code
+				that.addrCode=e.mp.detail.code.pop()
 				that.region=e.mp.detail.value
 			},
 			async addAddress() {
-				var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
 				let that = this
 				if(that.username == '') {
 					wx.showToast({
 						icon: 'none',
 						title: '用户名不能为空',
 					})
-				} else if(!myreg.test(that.userphone)) {
+				} else if(that.userphone.length!=11) {
 					wx.showToast({
 						icon: 'none',
-						title: '手机号格式不正确',
+						title: '手机号长度有误',
 					})
 				} else if(that.detailaddr == '') {
 					wx.showToast({
@@ -87,15 +85,20 @@
 						params.region = that.detailaddr
 						params.province = ''
 						params.city = ''
-						params.zip = that.addrCode.pop()						
+						params.zip = that.addrCode						
 						Api.update(params).then(function(res) {
-
+							if(res.code==0){
+								wx.showToast({
+									title: '修改成功',
+									icon: 'success',
+									duration: 1500
+								})
+								wx.navigateBack({
+									delta: 1
+								})
+							}
 						})
-						wx.showToast({
-							title: '修改成功',
-							icon: 'success',
-							duration: 1500
-						})
+						
 					} else {
 						let params = {}
 						params.memberId = that.memberId
@@ -106,22 +109,23 @@
 						params.region = that.detailaddr
 						params.province = ''
 						params.city = ''
-						params.zip = that.addrCode.pop()						
+						params.zip = that.addrCode					
 						Api.getSite(params).then(function(res) {
-							
+							console.log(res)
+							if(res.code==0){
+								wx.showToast({
+									title: '添加成功',
+									icon: 'success',
+									duration: 1500
+								})
+								params.address=that.region.join('')+that.detailaddr
+								wx.setStorageSync('addr',params)
+								wx.navigateBack({
+									delta: 1
+								})
+							}
 						})
-						wx.showToast({
-							title: '添加成功',
-							icon: 'success',
-							duration: 1500
-						})
-
 					}
-					setTimeout(function() {
-						wx.navigateBack({
-							delta: 1
-						})
-					}, 1500)
 				}
 
 			},
