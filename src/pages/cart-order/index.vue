@@ -281,6 +281,7 @@
 		   		},
 		   		// 跳转添加地址	
 		   		toAddressAdd(){
+		   			let that=this
 		   			wx.setStorageSync('orderType',that.orderType)
 		   			wx.navigateTo({ url: '../addressDetail/main' });
 		   		}
