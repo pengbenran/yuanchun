@@ -33,7 +33,8 @@
     "backgroundTextStyle":"dark"
   },
   "tabBar": {
-    "selectedColor":"#901414", 
+    "color": "#999999", 
+    "selectedColor":"#ff3344", 
     "list": [
       { 
         "pagePath": "pages/index/main",

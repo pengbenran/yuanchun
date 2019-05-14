@@ -3,20 +3,10 @@
 		<div class="footerBnt">
 			<div class="left">
 				<div class="leftItme" @click="jumpIndex"><img :src="homeImg"/><p>首页</p></div>
-				<div class="leftItme">
-					<button class='homepage custom' open-type="contact" session-from="weapp"><img :src="kefuImg" @click="kefu"/><p>客服</p> </button>
-				</div>
-				<div class="leftItme"  @click="collection">
-					<img :src="noshouChang" v-if="posts" />
-					<img :src="shouChang" v-if="!posts"/>
-					<p>收藏</p>
-				</div>
+				<div class="button"  @click="showModel(2)" form-type="submit">加入购物车</div >
 			</div>
 			<div class="right">	
-				<div class="btnWarp">
-					<button  @click="showModel(2)" form-type="submit">加入购物车</button ><span></span>
-					<button  @click="showModel(1)"  form-type="submit">立即购买</button >
-				</div>
+					<div class="button"  @click="showModel(1)"  form-type="submit">立即购买</div >
 			</div>
 		</div>
 		<div class="modeWarp" v-if="modelShow" >
@@ -234,22 +224,48 @@
 </script>
 
 <style lang="less">
-.footerBnt{display: flex;align-items: center;
-	;justify-content: space-between;padding: 10rpx 2%;position: fixed;bottom: 0;width:96%;background: #fff;box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.164) ;
-	.left{width: 45%;display: flex;justify-content: space-around;
+.footerBnt{
+	display: flex;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 57px;
+	.left{
+		display: flex;
+		width: 50%;
 		.leftItme{
-			color: rgb(117,117,117);font-size: 28rpx;font-weight: 100;	
-			img{width: 58rpx;height: 58rpx;margin: auto;}
-			button{line-height: 36rpx;background: #fff;padding: 0;color: rgb(117,117,117);font-size: 28rpx;}
-			button::after{border: none;}	
+			width: 57px;
+			height: 100%;
+			background: #fff2f3;
+			text-align: center;
+			img{width: 22px;height: 22px;display: block;margin: 7px auto 7px auto;}
+			p{font-size: 11px;color: #ff6673;display: block;}
 		}
-
+		 .button{
+		 	width: 1;
+		 	height: 100%;
+		 	flex-grow: 1;
+		 	line-height: 57px;
+		 	font-size: 16px;
+		 	color: #ffffff;
+		 	font-weight: bold;
+		 	background: #ff6673;
+		 	text-align: center;
+		 }
 	}
-	.right{width: 55%;}
-	.btnWarp{background-image: -webkit-linear-gradient(0deg,#801d20,#FF3D3A);border-radius: 45rpx;height: 75rpx;line-height: 75rpx;display: flex;justify-content: space-around;}
-	.btnWarp button{font-size: 32rpx;color: #fff;font-weight: 100;padding: 0 15rpx;background: rgba(255, 255, 255, 0)}
-	.btnWarp button::after{border: none;}
-	.btnWarp span{width: 2rpx;height: 35rpx;background-color: #fff;margin-top: 10px;}
+	.right{
+		width: 50%;
+		.button{	
+			width: 100%;
+			height: 100%;
+			line-height: 57px;
+			color: #ffffff;
+		 	font-weight: bold;
+		 	background: #ce303d;
+		 	text-align: center;
+		}
+	}
 }
 .modeWarp{height:100vh;position: fixed;left: 0;top: 0;width: 100%;}
 .ModelMask,.Model{position: fixed;left: 0;width: 100%;height: 100%;}

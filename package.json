@@ -18,8 +18,6 @@
   },
   "dependencies": {
     "flyio": "^0.6.13",
-    "less": "^3.9.0",
-    "less-loader": "^4.1.0",
     "mpvue": "^1.0.11",
     "mpvue-calendar": "^2.1.1",
     "mpvue-wxparse": "^0.6.5",

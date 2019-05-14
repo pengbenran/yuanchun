@@ -1,20 +1,23 @@
 <template>
 	<div>
-		<div class="product-list-li" v-for="(item,index) in products" @click="jump(item.goodsId)">
-			<div class="img">
-				<img :src="item.thumbnail" />
-			</div>
-			<div class="content">
-				<div class="tit fontHidden">{{item.name}}</div>
-				<div class="price">
-					<span>¥{{item.cost}}</span>
-				</div> 
-				<div class="price1" :style="{display:isflex}">
-					<span>¥{{item.price}}+</span>
-					<div class="ptq">{{item.unit}}平台劵</div>
+			<div class="exclusive">
+					<div class="exclusive-list">
+						<div class="exclusive-list-li" v-for="(item,index) in products" @click="jump(item.goodsId)">
+							<div class="left"><img :src="item.thumbnail" /></div>
+							<div class="right">
+								<div class="name">{{item.name}}</div>
+								<div class="picold">
+									<span>¥{{item.cost}}+</span>
+									<span>{{item.unit}}平台券</span>
+								</div>
+								<div class="pic">
+									<span>¥{{item.price}}</span>
+									<span>立即购买</span>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
 	</div>
 </template>
 
@@ -45,53 +48,68 @@
 </script>
 
 <style lang="less">
-	.product-list-li {
-		display: flex;
-		justify-content: space-between;
-		padding: 15px 0 15px 0;
-		border-bottom: 1px solid #e6e6e6;
-		flex-wrap: wrap;
-		.img {
-			width: 110px;
-			height: 110px;
-			border-radius: 5px;
-			overflow: hidden;
-			img {
+	
+	.exclusive {
+		padding: 0 12px;
+		box-sizing: border-box;
+		.exclusive-list {
+			.exclusive-list-li {
+				display: flex;
 				width: 100%;
-				height: 100%;
-			}
-		}
-		.content {
-			width: 210px;
-			font-size: 11px;
-			.tit {
-				color: #333333;
-				line-height: 25px;
-				box-sizing: border-box;
-				height: 55px;
-				margin-bottom: 10px;
-			}
-			.price {
-				span {
-					color: #a82429;
-					font-size: 16px;
+				height: 150px;
+				border-radius: 12px;
+				overflow: hidden;
+				box-shadow:0 0 8px #e6e5ff;
+				margin-top: 10px;
+				&:nth-child(1){margin-top: 0;}
+				.left {
+						width: 150px;
+						height: 150px;
+						padding: 4px 0 4px 4px;
+						box-sizing: border-box;
+						img{width: 100%;height: 100%;border-top-left-radius: 8px;border-bottom-left-radius: 8px;}
 				}
-			}
-			.price1 {
-				color: #a82429;
-				font-size: 16px;
-				.ptq {
-					background-color: #801d20;
-					padding:0 10px;
-					box-sizing: border-box;
-					height: 19px;
-					text-align: center;
-					border-radius: 5px;
-					line-height: 19px;
-					color: #ffffff;
-					font-size: 13px;
-					display: inline-block;
-					vertical-align: middle;
+				.right {
+						padding: 14px 12px 0 7px;
+						box-sizing: border-box;
+						width: 1px;
+						flex-grow: 1;
+					.name {
+                        font-size: 15px;
+                        color: #333333;
+                        height: 40px;
+                        line-height: 20px;                                              
+					}
+					.picold {
+						margin-top: 20px;
+						font-size: 16px;
+						color: #ff0000;
+					}
+					.pic {  
+						margin-top: 11px;
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
+						span{
+							display: block;
+							&:nth-child(1){
+								font-size: 19px;
+								color: #ff0000;
+								font-weight: bold;
+							}
+							&:nth-child(2){
+								font-size: 14px;
+								color: #ffffff;
+								text-align: center;
+								width: 90px;
+								height: 33px;
+								border-radius: 16.5px;
+								background: linear-gradient(to right,#c42f3c,#ff3344);
+								line-height: 33px;
+								
+							}
+						}
+					}
 				}
 			}
 		}

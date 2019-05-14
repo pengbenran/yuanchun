@@ -23,13 +23,8 @@
 					<span>{{item.name}}</span>
 				</div>
 			</div>
-			<!--海报-->
-			<div class="poster" :style="{height:kindHeight+'px'}">
-				<img :src="catImg" />
-			</div>
 			<!--产品列表-->
 			<div class="product">
-				<div class="headline">商品列表 </div>
 				<div class="product-list">
 		           <product :products="product"></product>
 				</div>
@@ -191,14 +186,14 @@
 		padding:18px;
 		box-sizing: border-box;
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
 		flex-wrap: wrap;
 		.cate-li {
 			span {
 				display: block;
 				&:nth-child(1) {
-					width: 46px;
-					height: 46px;
+					width: 40px;
+					height: 40px;
 					margin: 0 auto;
 					img {
 						width: 100%;
@@ -207,9 +202,10 @@
 				}
 				&:nth-child(2) {
 					text-align: center;
-					font-size: 12px;
-					color: #666666;
+					font-size: 17px;
+					color: #333333;
 					line-height: 26px;
+					font-weight: bold;
 				}
 			}
 			img{
@@ -260,7 +256,7 @@
 	
 	.product {
 		.product-list {
-			padding: 0 30px 0 10px;
+			padding-bottom: 20px;
 		}
 	}
 </style>
