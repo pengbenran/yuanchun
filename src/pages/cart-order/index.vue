@@ -212,8 +212,8 @@
    					let that = this;
    					let params ={}
    					params.sn = that.order.sn
-   					params.payAmount = Math.round(that.order.needPayMoney * 100)
-   					// params.payAmount=1
+   					// params.payAmount = Math.round(that.order.needPayMoney * 100)
+   					params.payAmount=1
 			        //请求支付
 			        params.openId=that.userInfo.openId
 			        params.shippingAmount=that.order.shippingAmount

@@ -169,12 +169,15 @@
 					that.listArry.map(item=>
 						item.isSelect=false
 					)
-					that.countMp=that.listArry[index].num*that.oneBox
-					that.listArry[index].isSelect=true
-					that.postage=that.listArry[index].num*that.postage
-					that.num=that.listArry[index].num
+					that.listArry[index].isSelect=true	
 				}
-				
+				for(var i in that.listArry){
+					if(that.listArry[i].isSelect){
+						that.postage=that.listArry[i].num*that.postage
+						that.num=that.listArry[i].num
+						that.countMp=that.listArry[i].num*that.oneBox
+					}
+				}		
 			},
 			exchange(){
 				let that=this

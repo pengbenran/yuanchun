@@ -71,6 +71,7 @@
 					params.catId=catId
 					params.offset=pages*limit
 					params.limit=limit
+					params.disabled=2
 					let res=await Api.getGoodsAll(params)
 					that.isLoading=true
 					if(res.code==0){

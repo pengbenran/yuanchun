@@ -135,8 +135,8 @@
 		    	params.orderId = that.order.orderId
 		    	params.sn = that.order.sn
    				params.shippingAmount=0
-   				params.payAmount=Math.round(that.order.needPayMoney * 100)
-   				// params.payAmount=1
+   				// params.payAmount=Math.round(that.order.needPayMoney * 100)
+   				params.payAmount=1
 			    //请求支付
 			    params.openId=that.userInfo.openId
 			    Api.ConfirmPay(params).then(function(PayRes){
@@ -215,19 +215,18 @@
 			that.googitem=[]
 			that.personGiftIdArry=[]
 			for(var i in that.personGift){
+				let googobj={}
+				googobj.num=1
+				googobj.pic=1
+				googobj.image=that.personGift[i].voucherType
+				googobj.name=that.personGift[i].repacketName
+				googobj.price=that.personGift[i].conditionAmount
+				that.googitem.push(googobj)
 				if(that.personGift[i].repacketId==1){
-					that.freight=wx.getStorageSync('postage')
-					let googobj={}
-					googobj.num=1
-					googobj.pic=1
-					googobj.image=that.personGift[i].voucherType
-					googobj.name=that.personGift[i].repacketName
-					googobj.price=that.personGift[i].conditionAmount
-					that.googitem.push(googobj)	
+					that.freight=wx.getStorageSync('postage')	
 				}
 				that.personGiftIdArry.push(that.personGift[i].repacketId)
 			}
-			console.log(that.googitem,that.personGiftIdArry)
 			that.userInfo=store.state.userInfo
 		},
 		onShow(){

@@ -32,7 +32,7 @@
 					</div>
 				</div>
 				<!--新人礼包-->
-				<div class="giftbags">
+				<div class="giftbags" v-if="hasGift">
 					<div class="tit">新人礼包</div>
 					<scroll-view class="scroll-view_H" scroll-x>
 						<div class="giftbag" @click="jumpNewPersonGift(index)" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
@@ -96,16 +96,16 @@
 					</div>
 					<div class="exclusive-list">
 						<div class="exclusive-list-li" v-for="(item,index) in exclusive">
-							<div class="left"><img :src="item.img" /></div>
+							<div class="left"><img :src="item.thumbnail" /></div>
 							<div class="right">
 								<div class="name">{{item.name}}</div>
 								<div class="picold">
-									<span>¥{{item.picold}}+</span>
-									<span>{{item.quan}}平台券</span>
+									<span>¥{{item.price}}+</span>
+									<span>{{item.unit}}平台券</span>
 								</div>
 								<div class="pic">
-									<span>¥{{item.pic}}</span>
-									<span>立即购买</span>
+									<span>¥{{item.cost}}</span>
+									<span @click="jumpDistribe(item.goodsId)">立即购买</span>
 								</div>
 							</div>
 						</div>
@@ -145,6 +145,7 @@
 	import loading from '@/components/loading'
 	import wxParse from 'mpvue-wxparse'
 	import utils from "@/utils/index"
+	import Api_good from "@/api/goods";
 	export default {
 		data() {
 			return {
@@ -161,22 +162,8 @@
 				Height: '',
 				message: [],
 				showDetail: false,
-				exclusive: [{
-					img: "/static/images/banner.png",
-					name: "元淳夏季伴侣（雪莲夏季隔离乳+七珍莹润水水霜）",
-					picold: "88",
-					quan: 50,
-					pic: 138,
-
-				},
-				{
-					img: "/static/images/banner.png",
-					name: "元淳夏季伴侣（雪莲夏季隔离乳+七珍莹润水水霜）",
-					picold: "88",
-					quan: 50,
-					pic: 138,
-
-				}]
+				exclusive: [],
+				hasGift:false,
 			}
 		},
 		components: {
@@ -191,12 +178,19 @@
 			that.hideTabBar()
 			that.getBanner()
 			that.getTicket()
-			that.getUserInfo(),
-				that.getmemberUpGoods()
+			that.getUserInfo()
+			that.getmemberUpGoods()
+			that.getDistribeGood()
 		},
 		onShow() {
 			let that = this
 			that.giftbag = store.state.giftbag
+			if(that.giftbag.length==0){
+				that.hasGift=false
+			}
+			else{
+				that.hasGift=true
+			}
 		},
 		methods: {
 			//隐藏导航栏
@@ -216,6 +210,34 @@
 					that.goodsDO = res.goodsDO
 				})
 			},
+			// 获取合伙人专属礼包
+			getDistribeGood(){
+				let that = this
+				let params={}
+				params.offset=0;
+				params.limit=5
+				params.disabled=1
+				Api_good.getGoodsAll(params).then(function(res) {
+					if(res.code==0){
+						that.exclusive = res.Goods
+					}
+					
+				})
+			},
+			jumpDistribe(goodsId){
+				let that=this
+				if(that.userInfo.lvId==11){
+					wx.showToast({
+						icon: 'none',
+						title: '请先成为合伙人',
+					})
+				}
+				else{
+					wx.navigateTo({
+						url:'../product-detail/main?goodsId='+goodsId
+					})
+				}
+             },
 			jumpmemberUp() {
 				let that = this
 				let goodarr = []
