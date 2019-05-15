@@ -34,7 +34,12 @@
 				</div>
 				</div>
 			</div>
-
+             <!--商品详情 -->
+             <div class="detail-tit">
+             	<span></span>
+             	<span>商品详情</span>
+             </div>
+             
 			<div>
 				<wxParse :content="detail.intro" @preview="preview" @navigate="navigate" />
 			</div>
@@ -130,7 +135,27 @@
 			}
 		}
 	}
-	
+	/*商品详情*/
+	.detail-tit{
+		width: 100%;padding-left: 12px;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		margin-top: 35px;
+		span{
+			display:block;
+			&:nth-child(1){
+				width: 4px;
+				height: 14px;
+				background: linear-gradient(#c42f3c,#ff3344);
+			}
+			&:nth-child(2){
+			 font-size: 15px;
+		     color: #333333;
+		     margin-left: 4px;
+			}
+		}
+	}
 	.wxParse .img {
 		display: flex;
 	}

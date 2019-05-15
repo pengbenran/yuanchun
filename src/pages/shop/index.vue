@@ -19,8 +19,10 @@
 			<!--商品类目-->
 			<div class="cate">
 				<div class="cate-li" v-for="(item,index) in cate" :key="item.catId" :index="index" @click="getKindGoods(item.catId,index)">
-					<span><img :src="item.goodsCount"/></span>
-					<span>{{item.name}}</span>
+					<div class="img">
+						<img :src="item.goodsCount"/>
+					</div>
+					<div class="name" :class="kindIndex==index?'on':''">{{item.name}}</div>
 				</div>
 			</div>
 			<!--产品列表-->
@@ -39,6 +41,7 @@
 	export default {
 		data() {
 			return {
+				russ:0,
 			    isflex:"none",
 				catImg:'',
 				ticket:20,  //平台券
@@ -54,7 +57,12 @@
 				catId:'',
 				isLoading:false,
 				Height:'',
-				kindHeight:''
+				kindHeight:'',
+				cate1:[
+				  {goodsCount:"/static/images/menu1.png"},
+				  {goodsCount:"/static/images/menu2.png"},
+				  {goodsCount:"/static/images/menu3.png"},
+				]
 			}
 		},
 
@@ -95,13 +103,15 @@
 				let that=this
 				that.catId=catId
 				that.kindIndex=index
+				console.log(that.russ)
 				that.catImg=that.cate[index].image
 				for(var i in that.cate){
 					that.hasMore[i]=true
 					that.goodsList[i]=[]
 					that.nowPage[i]=0
 				}
-				that.getGoodsAll(catId,that.nowPage[that.kindIndex],that.limit)
+				that.getGoodsAll(catId,that.nowPage[that.kindIndex],that.limit)	
+				console.log(that.catImg)				
 			},
 
 			//brand跳转
@@ -181,7 +191,7 @@
 		}
 	}
 	
-	/*轮播*/
+	
 	.cate {
 		width: 100%;
 		padding:18px;
@@ -190,9 +200,7 @@
 		justify-content: space-around;
 		flex-wrap: wrap;
 		.cate-li {
-			span {
-				display: block;
-				&:nth-child(1) {
+				.img {
 					width: 40px;
 					height: 40px;
 					margin: 0 auto;
@@ -201,14 +209,14 @@
 						height: 100%;
 					}
 				}
-				&:nth-child(2) {
+				.name{
 					text-align: center;
 					font-size: 17px;
-					color: #333333;
-					line-height: 26px;
-					font-weight: bold;
-				}
-			}
+					color: #8d8db2;
+					line-height: 30px;
+				}				
+			
+			.on{color: #333333;}
 			img{
 				border-radius: 5px;
 			}
