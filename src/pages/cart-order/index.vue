@@ -300,6 +300,7 @@
 					url: '../addressDetail/main'
 				});
 			}
+
 		},
 		mounted() {
 			let that = this
@@ -495,7 +496,7 @@
 			.Item {
 				display: flex;
 				padding-top: 24px;
-				font-size: 14px;
+				font-size: 16px;
 				color: #333333;
 				align-items: center;
 				justify-content: space-between;

@@ -6,7 +6,7 @@
 		</div>
 		<div class="cant">		
 			<div class="inp" v-for="(item,index) in giftList">
-				<span><img src="/static/images/gift.png"/></span>
+				<span><img :src="item.voucherType"/></span>
 				<span><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
 				<div class="tit fontHidden">{{item.repacketName}}</div>
 			</div>
@@ -23,7 +23,11 @@
 	export default {
 		data() {
 			return {
-				giftList:[]
+				giftList:[],
+				gifimg:[
+				  {voucherType:"/static/images/gift0.png"},
+				  {voucherType:"/static/images/gift.png"}
+				]
 			}
 		},
 
@@ -55,13 +59,14 @@
 				}		
 			},
 			// 获取新人礼
-			getNewPersonGift(){
+			getNewPersonGift(index){
 				let params={}
 				let that=this
 				params.memberId=store.state.userInfo.memberId
 				Api.getNewPersonGift(params).then(function(res){
 					for(var i in res.giftPackage){
 						res.giftPackage[i].ischeck=false
+						res.giftPackage[i].voucherType = that.gifimg[i].voucherType
 					}
 					that.giftList=res.giftPackage
 				})
@@ -111,20 +116,20 @@
 				.tit{
 					position: absolute;
 					top:0;
-					left: 32%;
+					left: 40%;
 					line-height:25px;
-					padding: 21px 0 0 0;
+					padding: 25px 0 0 0;
 					box-sizing: border-box;
 					font-size: 15px;
 					color: #ffffff;
-					width:170px;
+					width:131px;
 				}		
 				span {
 					margin: 0 auto;
 					display: block;
 					&:nth-child(1) {
-						width: 296px;
-						height: 92px;
+						width: 309px;
+						height: 117px;
 						img {
 							width: 100%;
 							height: 100%;
@@ -132,12 +137,13 @@
 					}
 					&:nth-child(2) {
 						position: absolute;
-						top: 31%;
+						top: 41%;
 						right: 13%;
 					}
 				}
 			}
 		}
+		
 		.btn {
 			width: 252px;
 			height: 40px;

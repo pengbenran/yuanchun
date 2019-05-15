@@ -129,10 +129,6 @@
 						</div>
 					</div>
 				</div>
-				<!--<div class="footer">
-					<img src="https://shop.guqinet.com/html/images/shuiguo/index/footerImg.png" />
-				</div>-->
-
 			</div>
 		</blockquote>
 		<loginModel ref="loginModel"></loginModel>
@@ -503,6 +499,7 @@
 			width: 100%;
 			position: absolute;
 			top: 100px;
+			color: #FFFFFF;
 			.hidd {
 				position: absolute;
 				top: -30px;
