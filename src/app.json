@@ -1,5 +1,6 @@
 {
   "pages": [
+  
     "pages/index/main",
     "pages/bindbankCard/main",  
     "pages/logistics/main",    
@@ -33,7 +34,7 @@
     "backgroundTextStyle":"dark"
   },
   "tabBar": {
-    "color": "#999999", 
+    "color": "#8d8db2", 
     "selectedColor":"#ff3344", 
     "list": [
       { 
