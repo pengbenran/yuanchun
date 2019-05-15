@@ -1,7 +1,8 @@
 {
   "pages": [
-  
     "pages/index/main",
+    "pages/memberUpDetail/main",
+    "pages/Partner/main",
     "pages/bindbankCard/main",  
     "pages/logistics/main",    
     "pages/addressDetail/main",
@@ -20,7 +21,6 @@
     "pages/recommendationCode/main",     
     "pages/address/main",
     "pages/shop/main",
-    "pages/Partner/main",
     "pages/cart-order/main",
     "pages/myself/main",
     "pages/favoriteList/main",

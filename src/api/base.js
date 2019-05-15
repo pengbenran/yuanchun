@@ -33,8 +33,8 @@ fly.interceptors.response.use(
     }
 )
   // let base='https://zhifenxiang.guqinet.com'
-   // let base='https://www.aiychbaby.cn'
-   let base='http://192.168.0.114:8080'
+   let base='https://www.aiychbaby.cn'
+   // let base='http://192.168.2.131:8080'
    // let base='http://192.168.0.110:8080'
 
 export const POST = (url, params) => {

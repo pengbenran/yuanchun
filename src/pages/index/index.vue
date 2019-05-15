@@ -74,7 +74,7 @@
 							<img :src="goodsDO.thumbnail" />
 							<div class="tit">
 								<p>{{goodsDO.name}}</p>
-								<p>查看详情 > </p>
+								<p @click="jumpMemberUpDetail(goodsDO.goodsId)">查看详情 > </p>
 							</div>
 						</div>
 						<div class="subTit">{{goodsDO.pageTitle}}</div>
@@ -83,7 +83,7 @@
 							<span>{{goodsDO.price}}</span>
 						</div>
 						<div class="btns">
-							<div class="btn" @click="jumpNewPersonGift(index)">立即抢购</div>
+							<div class="btn" @click="jumpmemberUp">立即抢购</div>
 						</div>
 					</div>
 				</div>
@@ -222,6 +222,12 @@
 						that.exclusive = res.Goods
 					}
 					
+				})
+			},
+			// 跳转合伙人礼包详情
+			jumpMemberUpDetail(goodsId){
+				wx.navigateTo({
+					url:'../memberUpDetail/main?goodsId='+goodsId
 				})
 			},
 			jumpDistribe(goodsId){

@@ -135,8 +135,8 @@
 		    	params.orderId = that.order.orderId
 		    	params.sn = that.order.sn
    				params.shippingAmount=0
-   				// params.payAmount=Math.round(that.order.needPayMoney * 100)
-   				params.payAmount=1
+   				params.payAmount=Math.round(that.order.needPayMoney * 100)
+   				// params.payAmount=1
 			    //请求支付
 			    params.openId=that.userInfo.openId
 			    Api.ConfirmPay(params).then(function(PayRes){

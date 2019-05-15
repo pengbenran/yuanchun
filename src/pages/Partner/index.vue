@@ -10,7 +10,8 @@
 				</div>
 			</div>
 			<div class="partnerTitle">
-				我的团队
+				<span class="iconfont">&#xe67a;</span>
+				<input type="text" placeholder="查找队友" placeholder-style="color:#7A252C" v-model="searchName" @blur="seachParent">
 			</div>
 			<div class="myTeam">
 				<div class="myTeamTitle">
@@ -57,7 +58,9 @@
 				myTeam:[],
 				hasMore:true,
 				total:0,
-				isLoading:false
+				isLoading:false,
+				searchName:'',
+				seachMyTeam:[]
 
 			}
 		},
@@ -74,7 +77,8 @@
 					let params={}
 					params.limit=that.limit
 					params.offset=that.pages*that.limit
-					params.memberId=that.userInfo.memberId
+					params.memberId=350
+					params.name=that.searchName
 					Api.allSubordinate(params).then(function(res){
 						that.isLoading=true
 						that.total=res.total
@@ -94,6 +98,14 @@
 					})
 				}
 				
+			},
+			seachParent(){
+				let that=this
+				that.limit=15
+				that.pages=0
+				that.myTeam=[]
+				that.hasMore=true
+				that.getAllSubordinate()
 			}
 		},
 		mounted() {
@@ -152,6 +164,15 @@ img{
 	top:-10px;
 	background: #fff;
 	border-radius: 5px;  
+	input{
+		width: 100px;
+		height: 45px;
+		line-height: 45px;
+		display: inline-block;
+		vertical-align: middle;
+		color:#7A252C;
+
+	}
 }
 .myTeam{
 	.myTeamTitle{
