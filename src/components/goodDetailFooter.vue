@@ -384,7 +384,7 @@
 		display: block;
 		width:100%;
 		margin: auto;
-		line-height: 80rpx;
+		line-height: 88rpx;
 		text-align: center;
 		border-radius: 40rpx;
 		background:linear-gradient(to right, #c42f3c, #ff3344);

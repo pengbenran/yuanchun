@@ -11,7 +11,7 @@
 			</div>
 			<div class="partnerTitle">
 				<span class="iconfont">&#xe67a;</span>
-				<input type="text" placeholder="查找队友" placeholder-style="color:#7A252C" v-model="searchName" @blur="seachParent">
+				<input type="text" :placeholder="placeTitle" placeholder-style="color:#7A252C" v-model="searchName" @blur="seachParent" @focus="onFocus">
 			</div>
 			<div class="myTeam">
 				<div class="myTeamTitle">
@@ -60,7 +60,8 @@
 				total:0,
 				isLoading:false,
 				searchName:'',
-				seachMyTeam:[]
+				seachMyTeam:[],
+				placeTitle:'查找队友'
 
 			}
 		},
@@ -105,7 +106,13 @@
 				that.pages=0
 				that.myTeam=[]
 				that.hasMore=true
+				if(that.searchName==''){
+					that.placeTitle='查找队友'
+				}
 				that.getAllSubordinate()
+			},
+			onFocus(){
+				this.placeTitle=''
 			}
 		},
 		mounted() {

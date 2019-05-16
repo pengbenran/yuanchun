@@ -8,7 +8,7 @@
 			<div class="inp" v-for="(item,index) in giftList">
 				<span><img :src="gifimg[index].voucherType"/></span>
 				<span><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
-				<div class="tit fontHidden">{{item.repacketName}}</div>
+				<div class="tit fontHidden3">{{item.repacketName}}</div>
 			</div>
 		</div>
 		<div class="btn" @click="jump">
