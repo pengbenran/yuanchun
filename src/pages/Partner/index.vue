@@ -77,7 +77,7 @@
 					let params={}
 					params.limit=that.limit
 					params.offset=that.pages*that.limit
-					params.memberId=350
+					params.memberId=that.userInfo.memberId
 					params.name=that.searchName
 					Api.allSubordinate(params).then(function(res){
 						that.isLoading=true

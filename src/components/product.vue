@@ -7,11 +7,11 @@
 							<div class="right">
 								<div class="name">{{item.name}}</div>
 								<div class="picold">
-									<span>¥{{item.cost}}+</span>
+									<span>¥{{item.price}}+</span>
 									<span>{{item.unit}}平台券</span>
 								</div>
 								<div class="pic">
-									<span>¥{{item.price}}</span>
+									<span>¥{{item.cost}}</span>
 									<span>立即购买</span>
 								</div>
 							</div>

@@ -4,6 +4,8 @@
 			<loading></loading>
 		</blockquote>
 		<blockquote v-else>
+			<swiper vertical style="height: 100vh;">
+		  <swiper-item style="background: #FFFFFF;">
 			<div class="header">
 				<div class="userInfo">
 					<div class="avator">
@@ -85,7 +87,17 @@
 					<div class="menuname">{{item.menuName}}</div>
 				</div>
 			</div>
+				</swiper-item>
+				</swiper>
+				<div class="footer">
+					<img src="https://shop.guqinet.com/html/images/shuiguo/index/footerImg.png" />
+				</div>
+				<div class="more" v-if="ismore" @click="more">
+					<span><img src="/static/images/more.png"/></span>
+				</div>
 		</blockquote>
+		
+		
 	</div>
 </template>
 
@@ -100,6 +112,7 @@
 	export default {
 		data() {
 			return {
+				ismore:true,
 				count:'',  //拉了多少人
 				condition:'', //总人数
 				menuItem: [{ 
@@ -154,6 +167,9 @@
 		},
 
 		methods: {
+			more(){
+				this.ismore=false
+			},
 			jump(url) {
 				let that = this
 				if(url == "../kefu/main") {
@@ -298,6 +314,30 @@
 </script>
 
 <style scoped lang="less">
+	.more{
+		span{
+			position:absolute;
+			top: 0;
+			display: block;
+			width: 100%;
+			height: 30px;
+			img{
+				width: 100%;height: 100%;
+			}
+		}
+	}
+	.footer {
+		width: 100%;
+		height: 60px;
+		position: absolute;
+		bottom: 12px;
+		z-index: -10;
+		img {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+	}
 	/*进度条*/
 	
 	.progress {
@@ -378,7 +418,7 @@
 					height: 30px;
 					line-height: 30px;
 					font-size: 16px;
-					color: #3a3a3a;
+					color: #FFFFFF;
 					font-weight: bold;
 				}
 				.memberLv {
@@ -468,7 +508,6 @@
 	}
 	
 	.menuContain {
-		padding-bottom: 48px;
 		.menuTitle {
 			font-size: 15px;
 			color: #313131;
@@ -481,8 +520,8 @@
 			display: flex;
 			padding-left: 10px;
 			width: 100%;
-			height: 40px;
-			line-height: 40px;
+			height: 44px;
+			line-height: 44px;
 			font-size: 20px;
 			border-top: 1px solid #EDEDED;
 			.icon {

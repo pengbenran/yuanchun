@@ -129,10 +129,6 @@
 						</div>
 					</div>
 				</div>
-				<!--<div class="footer">
-					<img src="https://shop.guqinet.com/html/images/shuiguo/index/footerImg.png" />
-				</div>-->
-
 			</div>
 		</blockquote>
 		<loginModel ref="loginModel"></loginModel>
@@ -302,8 +298,10 @@
 						that.isLoading = true
 						if(res.giftPackage.length == 0) {
 							that.isTogo = false
+							that.hasGift=false
 						} else {
 							that.isTogo = true
+							that.hasGift=true
 						}
 						store.commit("stateGiftbag", res.giftPackage)
 						that.giftbag = store.state.giftbag
@@ -509,6 +507,7 @@
 			width: 100%;
 			position: absolute;
 			top: 100px;
+			color: #FFFFFF;
 			.hidd {
 				position: absolute;
 				top: -30px;

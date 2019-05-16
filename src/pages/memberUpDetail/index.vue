@@ -123,7 +123,7 @@
 			let that = this
 			that.goodsId = that.$root.$mp.query.goodsId
 			that.userInfo = store.state.userInfo
-			that.Width = wx.getSystemInfoSync().windowWidth*0.8
+			that.Width = wx.getSystemInfoSync().windowWidth
 			that.getGoodsInfo(that.goodsId)
 		},
 		onUnload() {
