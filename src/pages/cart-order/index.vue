@@ -12,7 +12,7 @@
 							<img :src="item.image" />
 						</div>
 						<div class="product-right">
-							<div class="fontHidden1">{{item.name}}</div>
+							<div class="name fontHidden">{{item.name}}</div>
 							<!--<div class="describe fontHidden1" v-if="orderType==1">{{item.specvalue}}</div>-->
 							<div class="price1" :style="{display:isflex}" v-if="orderType==1">
 								<div class="left">
@@ -351,6 +351,7 @@
 		background: #FFFFFF;	
 		position: relative;
 		line-height: 1;	 		
+		margin-top: 12px;
 		.tit{
 			font-size: 16px;
 			color: #666666;
@@ -433,16 +434,18 @@
 				width: 1;
 				flex-grow: 1;
 				padding-right: 12px;
-				.fontHidden1 {
+				.name {
 					font-size: 17px;
 					color: #333333;
 					font-weight: bold;
+					width: 200px;
+					height: 55px;
+					line-height: 22px;
 				}
 				.price1 {
 					display: flex;
 					align-items: center;
 					justify-content: space-between;
-					margin-top: 33px;
 					.left{
 					   span{
 	                  	display: inline-block;

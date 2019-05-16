@@ -4,11 +4,13 @@
 			<img src="/static/images/gift1.png" />
 			<div class="tit">双重大礼 赶紧领取</div>
 		</div>
-		<div class="cant">		
-			<div class="inp" v-for="(item,index) in giftList">
-				<span><img :src="gifimg[index].voucherType"/></span>
-				<span><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)"/></span>
-				<div class="tit fontHidden3">{{item.repacketName}}</div>
+		<div class="cant">
+			<div class="cant-list" v-for="(item,index) in giftList">
+				<div class="left">
+					<div class="img"><img :src="item.voucherType" /></div>
+					<div class="tit fontHidden3">{{item.repacketName}}</div>
+				</div>
+				<div class="right"><input type="checkbox" name="checkbox" :checked="item.ischeck" @click="isChoose(index)" /></div>
 			</div>
 		</div>
 		<div class="btn" @click="jump">
@@ -23,10 +25,13 @@
 	export default {
 		data() {
 			return {
-				giftList:[],
-				gifimg:[
-				  {voucherType:"/static/images/gift0.png"},
-				  {voucherType:"/static/images/gift.png"}
+				giftList: [],
+				gifimg: [{
+						img: "/static/images/gift0.png"
+					},
+					{
+						img: "/static/images/gift.png"
+					}
 				]
 			}
 		},
@@ -36,49 +41,47 @@
 		},
 
 		methods: {
-			jump(){
-				let chooseGift=[]
-				let that=this
-				for(var i in that.giftList){
-					if(that.giftList[i].ischeck){
+			jump() {
+				let chooseGift = []
+				let that = this
+				for(var i in that.giftList) {
+					if(that.giftList[i].ischeck) {
 						chooseGift.push(that.giftList[i])
 					}
 				}
-				if(chooseGift.length!=0){
-					store.commit("stateNewPersonGift",chooseGift)
+				if(chooseGift.length != 0) {
+					store.commit("stateNewPersonGift", chooseGift)
 					wx.navigateTo({
 						url: '../newPersonGift/main'
 					})
-				}
-				else{
+				} else {
 					wx.showToast({
 						title: '请选择新人礼',
 						icon: 'none',
 						duration: 2000
 					})
-				}		
+				}
 			},
 			// 获取新人礼
-			getNewPersonGift(index){
-				let params={}
-				let that=this
-				params.memberId=store.state.userInfo.memberId
-				Api.getNewPersonGift(params).then(function(res){
-					for(var i in res.giftPackage){
-						res.giftPackage[i].ischeck=false
+			getNewPersonGift() {
+				let params = {}
+				let that = this
+				params.memberId = store.state.userInfo.memberId
+				Api.getNewPersonGift(params).then(function(res) {
+					for(var i in res.giftPackage) {
+						res.giftPackage[i].ischeck = false
 					}
-					that.giftList=res.giftPackage
+					that.giftList = res.giftPackage
 				})
 			},
-			isChoose(index){
-				let that=this
-				that.giftList[index].ischeck=!that.giftList[index].ischeck
+			isChoose(index) {
+				let that = this
+				that.giftList[index].ischeck = !that.giftList[index].ischeck
 			},
 
 		},
-
 		mounted() {
-			let that=this
+			let that = this
 			that.getNewPersonGift()
 		}
 	}
@@ -92,14 +95,14 @@
 		height: 100%;
 		.top {
 			width: 291px;
-			height: 68px;position: relative;
+			height: 68px;
+			position: relative;
 			margin: 20px auto 54px auto;
-			
 			img {
 				width: 100%;
 				height: 100%;
 			}
-			.tit{
+			.tit {
 				position: absolute;
 				top: 20px;
 				left: 60px;
@@ -109,47 +112,49 @@
 			}
 		}
 		.cant {
-			.inp {
+			.cant-list {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding-right: 18px;
+				height: 103px;
+				width: 309px;
 				position: relative;
-				margin-bottom: 20px;
-				.tit{
-					position: absolute;
-					top:0;
-					left: 40%;
-					line-height:25px;
-					padding: 25px 0 0 0;
-					box-sizing: border-box;
-					font-size: 15px;
-					color: #ffffff;
-					width:131px;
-				}		
-				span {
-					margin: 0 auto;
-					display: block;
-					&:nth-child(1) {
-						width: 309px;
-						height: 117px;
-						img {
-							width: 100%;
-							height: 100%;
-						}
-					}
-					&:nth-child(2) {
+				box-sizing: border-box;
+				background: linear-gradient(to right,#de434f,#982831);
+				margin:0 auto 28px auto;
+				border-radius: 12px;
+				.left {
+							display: flex;
+					.img{
+						width: 102px;
+						height: 114px;
 						position: absolute;
-						top: 41%;
-						right: 13%;
+						bottom: 0;
+						left: 0;
+						z-index: 9;
+						img{width: 100%;height: 100%;}
 					}
+					.tit{
+						width: 117px;
+						margin-left: 120px;
+						color: #FFFFFF;
+						font-size: 15px;
+						line-height: 22px;
+					}
+				}
+				.right {
+					
 				}
 			}
 		}
-		
 		.btn {
 			width: 252px;
-			height: 40px;
+			height: 44px;
 			margin: 40px auto 0 auto;
 			background-color: #f9b81a;
-			border-radius: 20px;
-			line-height: 40px;
+			border-radius: 22px;
+			line-height: 44px;
 			text-align: center;
 			color: #FFFFFF;
 			font-size: 15px;

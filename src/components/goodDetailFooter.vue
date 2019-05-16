@@ -326,9 +326,11 @@
 				  	font-size: 17px;
 					color: #333333;
 					font-weight: bold;
+					height: 55px;
+					line-height: 22px;
+					width: 200px;
 				  }
                	 .price1{
-               	 	margin-top: 33px;
                	 	span{
                	 		display: inline-block;
                	    	font-size: 16px;

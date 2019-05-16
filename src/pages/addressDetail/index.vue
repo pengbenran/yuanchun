@@ -1,7 +1,7 @@
 <template>
 	<div class="address">
 		<div class="item"><text>收货人:</text><input type="text" placeholder="请输入收货人" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="username" /></div>
-		<div class="item"><text>手机号码:</text><input type="text" placeholder="请输入手机号码" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="userphone" /></div>
+		<div class="item"><text>手机号码:</text><input type="number" placeholder="请输入手机号码" placeholder-style='font-size:26rpx;font-weight: 100;color:#8e8e8e;' v-model="userphone" /></div>
 		<div class="item">
 			<text>所在地区：</text>
 				<picker
@@ -196,7 +196,11 @@
 			align-items: center;
 			font-size: 32rpx;
 			font-weight: 100;
-			padding: 10rpx 20rpx;
+			padding:0 12px;
+			width: 100%;
+			box-sizing: border-box;
+			height: 44px;
+			line-height: 44px;
 		}
 		.picker{
 			font-size:26rpx;
@@ -229,19 +233,22 @@
 		font-size: 32rpx;
 	}
 	
-	.SubBtn {
-		text-align: center;
-		margin-top: 30rpx;
-		text {
-			display: inline-block;
-			background: #A92429;
-			color: #fff;
-			width: 90%;
-			text-align: center;
-			line-height: 80rpx;
-			line-height: 80rpx;
-			border-radius: 50rpx;
-		}
+	.SubBtn {		
+			width: 100%;
+			height: 44px; 
+			padding: 0 12px;
+			box-sizing: border-box;
+			margin-top: 30px;
+			text{
+				display: block;
+				border-radius: 16.5px;
+				background: linear-gradient(to right, #c42f3c, #ff3344);
+				line-height: 33px;
+				text-align: center;
+				font-size: 16px;
+				color: #ffffff;
+				font-weight: bold;
+			}
 	}
 	
 	.AddressModel {

@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container">	
 		<blockquote v-if="!isLoading">
 			<loading></loading>
 		</blockquote>
@@ -72,9 +72,9 @@
 					<div class="recommend-li">
 						<div class="img">
 							<img :src="goodsDO.thumbnail" />
-							<div class="tit">
+							<div class="tit" @click="jumpMemberUpDetail(goodsDO.goodsId)">
 								<p>{{goodsDO.name}}</p>
-								<p @click="jumpMemberUpDetail(goodsDO.goodsId)">查看详情 > </p>
+								<p>查看详情 > </p>
 							</div>
 						</div>
 						<div class="subTit">{{goodsDO.pageTitle}}</div>
@@ -95,7 +95,7 @@
 						<span><img src="/static/images/comtit.png"/></span>
 					</div>
 					<div class="exclusive-list">
-						<div class="exclusive-list-li" v-for="(item,index) in exclusive">
+						<div class="exclusive-list-li" v-for="(item,index) in exclusive" @click="jumpDistribe(item.goodsId)">
 							<div class="left"><img :src="item.thumbnail" /></div>
 							<div class="right">
 								<div class="name">{{item.name}}</div>
@@ -105,7 +105,7 @@
 								</div>
 								<div class="pic">
 									<span>¥{{item.cost}}</span>
-									<span @click="jumpDistribe(item.goodsId)">立即购买</span>
+									<span>立即购买</span>
 								</div>
 							</div>
 						</div>
@@ -170,8 +170,7 @@
 		async mounted() {
 			var that = this;
 			let Width = wx.getSystemInfoSync().windowWidth
-			that.Height = Width / 2.5
-			that.hideTabBar()
+			that.Height = Width / 2.5	
 			that.getBanner()
 			that.getTicket()
 			that.getUserInfo()
@@ -189,12 +188,11 @@
 			}
 		},
 		methods: {
-			//隐藏导航栏
-			hideTabBar: function() {
-				wx.hideTabBar({
-					animation: false //是否需要过渡动画
-				})
-			},
+           imgBg(){
+           	 let that = this
+           	 that.isbg = false    
+           },
+
 			showGoodDetail() {
 				let that = this
 				that.showDetail = !that.showDetail
@@ -344,7 +342,6 @@
 			more: function() {
 				let that = this;
 				that.isTogo = false
-				that.showTabBar()
 				wx.navigateTo({
 					url: '../index-gift/main'
 				})
@@ -353,15 +350,9 @@
 			hidd: function() {
 				let that = this;
 				that.isTogo = false
-				that.showTabBar()
+				 
 			},
-			//显示导航栏
-			showTabBar: function() {
-				let that = this;
-				wx.showTabBar({
-					animation: false //是否需要过渡动画
-				})
-			},
+			
 			//签到跳转
 			jump: function() {
 				wx.navigateTo({
@@ -382,7 +373,6 @@
 
 <style lang="less">
 	/*公用标题*/
-	
 	.comtit {
 		display: flex;
 		justify-content: space-between;
@@ -496,7 +486,8 @@
 		top: 0;
 		right: 0;
 		bottom: 0;
-		z-index: 100;
+		z-index: 90; 
+		
 		.bcgmode {
 			width: 100%;
 			height: 100%;
