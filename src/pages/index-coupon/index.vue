@@ -185,7 +185,7 @@ import Utils from '@/utils/index'
 		/*数据*/
 		.index-coupon-list {
 			width: 100%;
-			padding: 10px 13px 100px 13px;
+			padding: 0 12px 100px 12px;
 			box-sizing: border-box;
 			.index-coupon-list-li {
 				display: flex;
@@ -195,10 +195,7 @@ import Utils from '@/utils/index'
 				height: 116px;
 				background: linear-gradient(#a92732, #701c23);
 				border-radius: 5px;
-				margin-top: 22px;
-				&:nth-child(1) {
-					margin-top: 0;
-				}
+				margin-top: 12px;
 				.cant {
 					p {
 					

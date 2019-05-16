@@ -69,7 +69,11 @@
 				personGiftIdArry:[],
                 moneySum:0,
                 freight:0,
-                googitem:[]
+                googitem:[],
+                gifimg:[
+				  {voucherType:"/static/images/menu1.png"},
+				  {voucherType:"/static/images/menu1.png"}
+				]
 			}
 		},
 		components: {},
@@ -211,14 +215,14 @@
 		},
 		mounted() {
 			let that=this
-			that.personGift =store.state.personGift
+	    	that.personGift =store.state.personGift			
 			that.googitem=[]
 			that.personGiftIdArry=[]
 			for(var i in that.personGift){
 				let googobj={}
 				googobj.num=1
 				googobj.pic=1
-				googobj.image=that.personGift[i].voucherType
+				googobj.image=that.personGift[i].voucherType				
 				googobj.name=that.personGift[i].repacketName
 				googobj.price=that.personGift[i].conditionAmount
 				that.googitem.push(googobj)
