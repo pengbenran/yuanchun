@@ -44,4 +44,10 @@ export default {
   font-family: 'iconfont';
   vertical-align: middle; 
 }
+ /*隐藏滚动条*/
+   ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
 </style>

@@ -198,10 +198,10 @@
 				that.showDetail = !that.showDetail
 			},
 			// 获取会员升级商品
-			getmemberUpGoods() {
+			getmemberUpGoods() {				
 				let that = this
 				Api.getmemberUpGoods().then(function(res) {
-					that.goodsDO = res.goodsDO
+					that.goodsDO = res.goodsDO				
 				})
 			},
 			// 获取合伙人专属礼包
@@ -246,7 +246,7 @@
 				goodlist.pic = 1
 				goodlist.num = 1;
 				goodlist.image = that.goodsDO.thumbnail
-				goodlist.name = that.goodsDO.name
+				goodlist.name = that.goodsDO.pageTitle
 				goodlist.goodsId = that.goodsDO.goodsId
 				goodlist.price = that.goodsDO.price
 				goodlist.cart = 0

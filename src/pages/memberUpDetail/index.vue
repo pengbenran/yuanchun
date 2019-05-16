@@ -16,9 +16,9 @@
 			</swiper>
 			<!--产品详情-->
 			<div class="detail">
-				<div class="tit">
+				<div class="tit fontHidden">
 					<span>包邮</span>
-					<span>{{detail.name}}</span>
+					<span>{{detail.pageTitle}}</span>
 				</div>
 				<div class="total">
 				<div class="left">
@@ -83,7 +83,7 @@
 				goodlist.pic = 1
 				goodlist.num = 1;
 				goodlist.image = that.detail.thumbnail
-				goodlist.name = that.detail.name
+				goodlist.name = that.detail.pageTitle 
 				goodlist.goodsId = that.detail.goodsId
 				goodlist.price = that.detail.price
 				goodlist.cart = 0
@@ -201,9 +201,10 @@
 		box-sizing: border-box;
 		line-height: 1;
 		.tit{
-			align-items: center;			
+			/*align-items: center;*/			
 			display: flex;
 			padding: 8px 0 12px 0;
+			line-height: 22px;
 			span{
 				display: block;
 				&:nth-child(1){
@@ -215,7 +216,7 @@
 					font-weight: bold;
 					text-align: center;
 					line-height: 19px;
-					
+					margin-top: 5rpx;
 				}
 				&:nth-child(2){
 					font-size: 17px;

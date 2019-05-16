@@ -439,10 +439,11 @@
 					color: #333333;
 					font-weight: bold;
 					width: 200px;
-					height: 55px;
+					height: 45px;
 					line-height: 22px;
 				}
 				.price1 {
+					margin-top: 10px;
 					display: flex;
 					align-items: center;
 					justify-content: space-between;

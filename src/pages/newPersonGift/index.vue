@@ -1,22 +1,6 @@
 <template>
-	<div>
-		<div class="cart">
-			<!--点击新增地址-->
-			<div class="AddressWarp">
-				<div class="AddressBtn" v-if="AddressBtn" @click="toAddressAdd">
-					+请填写收货地址
-				</div>
-				<div class="Address" v-else @click="toAddress">
-					<div class="Address-item">
-						<div class="itemLeft">收货人</div>
-						<div class="itemRight"><text>{{addr.name}}</text><text>{{addr.mobile}}</text></div>
-					</div>
-					<div class="Address-item">
-						<div class="itemLeft">收货地址</div>
-						<div class="itemRight">{{addr.address}}</div>
-					</div>
-				</div>
-			</div>
+	<div class="wrap">
+		<div class="cart">		
 			<div class="product-list-li" v-for="(item,index) in personGift">
 				<!--内容-->
 				<div class="product-canter">
@@ -33,17 +17,29 @@
 			</div>
 		</div>
 		<div class="cart-bottom">
-			<!--买家留言-->
-			<div class="leave">
-				<span>买家留言:</span>
-				<span><input type="text" placeholder="点击留言" v-model="InputMask" /></span>
-			</div>
 			<div class="leave">
 				<span>运费:</span>
 				<span>￥{{freight}}</span>
 			</div>
-			<!--支付方式-->
 		</div>
+			<!--点击新增地址-->
+				<div class="AddressWarp">		
+					<div class="tit">地址信息：</div>
+					<div class="AddressBtn"  @click="toAddressAdd"  v-if="AddressBtn">
+						+添加地址
+					</div>
+				<div class="Address" v-else>
+						<div class="xg"  @click="toAddress">修改</div>						
+						<div class="name">
+							<span>{{addr.name}}</span>
+							<span>{{addr.mobile}}</span>
+						</div>
+						<div class="address">
+							<span>{{addr.addr}}</span>
+							<span>{{addr.region}}</span>
+						</div>							
+					</div>
+				</div>
 		<div class="footerBnt">	
 			<div class="cartBtn">
 				合计：{{totalMoney}}元
@@ -260,20 +256,70 @@
 </script>
 
 <style lang="less">
-	.AddressWarp{
-		.AddressBtn {
-			width: 100%;
-			height:60px;
-			color: #858585;
-			font-size: 12px;
-			background-color: #e0e0e0;
-			line-height: 60px;
-			text-align: center;
+   .wrap{
+   	background: #F4F4F4;position: absolute;width: 100%;height: 100%;
+   	padding: 0 12px;
+   	box-sizing: border-box;
+   	overflow: hidden;
+   }
+	.AddressWarp {
+		width: 100%;
+		height: 140px;
+		border-radius: 8px;
+		background: #FFFFFF;	
+		position: relative;
+		line-height: 1;	 		
+		margin-top: 12px;
+		.tit{
+			font-size: 16px;
+			color: #666666;
+			padding: 12px;
 		}
-		.Address{padding: 10rpx 25rpx;border-bottom: 1px solid rgb(244,244,244);
-			.Address-item{display: flex;align-items: center;font-weight: 100;font-size: 32rpx;height: 50px;}
-			.itemLeft{width: 30%;}
-			.itemRight{width: 70%;display: flex;align-items: center;justify-content: space-between;color: #8e8e8e;}
+		.xg{
+			width: 44px;
+			height: 22px;
+			border-radius: 4px;
+		    text-align: center;
+		    line-height: 22px;
+		    color: #666666;
+		    font-size: 13px;
+		    position: absolute;
+		    top: 12px;
+		    right: 12px;
+		    border: 1px solid #DEDEDE;
+		}
+		.AddressBtn {
+            margin: 16px auto;
+            font-size: 14px;
+            color: #333333;
+            text-align: center;
+            width: 160px;
+            height: 37px;
+            border-radius: 12px;
+            border: 1px solid #dedede;
+            line-height: 37px;
+		}
+		.Address {
+			padding-left: 12px;
+			box-sizing: border-box;
+             .name{
+             	padding-bottom: 10px;
+             	span{
+             		display: inline-block;
+             		font-size: 14px;
+             		color: #333333;
+             		&:nth-child(2){
+             			margin-left: 17px;
+             		}
+             	}
+             }
+             .address{
+             	span{display: block;}
+             	width: 258px;
+             	line-height: 22px;
+             	font-size: 14px;
+             	color: #333333;
+             }
 		}
 	}
 	.product-list-li {
@@ -281,14 +327,19 @@
 		justify-content: space-between;
 		align-items: center;
 		border-bottom: 1px solid #f6f6f6;
-		padding: 0 20px 9px 15px;
+		background: #FFFFFF;
+		padding: 12px;
+		box-sizing: border-box;
+		margin-top: 12px;
+		width: 100%;
+		height: 144px;
+		border-radius: 12px;
 		.product-canter {
-			margin-top: 9px;
 			display: flex;
 			justify-content: space-between;
 			.img {
-				width: 80px;
-				height: 80px;
+				width: 120px;
+				height: 120px;
 				img {
 					width: 100%;
 					height: 100%;
@@ -296,18 +347,21 @@
 			} 
 			.content {
 			    flex-grow: 1;
-				font-size: 11px;
-				padding-left:10px; 
+				padding-left:12px; 
 				box-sizing: border-box;
 				.tit {
 					color: #333333;
 					line-height: 18px;
 					margin-top: 10px;
-					width:240px;
-					height: 36px;
-					margin-bottom: 10px;
+					width: 200px;
+					height: 44px;
+					font-size: 17px;
+					line-height: 22px;
+					font-weight: bold;
+					margin-top: 12px;
 				}
 				.price {
+					margin-top: 22px;
 					span {
 						color: #a82429;
 						font-size: 16px;
@@ -317,32 +371,67 @@
 		}
 	}
 	.cart-bottom {
-		padding-left: 17px;
-		box-sizing: border-box;
+		background: #FFFFFF;
+		border-radius: 12px;
+		margin-top: 12px;					
 		.leave {
-			border-bottom: 1px solid #f6f6f6;
 			display: flex;
 			align-items: center;
 			width: 100%;
-			height: 35px;
+			height: 44px;
+			padding-left: 12px;
+			box-sizing: border-box;
 			span {
 				display: block;
 				&:nth-child(1) {
-					font-size: 14px;
-					color: #000000;
+					font-size: 16px;
+					color: #666666;
+					font-weight: bold;
 				}
 				&:nth-child(2) {
 					flex-grow: 1;
-					font-size: 12px;
+					font-size: 14px;
 					margin-left: 16px;
+					color: #666666;
 				}
 			}
 		}
 	}
 	/*结算*/
-	.footerBnt{position: fixed;bottom: 0;width: 100%;height: 95rpx;display: flex;justify-content: center;font-size: 36rpx;font-weight: 100;color: #8e8e8e;
-		.cartBtn{height: 95rpx;font-size: 16px;flex-grow: 1;line-height: 95rpx;text-align: right;padding-right: 5px;}
-		.btn{background: #901414;height: 95rpx;line-height: 95rpx; width: 180rpx;text-align: center;color: #fff;}
+		.footerBnt {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        bottom: 12px;
+        z-index: 90;
+        line-height: 44px;
+        left: 0;
+		.cartBtn {
+          width: 220px;
+          height: 100%;
+          background: #333333;
+          border-top-left-radius: 22px;
+          border-bottom-left-radius: 22px;
+          text-align: center;
+          color: #ffffff;
+          font-size: 16px;
+		}
+		.btn {
+          width: 1;
+          height: 100%;
+          flex-grow: 1;
+          background: #f73243;
+          border-top-right-radius: 22px;
+          border-bottom-right-radius: 22px;
+          text-align: center;
+           color: #ffffff;
+          font-size: 16px;
+          font-weight: bold;
+		}
 	}
 
 </style>

@@ -25,7 +25,7 @@
     </div>
      <div class="addressList" v-else><img :src="noAddrImg" mode='aspectFit'/></div>
      <!--addressList end-->
-     <div class="addresBtn" @click="toAddress"><text>添加新增收货地址</text></div>
+     <div class="ModelBtn" @click="toAddress"><span>添加新收货地址</span></div>
      <!--addresBtn end-->
   </div>
 </template>
@@ -177,9 +177,27 @@ img{display: block;height: 100%;width: 100%;}
    }
    .deit text{font-weight: 100;font-size: 30rpx;color:#A92429;}
 }
-.addresBtn{position: absolute;bottom: 40rpx;left: 5%;width: 90%;background:#A92429;margin: auto;text-align: center;
-   text{color: #fff;font-weight: 100;font-size: 32rpx;line-height: 80rpx;line-height: 80rpx;border-radius: 10rpx;}
-}
+	.ModelBtn {
+		position: fixed;
+		z-index: 3;
+		bottom: 12px;
+		width: 100%;
+		padding: 0 12px ;
+		box-sizing: border-box;
+	}
+	
+	.ModelBtn span {
+		display: block;
+		width:100%;
+		margin: auto;
+		line-height: 88rpx;
+		text-align: center;
+		border-radius: 22px;
+		background:linear-gradient(to right, #c42f3c, #ff3344);
+		color: #fff;
+		font-weight: 100;
+		
+	}
 
 
 

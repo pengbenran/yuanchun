@@ -328,7 +328,7 @@
 					font-weight: bold;
 					height: 55px;
 					line-height: 22px;
-					width: 200px;
+					width: 190px;
 				  }
                	 .price1{
                	 	span{
@@ -388,7 +388,7 @@
 		margin: auto;
 		line-height: 88rpx;
 		text-align: center;
-		border-radius: 40rpx;
+		border-radius: 22px;
 		background:linear-gradient(to right, #c42f3c, #ff3344);
 		color: #fff;
 		font-weight: 100;

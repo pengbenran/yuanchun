@@ -240,10 +240,12 @@
 			box-sizing: border-box;
 			margin-top: 30px;
 			text{
+				height: 100%;
+				width: 100%;
 				display: block;
-				border-radius: 16.5px;
+				border-radius: 22px;
 				background: linear-gradient(to right, #c42f3c, #ff3344);
-				line-height: 33px;
+				line-height: 44px;
 				text-align: center;
 				font-size: 16px;
 				color: #ffffff;

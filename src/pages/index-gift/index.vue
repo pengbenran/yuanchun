@@ -133,6 +133,8 @@
 						bottom: 0;
 						left: 0;
 						z-index: 9;
+						border-radius: 6px;
+						overflow: hidden;
 						img{width: 100%;height: 100%;}
 					}
 					.tit{
