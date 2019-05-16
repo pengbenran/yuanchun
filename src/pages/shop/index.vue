@@ -20,7 +20,8 @@
 			<div class="cate">
 				<div class="cate-li" v-for="(item,index) in cate" :key="item.catId" :index="index" @click="getKindGoods(item.catId,index)">
 					<div class="img">
-						<img :src="item.goodsCount"/>
+						<img v-if="kindIndex==index" :src="item.goodsCount"/>
+						<img v-if="kindIndex!=index" :src="item.image"/>
 					</div>
 					<div class="name" :class="kindIndex==index?'on':''">{{item.name}}</div>
 				</div>
@@ -41,7 +42,6 @@
 	export default {
 		data() {
 			return {
-				russ:0,
 			    isflex:"none",
 				catImg:'',
 				ticket:20,  //平台券
@@ -58,11 +58,6 @@
 				isLoading:false,
 				Height:'',
 				kindHeight:'',
-				cate1:[
-				  {goodsCount:"/static/images/menu1.png"},
-				  {goodsCount:"/static/images/menu2.png"},
-				  {goodsCount:"/static/images/menu3.png"},
-				]
 			}
 		},
 
@@ -110,8 +105,7 @@
 					that.goodsList[i]=[]
 					that.nowPage[i]=0
 				}
-				that.getGoodsAll(catId,that.nowPage[that.kindIndex],that.limit)	
-				console.log(that.catImg)				
+				that.getGoodsAll(catId,that.nowPage[that.kindIndex],that.limit)			
 			},
 
 			//brand跳转

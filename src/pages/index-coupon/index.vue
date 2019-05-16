@@ -2,7 +2,7 @@
 	<div class="index-coupon">
 		<!--数据-->
 		<div class="index-coupon-list">
-			<div class="index-coupon-list-li" v-for="(item,index) in memberTiket">
+			<div class="index-coupon-list-li" v-for="(item,index) in memberTiket" @click="submit(item)">
 				<div class="cant">
 					<p>抢购{{item.giveMoney}}平台劵</p>
 					<p>
@@ -11,7 +11,7 @@
 						<span class="xian"></span>
 					</p>
 				</div>
-				<div class="btn" @click="submit(item)">
+				<div class="btn">
 					立即购买
 				</div>
 			</div>
@@ -207,19 +207,19 @@ import Utils from '@/utils/index'
 								position: relative;
 							span {
 								&:nth-child(1) {
-									font-size: 40px;
+									font-size: 30px;
 									color: #FFEEEE;
 								}
 								&:nth-child(2) {
-									font-size: 13px;
+									font-size: 15px;
 									color: #ffeeee;
 								}
 							}
 							.xian{
 								display: block;
 								position: absolute;
-								right: -4px;
-								top: 11px;
+								right: -42px;
+								top: 0;
 								width: 1px;
 								background-color: #ffd0d0;
 								height: 34px;
@@ -229,13 +229,13 @@ import Utils from '@/utils/index'
 					}
 				}
 				.btn{
-					width: 67px;
-					height: 23px;
-					border-radius: 11px;
+					width: 90px;
+					height: 33px;					
+					border-radius: 16.5px;
 					border: 1px solid #ebebeb;
-					line-height: 23px;
+					line-height: 33px;
 					text-align: center;
-					font-size: 12px;
+					font-size: 14px;
 					color: #ffffff;
 				}
 			}
