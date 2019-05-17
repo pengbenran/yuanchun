@@ -98,7 +98,6 @@
 				let that=this
 				that.catId=catId
 				that.kindIndex=index
-				console.log(that.russ)
 				that.catImg=that.cate[index].image
 				for(var i in that.cate){
 					that.hasMore[i]=true

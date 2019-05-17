@@ -22,6 +22,7 @@
 				<span>￥{{freight}}</span>
 			</div>
 		</div>
+		     
 			<!--点击新增地址-->
 				<div class="AddressWarp">		
 					<div class="tit">地址信息：</div>
@@ -34,12 +35,14 @@
 							<span>{{addr.name}}</span>
 							<span>{{addr.mobile}}</span>
 						</div>
-						<div class="address">
+						<div class="address fontHidden3">
 							<span>{{addr.addr}}</span>
 							<span>{{addr.region}}</span>
 						</div>							
 					</div>
 				</div>
+		
+		
 		<div class="footerBnt">	
 			<div class="cartBtn">
 				合计：{{totalMoney}}元
@@ -264,7 +267,7 @@
    }
 	.AddressWarp {
 		width: 100%;
-		height: 140px;
+		height: 160px;
 		border-radius: 8px;
 		background: #FFFFFF;	
 		position: relative;
@@ -306,7 +309,7 @@
              	padding-bottom: 10px;
              	span{
              		display: inline-block;
-             		font-size: 14px;
+             		font-size: 16px;
              		color: #333333;
              		&:nth-child(2){
              			margin-left: 17px;
@@ -317,7 +320,7 @@
              	span{display: block;}
              	width: 258px;
              	line-height: 22px;
-             	font-size: 14px;
+             	font-size: 15px;
              	color: #333333;
              }
 		}

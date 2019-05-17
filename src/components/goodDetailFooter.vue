@@ -11,9 +11,9 @@
 				<div class="button" @click="showModel(1)" form-type="submit">立即购买</div>
 			</div>
 		</div>
-		<div class="modeWarp" v-if="modelShow">
+		<div class="modeWarp" v-if="modelShow" @click="hideModel">
 			<div class="ModelMask"></div>
-			<div class="Model" :animation='Animation'>
+			<div class="Model" :animation='Animation' catchtap>
 				<div class="colse" @click="hideModel">
 					<span class="iconfont">&#xe61a;</span>
 				</div>
