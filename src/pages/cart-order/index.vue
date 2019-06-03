@@ -67,7 +67,7 @@
 							<span>{{addr.name}}</span>
 							<span>{{addr.mobile}}</span>
 						</div>
-						<div class="address">
+						<div class="address fontHidden3">
 							<span>{{addr.addr}}</span>
 							<span>{{addr.region}}</span>
 						</div>							
@@ -388,7 +388,7 @@
              	padding-bottom: 10px;
              	span{
              		display: inline-block;
-             		font-size: 14px;
+             		font-size: 16px;
              		color: #333333;
              		&:nth-child(2){
              			margin-left: 17px;
@@ -399,7 +399,7 @@
              	span{display: block;}
              	width: 258px;
              	line-height: 22px;
-             	font-size: 14px;
+             	font-size: 15px;
              	color: #333333;
              }
 		}
