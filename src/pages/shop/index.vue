@@ -6,7 +6,7 @@
 		<blockquote v-else>
 			<!--轮播-->
 			<div class='test' :style="{height:Height+'px'}">
-				<swiper display-multiple-items='1' circular previous-margin='28px' next-margin='28px' indicator-dots>
+				<swiper display-multiple-items='1'  previous-margin='28px' next-margin='28px' indicator-dots>
 					<div v-for="(item,index) in banner" :key="item.imageId" :index="index" @click="Brandjump(item.goodsId)">
 						<swiper-item>
 							<div class='box'>

@@ -144,11 +144,13 @@
 				this.value = val
 			},
 			closeMode() {
+				let that=this
 				this.modelBool = false
 				this.listArry.map(item => {
 					item.isSelect = false
 				})
 				this.listArry[0].isSelect = true
+				that.postage = wx.getStorageSync('postage')
 			},
 			getSign() {
 				let that = this;
@@ -183,7 +185,7 @@
 					}
 				}
 			},
-			exchange() {
+			exchange() { 
 				let that = this
 				if(that.oneBox == 0) {
 					ToastShow('数据错误,请稍后重试', 'none')

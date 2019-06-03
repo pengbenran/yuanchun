@@ -17,7 +17,7 @@
 					<input type="number" v-model="inputVal" placeholder="输入提现金额">
 				</span>
 				<span class="all" @click="allBalance">提现规则</span>
-				<span class="btn" @click="isBindCard">提现</span>
+				<span class="btn" @click="canApply">提现</span>
 			</div>
 		</div>
 		<div class="menu">
@@ -55,7 +55,7 @@
 				userInfo:{},
 				inputVal:'',
 				canSubmit:true,
-				showTip:false
+				showTip:true
 			}
 		},
 		mounted(){
@@ -80,12 +80,22 @@
 				let that=this
 				that.showTip=false
 			},
+			// 判断是否是提现日
+			canApply(){
+				var myDate = new Date(); 
+				let that=this
+				if(myDate.getDay()==4){
+					that.isBindCard()
+				}
+				else{
+					Lib.ToastShow('周四为提现日哦','none')
+				}
+			},
 			isBindCard(){
 				let that=this
 				let params={}
 				params.memberId=that.userInfo.memberId
 				Api.isBind(params).then(function(res){
-					console.log(res)
 					if(res.code==1){
 						wx.showModal({
 							title: '提示',

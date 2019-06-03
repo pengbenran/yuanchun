@@ -226,7 +226,7 @@
 			},
 			jumpDistribe(goodsId){
 				let that=this
-				if(that.userInfo.lvId==11){
+				if(store.state.userInfo.lvId==11){
 					wx.showToast({
 						icon: 'none',
 						title: '请先成为合伙人',

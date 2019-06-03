@@ -4,88 +4,84 @@
 			<loading></loading>
 		</blockquote>
 		<blockquote v-else>
-			<swiper vertical style="height: 100vh;">
-				<swiper-item style="background: #FFFFFF;">
-					<div class="header">
-						<div class="userInfo">
-							<div class="avator">
-								<img :src="userInfo.face">
-							</div>
-							<div class="userName">
-								<p class="memberName">{{userInfo.name}}</p>
-								<p class="memberLv">
-									<span>{{userInfo.lvidname}}</span>
-									<span @click="jumpvipUp" v-if="canUp">点击升级</span>
-								</p>
-							</div>
-						</div>
+			<div class="header">
+				<div class="userInfo">
+					<div class="avator">
+						<img :src="userInfo.face">
 					</div>
-					<!--进度条-->
-					<div class="progress" v-if="userInfo.defaultLv!=1">
-						<div class="progress-left">
-							<div class="progress-cant">
-								<span class="iconfont">&#xe636;</span>
-								<span>{{userInfo.lvidname}}</span>
-							</div>
-							<div class="xian"></div>
-						</div>
-						<div class="progress-right">
-							<div class="hint">当前进度{{count}}/{{condition}}</div>
-							<progress border-radius="3" :percent="progressNum" activeColor="#ffda83" />
-						</div>
+					<div class="userName">
+						<p class="memberName">{{userInfo.name}}</p>
+						<p class="memberLv">
+							<span>{{userInfo.lvidname}}</span>
+							<span @click="jumpvipUp" v-if="canUp">点击升级</span>
+						</p>
 					</div>
-					<div class="menu">
-						<div class="list">
-							<p class="num">{{point}}</p>
-							<p class="name">平台券</p>
-						</div>
-						<div class="list" @click="jump('../inComing/main')">
-							<p class="num">{{advance}}</p>
-							<p class="name">余额</p>
-						</div>
-						<div class="list" @click="jump('../favoriteList/main')">
-							<p class="num">{{orderStatus.favorite}}</p>
-							<p class="name">收藏</p>
-						</div>
+				</div>
+			</div>
+			<!--进度条-->
+			<div class="progress" v-if="userInfo.defaultLv!=1">
+				<div class="progress-left">
+					<div class="progress-cant">
+						<span class="iconfont">&#xe636;</span>
+						<span>{{userInfo.lvidname}}</span>
 					</div>
-					<div class="order">
-						<div class="orderTitle">
-							<div class="allOrer-left">我的订单</div>
+					<div class="xian"></div>
+				</div>
+				<div class="progress-right">
+					<div class="hint">当前进度{{count}}/{{condition}}</div>
+					<progress border-radius="3" :percent="progressNum" activeColor="#ffda83" />
+				</div>
+			</div>
+			<div class="menu">
+				<div class="list">
+					<p class="num">{{point}}</p>
+					<p class="name">平台券</p>
+				</div>
+				<div class="list" @click="jump('../inComing/main')">
+					<p class="num">{{advance}}</p>
+					<p class="name">余额</p>
+				</div>
+				<div class="list" @click="jump('../favoriteList/main')">
+					<p class="num">{{orderStatus.favorite}}</p>
+					<p class="name">收藏</p>
+				</div>
+			</div>
+			<div class="order">
+				<div class="orderTitle">
+					<div class="allOrer-left">我的订单</div>
 					
-						</div>
-						<div class="orderItem">
-							<div class="orderList" @click="jump('../orderList/main?orderStatus=1')">
-								<p>{{orderStatus.payOrder}}</p>
-								<p>待付款</p>
-							</div>
-							<div class="orderList" @click="jump('../orderList/main?orderStatus=2')">
-								<p>{{orderStatus.shipOrder}}</p>
-								<p>待发货</p>
-							</div>
-							<div class="orderList" @click="jump('../orderList/main?orderStatus=3')">
-								<p>{{orderStatus.takeOrder}}</p>
-								<p>待收货</p>
-							</div>
-							<div class="orderList" @click="jump('../orderList/main?orderStatus=4')">
-								<p>{{orderStatus.completeOrder}}</p>
-								<p>已完成</p>
-							</div>
-						</div>
+				</div>
+				<div class="orderItem">
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=1')">
+						<p>{{orderStatus.payOrder}}</p>
+						<p>待付款</p>
 					</div>
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=2')">
+						<p>{{orderStatus.shipOrder}}</p>
+						<p>待发货</p>
+					</div>
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=3')">
+						<p>{{orderStatus.takeOrder}}</p>
+						<p>待收货</p>
+					</div>
+					<div class="orderList" @click="jump('../orderList/main?orderStatus=4')">
+						<p>{{orderStatus.completeOrder}}</p>
+						<p>已完成</p>
+					</div>
+				</div>
+			</div>
 
-					<div class="menuContain">
-						<div class="menuTitle">
-							我的服务
-						</div>
-						<div class="menuItem" v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
-							<div class="icon">
-								<img :src="item.icon">
-							</div>
-							<div class="menuname">{{item.menuName}}</div>
-						</div>
+			<div class="menuContain">
+				<div class="menuTitle">
+					我的服务
+				</div>
+				<div class="menuItem" v-for="(item,index) in menuItem" :key="item" :inde="index" @click="jump(item.jumpUrl)">
+					<div class="icon">
+						<img :src="item.icon">
 					</div>
-				</swiper-item>
-			</swiper>
+					<div class="menuname">{{item.menuName}}</div>
+				</div>
+			</div>
 			<div class="footer">
 				<img src="https://shop.guqinet.com/html/images/shuiguo/index/footerImg.png" />
 			</div>
@@ -93,7 +89,6 @@
 				<span><img src="/static/images/more.png"/></span>
 			</div>
 		</blockquote>
-
 	</div>
 </template>
 
@@ -324,13 +319,10 @@
 			}
 		}
 	}
-	
 	.footer {
-		width: 100%;
-		height: 60px;
-		position: absolute;
-		bottom: 12px;
-		z-index: -10;
+		width: 443rpx;
+		height: 61rpx;
+		margin: 10px auto;
 		img {
 			width: 100%;
 			height: 100%;
