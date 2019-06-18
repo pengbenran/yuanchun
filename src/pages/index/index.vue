@@ -1,5 +1,5 @@
 <template>
-	<div class="container">	
+	<div class="container">
 		<blockquote v-if="!isLoading">
 			<loading></loading>
 		</blockquote>
@@ -33,9 +33,13 @@
 				</div>
 				<!--新人礼包-->
 				<div class="giftbags" v-if="hasGift">
-					<div class="tit">新人礼包</div>
+					<div class="comtit">
+						<span><img src="/static/images/comtit.png"/></span>
+						<span>注册会员</span>
+						<span><img src="/static/images/comtit.png"/></span>
+					</div>
 					<scroll-view class="scroll-view_H" scroll-x>
-						<div class="giftbag" @click="jumpNewPersonGift(index)" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
+						<div v-if="giftbag[index].isend==1" class="giftbag" @click="jumpNewPersonGift(index)" v-for="(item,index) in giftbag" :key='item.repacketId' :index="index">
 							<div class="giftbag-list">
 								<div class="img">
 									<img :src="item.voucherType" />
@@ -43,13 +47,14 @@
 								<div class="cant">
 									<div class="cant-right">
 										<p class="fontHidden">{{item.repacketName}}</p>
-										<div class="btn">免费领取</div>
+										<div class="btn">立即注册</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</scroll-view>                      
+					</scroll-view>
 				</div>
+
 				<!--弹窗-->
 				<div class='popup' v-if="isTogo">
 					<div class='bcgmode' @click="hidd"></div>
@@ -83,7 +88,7 @@
 							<span>{{goodsDO.price}}</span>
 						</div>
 						<div class="btns">
-							<div class="btn" @click="jumpmemberUp">立即抢购</div>
+							<div class="btn" @click="jumpmemberUp">立即升级</div>
 						</div>
 					</div>
 				</div>
@@ -115,7 +120,7 @@
 				<div class="sign" @click="jump">
 					<div class="comtit">
 						<span><img src="/static/images/comtit.png"/></span>
-						<span>签到领取面膜</span>
+						<span>签到领取积分</span>
 						<span><img src="/static/images/comtit.png"/></span>
 					</div>
 					<div class="sign-wp">
@@ -124,7 +129,7 @@
 							<span>签到</span>
 						</div>
 						<div class="sign-right">
-							<span>点击签到领取面膜</span>
+							<span>点击签到领取积分</span>
 							<span>&gt;</span>
 						</div>
 					</div>
@@ -145,6 +150,7 @@
 	export default {
 		data() {
 			return {
+				istooge: true,
 				isLoading: false,
 				opacity: 0,
 				isMore: false,
@@ -159,7 +165,7 @@
 				message: [],
 				showDetail: false,
 				exclusive: [],
-				hasGift:false,
+				hasGift: false,
 			}
 		},
 		components: {
@@ -170,7 +176,7 @@
 		async mounted() {
 			var that = this;
 			let Width = wx.getSystemInfoSync().windowWidth
-			that.Height = Width / 2.5	
+			that.Height = Width / 2.5
 			that.getBanner()
 			that.getTicket()
 			that.getUserInfo()
@@ -180,64 +186,62 @@
 		onShow() {
 			let that = this
 			that.giftbag = store.state.giftbag
-			if(that.giftbag.length==0){
-				that.hasGift=false
-			}
-			else{
-				that.hasGift=true
+			if(that.giftbag.length == 0) {
+				that.hasGift = false
+			} else {
+				that.hasGift = true
 			}
 		},
 		methods: {
-           imgBg(){
-           	 let that = this
-           	 that.isbg = false    
-           },
+			imgBg() {
+				let that = this
+				that.isbg = false
+			},
 
 			showGoodDetail() {
 				let that = this
 				that.showDetail = !that.showDetail
 			},
 			// 获取会员升级商品
-			getmemberUpGoods() {				
+			getmemberUpGoods() {
 				let that = this
 				Api.getmemberUpGoods().then(function(res) {
-					that.goodsDO = res.goodsDO				
+					that.goodsDO = res.goodsDO
 				})
 			},
 			// 获取合伙人专属礼包
-			getDistribeGood(){
+			getDistribeGood() {
 				let that = this
-				let params={}
-				params.offset=0;
-				params.limit=5
-				params.disabled=1
+				let params = {}
+				params.offset = 0;
+				params.limit = 5
+				params.disabled = 1
 				Api_good.getGoodsAll(params).then(function(res) {
-					if(res.code==0){
+					if(res.code == 0) {
 						that.exclusive = res.Goods
 					}
-					
+
 				})
 			},
 			// 跳转合伙人礼包详情
-			jumpMemberUpDetail(goodsId){
+			jumpMemberUpDetail(goodsId) {
 				wx.navigateTo({
-					url:'../memberUpDetail/main?goodsId='+goodsId
+					url: '../memberUpDetail/main?goodsId=' + goodsId
 				})
 			},
-			jumpDistribe(goodsId){
-				let that=this
-				if(that.userInfo.lvId==11){
+			jumpDistribe(goodsId) {
+				let that = this
+				if(store.state.userInfo.lvId == 11) {
 					wx.showToast({
 						icon: 'none',
 						title: '请先成为合伙人',
 					})
-				}
-				else{
+				} else {
 					wx.navigateTo({
-						url:'../product-detail/main?goodsId='+goodsId
+						url: '../product-detail/main?goodsId=' + goodsId
 					})
 				}
-             },
+			},
 			jumpmemberUp() {
 				let that = this
 				let goodarr = []
@@ -296,17 +300,17 @@
 						that.isLoading = true
 						if(res.giftPackage.length == 0) {
 							that.isTogo = false
-							that.hasGift=false
+							that.hasGift = false
 						} else {
 							that.isTogo = true
-							that.hasGift=true
+							that.hasGift = true
 						}
 						store.commit("stateGiftbag", res.giftPackage)
 						that.giftbag = store.state.giftbag
-
 					}
 				})
 			},
+
 			// 获取用户信息
 			async getUserInfo() {
 				let that = this
@@ -350,9 +354,9 @@
 			hidd: function() {
 				let that = this;
 				that.isTogo = false
-				 
+
 			},
-			
+
 			//签到跳转
 			jump: function() {
 				wx.navigateTo({
@@ -373,6 +377,7 @@
 
 <style lang="less">
 	/*公用标题*/
+	
 	.comtit {
 		display: flex;
 		justify-content: space-between;
@@ -486,8 +491,7 @@
 		top: 0;
 		right: 0;
 		bottom: 0;
-		z-index: 90; 
-		
+		z-index: 90;
 		.bcgmode {
 			width: 100%;
 			height: 100%;
@@ -559,10 +563,6 @@
 	/*新人礼包*/
 	
 	.giftbags {
-		width: 100%;
-		height: 184px;
-		background: #c42f3c;
-		margin-top: 12px;
 		.tit {
 			text-align: center;
 			font-size: 19px;
@@ -576,24 +576,23 @@
 		white-space: nowrap;
 		width: 100%;
 		.giftbag {
-			display: inline-block;
-			margin-right: 12px;
-			&:nth-child(1) {
-				margin-left: 12px;
-			}
+	     width: 100%;
+	     padding: 0 12px;
+	     box-sizing: border-box;
 		}
 		.giftbag-list {
 			display: flex;
 			position: relative;
 			justify-content: space-between;
-			border-radius: 8px;
+			border-radius: 12px;
 			background: #FFFFFF;
-			height: 125px;
+			height: 140px;
 			overflow: hidden;
-			width: 290px;
+			width: 100%;
+			border: 1px solid #c42f3c;
 			.img {
 				width: 125px;
-				height: 125px;
+				height: 100%;
 				img {
 					width: 100%;
 					height: 100%;
@@ -608,7 +607,7 @@
 						font-size: 14px;
 						color: #333333;
 						line-height: 20px;
-					/*	font-weight: bold;*/
+						/*	font-weight: bold;*/
 						padding-top: 12px;
 					}
 					.btn {
@@ -629,13 +628,14 @@
 			}
 		}
 	}
-	/*签到*/	
+	/*签到*/
+	
 	.sign {
 		padding: 0 12px 40px 12px;
 		box-sizing: border-box;
 		.sign-wp {
 			border-radius: 12px;
-			background: linear-gradient(to right,#c42f3c, #ff3344);
+			background: linear-gradient(to right, #c42f3c, #ff3344);
 			width: 100%;
 			height: 66px;
 			display: flex;
@@ -683,7 +683,8 @@
 			}
 		}
 	}
-	/*商品*/	
+	/*商品*/
+	
 	.recommend {
 		width: 100%;
 		padding: 0 12px;
@@ -719,7 +720,7 @@
 						display: block;
 						&:nth-child(1) {
 							font-size: 19px;
-							color: #ffffff;					
+							color: #ffffff;
 						}
 						&:nth-child(2) {
 							font-size: 14px;
@@ -809,55 +810,60 @@
 				height: 150px;
 				border-radius: 12px;
 				overflow: hidden;
-				box-shadow:0 0 8px #e6e5ff;
+				box-shadow: 0 0 8px #e6e5ff;
 				margin-top: 10px;
-				&:nth-child(1){margin-top: 0;}
+				&:nth-child(1) {
+					margin-top: 0;
+				}
 				.left {
-						width: 150px;
-						height: 150px;
-						padding: 4px 0 4px 4px;
-						box-sizing: border-box;
-						img{width: 100%;height: 100%;border-top-left-radius: 8px;border-bottom-left-radius: 8px;}
+					width: 150px;
+					height: 150px;
+					padding: 4px 0 4px 4px;
+					box-sizing: border-box;
+					img {
+						width: 100%;
+						height: 100%;
+						border-top-left-radius: 8px;
+						border-bottom-left-radius: 8px;
+					}
 				}
 				.right {
-						padding: 14px 12px 0 7px;
-						box-sizing: border-box;
-						width: 1px;
-						flex-grow: 1;
+					padding: 14px 12px 0 7px;
+					box-sizing: border-box;
+					width: 1px;
+					flex-grow: 1;
 					.name {
-                        font-size: 15px;
-                        color: #333333;
-                        line-height: 20px;
-                         height: 40px;
-                          
+						font-size: 15px;
+						color: #333333;
+						line-height: 20px;
+						height: 40px;
 					}
 					.picold {
 						margin-top: 20px;
 						font-size: 16px;
 						color: #ff0000;
 					}
-					.pic {  
+					.pic {
 						margin-top: 11px;
 						display: flex;
 						align-items: center;
 						justify-content: space-between;
-						span{
+						span {
 							display: block;
-							&:nth-child(1){
+							&:nth-child(1) {
 								font-size: 19px;
 								color: #ff0000;
 								font-weight: bold;
 							}
-							&:nth-child(2){
+							&:nth-child(2) {
 								font-size: 14px;
 								color: #ffffff;
 								text-align: center;
 								width: 90px;
 								height: 33px;
 								border-radius: 16.5px;
-								background: linear-gradient(to right,#c42f3c,#ff3344);
+								background: linear-gradient(to right, #c42f3c, #ff3344);
 								line-height: 33px;
-								
 							}
 						}
 					}

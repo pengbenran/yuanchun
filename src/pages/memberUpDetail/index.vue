@@ -43,7 +43,7 @@
 				<wxParse :content="detail.intro" @preview="preview" @navigate="navigate" />
 			</div>
 			<div class="footerBnt">
-				<div class="button"  @click="jumpmemberUp">立即购买</div >
+				<div class="button"  @click="jumpmemberUp">立即成为</div >
 			</div>
 		</blockquote>
 	</div>

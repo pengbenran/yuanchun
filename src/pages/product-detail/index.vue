@@ -43,7 +43,9 @@
 			<div>
 				<wxParse :content="detail.intro" @preview="preview" @navigate="navigate" />
 			</div>
-			<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection' />
+			<!-- 分享海报 -->
+			<goodPoster ref="goodPoster" @closePoster='closePoster' @paintOk='paintOk' :goodDetail='detail' ></goodPoster>
+			<goodsDetailFooter :GoodsInfo='detail' :posts='isCollection' @drawPoster='drawPoster'/>
 		</blockquote>
 	</div>
 </template>
@@ -54,6 +56,7 @@
 	import goodsDetailFooter from '@/components/goodDetailFooter'
 	import loading from '@/components/loading'
 	import wxParse from 'mpvue-wxparse'
+	import goodPoster from '@/components/goodPoster'
 	export default {
 		data() {
 			return {
@@ -63,18 +66,44 @@
 				banner: [],
 				userInfo: {},
 				isLoading: false,
-				Width: ''
+				Width: '',
+				shareImg:'',
+				isPoster:false,
 			}
 		},
 		components: {
 			goodsDetailFooter,
 			loading,
-			wxParse
+			wxParse,
+			goodPoster
 		},
 		methods: {
 			btnTab: function(index) {
 				let that = this
 				that.curr = index
+			},
+			closePoster() {
+				let that = this
+				that.isPoster = false
+			},
+			drawPoster() {
+				let that = this
+				console.log('我执行到了')
+				that.$refs.goodPoster.getErCode()
+			},
+			// 保存图片
+			eventSave() {
+				let that = this
+				wx.saveImageToPhotosAlbum({
+					filePath: that.shareImg,
+					success(res) {
+						wx.showToast({
+							title: '保存图片成功',
+							icon: 'success',
+							duration: 2000
+						})
+					}
+				})
 			},
 			getGoodsInfo(goodsId) {
 				let params = {}
@@ -105,6 +134,7 @@
 			let that = this
 			that.goodsId = that.$root.$mp.query.goodsId
 			that.userInfo = store.state.userInfo
+			// that.$refs.goodPoster.closeClick()
 			that.Width = wx.getSystemInfoSync().windowWidth
 			that.getGoodsInfo(that.goodsId)
 		},

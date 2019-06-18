@@ -2,10 +2,10 @@
 	<div class="index-gift">
 		<div class="top">
 			<img src="/static/images/gift1.png" />
-			<div class="tit">双重大礼 赶紧领取</div>
+			<div class="tit">注册会员 全场半价</div>
 		</div>
 		<div class="cant">
-			<div class="cant-list" v-for="(item,index) in giftList">
+			<div v-if="giftList[index].isend==1" class="cant-list" v-for="(item,index) in giftList">
 				<div class="left">
 					<div class="img"><img :src="item.voucherType" /></div>
 					<div class="tit fontHidden3">{{item.repacketName}}</div>
@@ -14,7 +14,7 @@
 			</div>
 		</div>
 		<div class="btn" @click="jump">
-			立即领取
+			立即注册
 		</div>
 	</div>
 </template>

@@ -7,8 +7,8 @@
 			<div class="total">
 				<div class="sign1"><img src="/static/images/sign1.png" />
 					<div class="Num_div">
-						<span>{{userInfo.mp}}片</span>
-						<div>面膜数量</div>
+						<span>{{userInfo.mp}}</span>
+						<div>积分数量</div>
 					</div>
 				</div>
 				<div class="businessCard">
@@ -144,11 +144,13 @@
 				this.value = val
 			},
 			closeMode() {
+				let that=this
 				this.modelBool = false
 				this.listArry.map(item => {
 					item.isSelect = false
 				})
 				this.listArry[0].isSelect = true
+				that.postage = wx.getStorageSync('postage')
 			},
 			getSign() {
 				let that = this;
@@ -183,7 +185,7 @@
 					}
 				}
 			},
-			exchange() {
+			exchange() { 
 				let that = this
 				if(that.oneBox == 0) {
 					ToastShow('数据错误,请稍后重试', 'none')
@@ -192,7 +194,9 @@
 				} else {
 					that.getAddres()
 				}
-
+//                 wx.navigateTo({
+//						url: '../jfshop/main'
+//					})
 			},
 			//拿到用户的默认地址
 			getAddres() {

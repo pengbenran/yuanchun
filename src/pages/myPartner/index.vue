@@ -6,7 +6,7 @@
 		<blockquote v-else>
 			<div class="header">
 				<div class="avator">
-					<img :src="userInfo.face">
+					<img :src="face">
 				</div>
 			</div>
 			<div class="partnerTitle">
@@ -26,7 +26,7 @@
 					<img src="https://shop.guqinet.com/html/images/shuiguo/address/kong.png">
 				</div>
 				<blockquote v-else>
-					<div class="teamList" v-for="(item,index) in myTeam" :index="index" :key="item.unionid" @click="jumpmyPartner(item.memberId,item.face)">
+					<div class="teamList" v-for="(item,index) in myTeam" :index="index" :key="item.unionid" @click="getSubordinate(item.memberId,item.face)">
 						<div class="teamAvator">		
 							<img :src="item.face">				
 						</div>
@@ -52,7 +52,7 @@
 	export default {
 		data() {
 			return {
-				userInfo:{},
+				memberId:'',
 				limit:15,
 				pages:0,
 				myTeam:[],
@@ -61,8 +61,8 @@
 				isLoading:false,
 				searchName:'',
 				seachMyTeam:[],
-				placeTitle:'查找队友'
-
+				placeTitle:'查找队友',
+				face:''
 			}
 		},
 
@@ -71,16 +71,28 @@
 		},
 
 		methods: {
+			// 获取他的团队
+			getSubordinate(memberId,face){
+				let that=this
+				that.pages=0
+				that.myTeam=[]
+				that.hasMore=true
+				that.face=face
+				that.searchName=''
+				that.memberId=memberId
+				that.placeTitle='查找队友'
+				that.getAllSubordinate(memberId)
+			},
 			// 获取我的团队信息
-			getAllSubordinate(){
+			getAllSubordinate(memberId){
 				let that=this
 				if(that.hasMore){
 					let params={}
 					params.limit=that.limit
 					params.offset=that.pages*that.limit
-					params.memberId=that.userInfo.memberId
-					// params.memberId=350
-					params.searchName=that.searchName
+					// params.memberId=that.userInfo.memberId
+					params.memberId=memberId
+					params.name=that.searchName
 					Api.allSubordinate(params).then(function(res){
 						that.isLoading=true
 						that.total=res.total
@@ -101,11 +113,6 @@
 				}
 				
 			},
-			jumpmyPartner(memberId,face){
-				wx.navigateTo({
-					url: `../myPartner/main?memberId=${memberId}&face=${face}`,
-				})
-			},
 			seachParent(){
 				let that=this
 				that.limit=15
@@ -115,7 +122,7 @@
 				if(that.searchName==''){
 					that.placeTitle='查找队友'
 				}
-				that.getAllSubordinate()
+				that.getAllSubordinate(that.memberId)
 			},
 			onFocus(){
 				this.placeTitle=''
@@ -123,13 +130,14 @@
 		},
 		mounted() {
 			let that=this
-			that.userInfo=store.state.userInfo
-			that.getAllSubordinate()
+			that.memberId=that.$root.$mp.query.memberId
+			that.face=that.$root.$mp.query.face
+			that.getAllSubordinate(that.memberId)
 		},
 		onReachBottom:function(){
 			let that = this;
 			that.pages+=1
-			that.getAllSubordinate()
+			that.getAllSubordinate(that.memberId)
 		},
 		onUnload(){
 			let that=this

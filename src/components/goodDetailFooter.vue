@@ -2,8 +2,8 @@
 	<div class="goodDetailFooter">
 		<div class="footerBnt">
 			<div class="left">
-				<div class="leftItme" @click="jumpIndex"><img :src="homeImg" />
-					<p>首页</p>
+				<div class="leftItme" @click="share"><img :src="homeImg" />
+					<p>分享</p>
 				</div>
 				<div class="button" @click="showModel(2)" form-type="submit">加入购物车</div>
 			</div>
@@ -56,13 +56,13 @@
 		data() {
 			return {
 				kefuImg: 'https://shop.guqinet.com/html/images/shuiguo/group/kefu.png',
-				homeImg: '/static/images/homeselect.png',
+				homeImg: '/static/images/share.png',
 				noshouChang: 'https://shop.guqinet.com/html/images/shuiguo/group/shoucan.png',
 				shouChang: 'https://shop.guqinet.com/html/images/shuiguo/group/shoucang.png',
 				modelShow: false,
 				btnIndex: '',
 				pic: 1,
-				userInfo: {}
+				userInfo: {},
 			}
 		},
 		methods: {
@@ -73,15 +73,34 @@
 				//父组件控制子组件
 				// that.$refs.childs.emitEvent(index);
 			},
-			jumpIndex() {
-				wx.switchTab({
-					url: '../index/main'
-				});
+			share() {
+				let that=this
+				if(that.userInfo.lvId==11){
+						wx.showModal({
+						title: '提示',
+						content: '您还不是合伙人哦~无法分享，需购买合伙人大礼包',
+						confirmText: '立即成为',
+						success(res) {
+							if(res.confirm) {
+								let goodsId = 69
+								wx.navigateTo({
+									url:'../memberUpDetail/main?goodsId='+goodsId
+								})
+							} else if(res.cancel) {
+
+							}
+						}
+					})
+				}
+				else{
+					that.$emit('drawPoster')
+				}
 			},
 			hideModel() {
 				let that = this
 				that.modelShow = false;
 			},
+		
 			// 立即购买
 			async toNext() {
 				let that = this;

@@ -6,9 +6,9 @@
 		<blockquote v-else>
 			<!--轮播-->
 			<div class='test' :style="{height:Height+'px'}">
-				<swiper display-multiple-items='1' circular previous-margin='28px' next-margin='28px' indicator-dots>
+				<swiper circular display-multiple-items='1'  previous-margin='28px' next-margin='28px' indicator-dots>
 					<div v-for="(item,index) in banner" :key="item.imageId" :index="index" @click="Brandjump(item.goodsId)">
-						<swiper-item>
+						<swiper-item style='text-align: center;'>
 							<div class='box'>
 								<img :src='item.imageUrl'></img>
 							</div>
@@ -31,7 +31,7 @@
 				<div class="product-list">
 		           <product :products="product"></product>
 				</div>
-			</div>
+			</div>			
 		</blockquote>
 	</div>
 </template>
@@ -42,6 +42,7 @@
 	export default {
 		data() {
 			return {
+				listcurr: 0,
 			    isflex:"none",
 				catImg:'',
 				ticket:20,  //平台券
@@ -58,6 +59,10 @@
 				isLoading:false,
 				Height:'',
 				kindHeight:'',
+				recommendList: [
+				  {name:"普通商城"},
+				  {name:"积分商城"},
+				],
 			}
 		},
 
@@ -67,6 +72,13 @@
 		},
 
 		methods: {
+			listTab(e,catId) {
+				this.listcurr = e
+			},
+			changeTab(e) {
+				let that = this
+				that.listcurr = e.mp.detail.current
+			},
 			async getGoodsAll(catId,pages,limit){
 				let that=this
 				if(that.hasMore[that.kindIndex]){
@@ -153,7 +165,6 @@
 
 <style lang="less">
 	/*轮播*/
-	
 	.test {
 		width: 100%;
 		box-sizing: border-box;
@@ -161,10 +172,6 @@
 	
 	swiper {
 		height: 100%;
-	}
-	
-	swiper-item {
-		text-align: center;
 	}
 	
 	swiper-item image {

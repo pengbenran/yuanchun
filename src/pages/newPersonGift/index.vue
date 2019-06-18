@@ -47,7 +47,7 @@
 			<div class="cartBtn">
 				合计：{{totalMoney}}元
 			</div>
-			<div class="btn" @click="toast">立即领取</div>
+			<div class="btn" @click="toast">立即注册</div>
 		</div>
 	</div>
 </template>
