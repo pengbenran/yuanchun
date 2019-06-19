@@ -40,6 +40,7 @@ export default {
                 params.iv=res_user.iv
                 params.encryptedData=res_user.encryptedData
                 Api.weCatLogin(params).then(function(res){
+                	console.log(res)
                   if(res.code==0){
                     that.isSubmit=false
                     that.isMember=false
@@ -78,7 +79,7 @@ export default {
                 // memberDo.infoFull=''
                 // memberDo.lvId=11
                 // memberDo.lvidname='VIP'
-                // memberDo.memberId=2673
+//               memberDo.memberId=2673
                 // memberDo.memberUp=''
                 // memberDo.mobile=''
                 // memberDo.name='春华秋实'

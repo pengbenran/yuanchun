@@ -33,7 +33,7 @@
 				</div>
 				<!--新人礼包-->
 				<div class="giftbags" v-if="hasGift">
-					<div class="comtit">
+					<div class="comtit">  
 						<span><img src="/static/images/comtit.png"/></span>
 						<span>注册会员</span>
 						<span><img src="/static/images/comtit.png"/></span>
@@ -54,7 +54,6 @@
 						</div>
 					</scroll-view>
 				</div>
-
 				<!--弹窗-->
 				<div class='popup' v-if="isTogo">
 					<div class='bcgmode' @click="hidd"></div>

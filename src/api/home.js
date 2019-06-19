@@ -32,6 +32,9 @@ export default {
 	// 获取成为会员商品
 	getmemberUpGoods(){
 		return API.GET('/api/index/memberUpGoods')
+	},
+	getIndexBaner(){
+		return API.GET('/api/index/getIndexScreen')
 	}
 
 }

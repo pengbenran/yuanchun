@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="img-bg">
-			<div class="img"><img src="https://shop.guqinet.com/html/images/yuanchun/index-bg.jpg" /></div>
+			<div class="img"><img :src="imageUrl" /></div>
 			<div class="tit">
 				<span>{{num}}</span>
 				<span>s</span>
@@ -11,14 +11,18 @@
 	</div>
 </template>
 <script>
+	import Api from "@/api/home";
 	export default {
 		data() {
 			return {
 				num:3,
+				imageUrl:'',
 			}
 		},
 		onLoad() {
-			this.sendCode()
+			let that = this
+			that.sendCode()
+			that.getIndexBaner()
 		},
 		methods: {
 			sendCode() {
@@ -34,6 +38,12 @@
 						clearInterval(i)
 					}
 				}, 1000)
+			},
+			getIndexBaner() {
+				let that = this
+				Api.getIndexBaner().then(function(res) {
+					that.imageUrl = res.indexScreen.imageUrl
+				})
 			}
 
 		},

@@ -61,7 +61,7 @@
 		<div class="pic">
 			<div class="pic-wp2">
 				<span>运费（快递）</span>
-				<span v-if="orderDetail.orderType==3||orderDetail.orderType==5">¥{{postage*num}}</span>
+				<span v-if="orderDetail.orderType==5">¥{{postage*num}}</span>
 				<span v-else>¥0</span>
 			</div>
 			<div class="pic-wp4" v-if="orderDetail.orderType==1">
